@@ -18,20 +18,19 @@ This project follows a monorepo architecture using Turborepo + pnpm for efficien
 
 ```
 /gameshield
-│── /apps
-│ ├── landing-page                            # Public-facing website
-│ ├── api                                     # Backend API for verification
-│ ├── admin-dashboard                         # (Optional) Admin UI for monitoring
-│── /packages
-│ ├── game-core                               # Core game logic
-│ ├── captcha-sdk                             # SDK for integration
-│ ├── shared-ui                               # Reusable UI components
-│ ├── utils                                   # Helper functions
-│── /infra # Deployment & infrastructure
-│── /docs # Documentation
-│── package.json                              # Root dependencies & scripts
-│── turbo.json                                # Monorepo configuration
-│── .github/workflows                         # CI/CD setup
+├── apps/
+│   ├── api/                                  # Backend API for verification
+│   └── admin-dashboard/                      # (Optional) Admin UI for monitoring
+├── packages/
+│   ├── game-core/                            # Core game logic
+│   ├── captcha-sdk/                          # SDK for integration
+│   ├── shared-ui/                            # Reusable UI components
+│   └── utils/                                # Helper functions
+├── infra/                                    # Deployment & infrastructure
+├── docs/                                     # Documentation
+├── package.json                              # Root dependencies & scripts
+├── turbo.json                                # Monorepo configuration
+└── .github/workflows/                        # CI/CD setup
 ```
 
 ## Getting Started
