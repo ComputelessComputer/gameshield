@@ -1,21 +1,25 @@
 import * as PIXI from "pixi.js";
+import { BaseGame, GameConfig, GameResult } from "./games/base-game";
+import { GameFactory, GameType } from "./games";
 
-export interface GameOptions {
-  width?: number;
-  height?: number;
-  backgroundColor?: number;
+export interface GameOptions extends GameConfig {
+  gameType?: GameType;
 }
 
 export class Game {
-  private app: PIXI.Application;
+  private game: BaseGame | null = null;
+  private options: GameOptions;
   private container: HTMLElement | null = null;
+  private onGameComplete: ((result: GameResult) => void) | null = null;
 
   constructor(options: GameOptions = {}) {
-    this.app = new PIXI.Application({
+    this.options = {
       width: options.width || 400,
       height: options.height || 300,
-      backgroundColor: options.backgroundColor || 0x1099bb
-    });
+      backgroundColor: options.backgroundColor || 0x1099bb,
+      gameType: options.gameType || 'random',
+      difficulty: options.difficulty || 'medium'
+    };
   }
 
   mount(container: HTMLElement | string): void {
@@ -30,13 +34,42 @@ export class Game {
     }
     
     if (this.container) {
-      this.container.appendChild(this.app.view as unknown as HTMLElement);
+      this.initGame();
+    }
+  }
+
+  setCompletionCallback(callback: (result: GameResult) => void): void {
+    this.onGameComplete = callback;
+    if (this.game) {
+      this.game.setCompletionCallback(this.handleGameComplete.bind(this));
+    }
+  }
+
+  private initGame(): void {
+    // Create the game based on the specified type
+    this.game = GameFactory.createGame(this.options.gameType!, this.options);
+    
+    // Set completion callback if available
+    if (this.onGameComplete) {
+      this.game.setCompletionCallback(this.handleGameComplete.bind(this));
+    }
+    
+    // Mount the game to the container
+    if (this.container) {
+      this.game.mount(this.container);
+    }
+  }
+
+  private handleGameComplete(result: GameResult): void {
+    if (this.onGameComplete) {
+      this.onGameComplete(result);
     }
   }
 
   destroy(): void {
-    if (this.app) {
-      this.app.destroy(true);
+    if (this.game) {
+      this.game.destroy();
+      this.game = null;
     }
   }
 }

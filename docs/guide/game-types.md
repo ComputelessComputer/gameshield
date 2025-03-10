@@ -4,6 +4,73 @@ Gameshield offers a variety of game types to provide both security and accessibi
 
 ## Available Game Types
 
+### Pong (Human Reflex Test) 🏓
+
+**Description**: A classic Pong game where users must hit a ball with a paddle.
+
+**How it works**:
+- The user controls a paddle at the bottom of the screen
+- A ball bounces around the screen
+- The user must hit the ball a specific number of times to pass
+- The ball moves with unpredictable patterns, making it hard for bots
+
+**Security features**:
+- Ball movement has randomized angles and speeds
+- The system tracks natural movement patterns of the paddle
+- Requires human-like reflexes and prediction
+
+**Accessibility**: Moderate - requires hand-eye coordination and reflexes
+
+### Snake (Pattern Completion Challenge) 🐍
+
+**Description**: Users control a snake to collect specific food items while avoiding obstacles.
+
+**How it works**:
+- The player controls a snake that moves around a grid
+- The snake must collect food in a specific order (e.g., "Eat 3 apples, but avoid bananas")
+- The snake grows longer with each food item, increasing difficulty
+
+**Security features**:
+- Food placement is randomized
+- Requires decision-making rather than random movements
+- The system analyzes movement patterns for bot detection
+
+**Accessibility**: High - simple controls with clear visual feedback
+
+### Breakout (Brick Breaking Challenge) 🧱
+
+**Description**: Users control a paddle to bounce a ball and break bricks.
+
+**How it works**:
+- The user controls a paddle at the bottom of the screen
+- A ball bounces off the paddle and walls
+- The user must break a specific number of bricks to pass
+- The ball's speed changes to make it unpredictable for bots
+
+**Security features**:
+- Ball physics include randomized angles and speeds
+- The system tracks paddle movement patterns
+- Requires human-like prediction and reaction
+
+**Accessibility**: Moderate - requires hand-eye coordination
+
+### Dino Run (Jump Timing Test) 🦖
+
+**Description**: Users control a character that must jump over obstacles.
+
+**How it works**:
+- The player controls a character that automatically runs
+- Obstacles appear at varying intervals and speeds
+- The player must time jumps correctly to avoid obstacles
+- The player must successfully clear a specific number of obstacles to pass
+
+**Security features**:
+- Obstacle timing and spacing is randomized
+- Requires human timing and prediction
+- The system analyzes jump patterns for bot detection
+
+**Accessibility**: High - simple controls with clear visual feedback
+
 ### Puzzle Slider 🧩
 
 **Description**: A classic sliding puzzle where users must arrange tiles to complete an image.
@@ -103,9 +170,10 @@ import { generateCaptcha } from '@gameshield/captcha-sdk';
 
 generateCaptcha({
   container: document.getElementById('captcha-container'),
-  gameTypes: ['puzzle', 'pattern', 'maze'], // Only use these game types
-  preferredGameType: 'pattern', // Try to use this game type when possible
-  excludeGameTypes: ['physics'], // Never use these game types
+  gameTypes: ['pong', 'snake', 'breakout', 'dino-run', 'puzzle', 'pattern', 'maze', 'physics', 'sequence'], // Only use these game types
+  preferredGameType: 'pong', // Try to use this game type when possible
+  excludeGameTypes: [], // Never use these game types
+  difficulty: 'medium', // 'easy', 'medium', or 'hard'
 });
 ```
 

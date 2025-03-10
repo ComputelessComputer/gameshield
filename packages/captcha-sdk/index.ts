@@ -1,5 +1,5 @@
 // captcha-sdk/index.ts
-import { Game, GameOptions } from 'game-core';
+import { Game, GameOptions, GameType, GameResult } from 'game-core';
 
 export interface CaptchaOptions {
   container: HTMLElement | string;
@@ -7,11 +7,13 @@ export interface CaptchaOptions {
   onSuccess?: () => void;
   onFailure?: () => void;
   difficulty?: 'easy' | 'medium' | 'hard';
+  gameType?: GameType;
 }
 
 export class CaptchaSDK {
   private game: Game | null = null;
   private options: CaptchaOptions;
+  private isVerified: boolean = false;
 
   constructor(options: CaptchaOptions) {
     this.options = options;
@@ -19,7 +21,13 @@ export class CaptchaSDK {
 
   initialize(): void {
     // Initialize the game using the game-core package
-    this.game = new Game(this.options.gameOptions);
+    const gameOptions: GameOptions = {
+      ...this.options.gameOptions,
+      difficulty: this.options.difficulty || 'medium',
+      gameType: this.options.gameType || 'random'
+    };
+    
+    this.game = new Game(gameOptions);
     console.log('CaptchaSDK initialized');
   }
 
@@ -30,22 +38,34 @@ export class CaptchaSDK {
     
     if (this.game && this.options.container) {
       this.game.mount(this.options.container);
+      
+      // Set completion callback
+      this.game.setCompletionCallback(this.handleGameComplete.bind(this));
+      
       console.log('CaptchaSDK started');
     }
   }
-
-  verify(): boolean {
-    // Placeholder for verification logic
-    const result = Math.random() > 0.5; // Simulate random verification result
+  
+  private handleGameComplete(result: GameResult): void {
+    this.isVerified = result.success;
     
-    if (result && this.options.onSuccess) {
+    if (result.success && this.options.onSuccess) {
       this.options.onSuccess();
-    } else if (!result && this.options.onFailure) {
+    } else if (!result.success && this.options.onFailure) {
       this.options.onFailure();
     }
     
-    console.log(`CaptchaSDK verification: ${result ? 'Success' : 'Failure'}`);
-    return result;
+    console.log(`CaptchaSDK verification: ${result.success ? 'Success' : 'Failure'}`);
+  }
+
+  verify(): boolean {
+    return this.isVerified;
+  }
+  
+  reset(): void {
+    this.destroy();
+    this.initialize();
+    this.start();
   }
   
   destroy(): void {
@@ -54,6 +74,14 @@ export class CaptchaSDK {
       this.game = null;
     }
   }
+}
+
+// Helper function to easily create a captcha instance
+export function generateCaptcha(options: CaptchaOptions): CaptchaSDK {
+  const captcha = new CaptchaSDK(options);
+  captcha.initialize();
+  captcha.start();
+  return captcha;
 }
 
 export default CaptchaSDK;
