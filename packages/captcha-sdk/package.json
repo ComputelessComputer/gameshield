@@ -1,0 +1,23 @@
+{
+  "name": "captcha-sdk",
+  "version": "1.0.0",
+  "description": "SDK for GameShield CAPTCHA integration",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "esbuild": "^0.25.0",
+    "game-core": "workspace:*",
+    "rollup": "^4.35.0",
+    "typescript": "^5"
+  },
+  "devDependencies": {
+    "@types/node": "^20"
+  }
+}
