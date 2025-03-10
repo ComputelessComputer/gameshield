@@ -22,7 +22,7 @@ export default defineConfig({
       { text: 'Home', link: '/' },
       { text: 'Guide', link: '/guide/' },
       { text: 'API', link: '/api/' },
-      { text: 'GitHub', link: 'https://github.com/your-username/gameshield' }
+      { text: 'GitHub', link: 'https://github.com/ComputelessComputer/gameshield' }
     ],
     sidebar: {
       '/guide/': [
@@ -64,7 +64,7 @@ export default defineConfig({
       ]
     },
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/your-username/gameshield' }
+      { icon: 'github', link: 'https://github.com/ComputelessComputer/gameshield' }
     ],
     footer: {
       message: 'Released under the MIT License.',

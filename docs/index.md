@@ -11,7 +11,7 @@ hero:
       link: /guide/
     - theme: alt
       text: View on GitHub
-      link: https://github.com/your-username/gameshield
+      link: https://github.com/ComputelessComputer/gameshield
 
 features:
   - icon: 🎮
