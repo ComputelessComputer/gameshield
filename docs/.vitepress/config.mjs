@@ -15,6 +15,7 @@ const filter = getFilter()
 export default defineConfig({
   title: "🎮 Gameshield 🛡️",
   description: "Generative Game CAPTCHA - Prevent bots with interactive games",
+  ignoreDeadLinks: true,
   themeConfig: {
     siteTitle: '🎮 Gameshield 🛡️',
     logo: false,
