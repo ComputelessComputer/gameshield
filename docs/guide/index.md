@@ -24,6 +24,9 @@ Resistant to automated solvers and AI-based attacks, providing better protection
 ### Easy Integration
 Lightweight SDK that can be integrated into any website with just a few lines of code.
 
+### Analytics & Monitoring
+Comprehensive dashboard for tracking verification statistics and detecting malicious activity.
+
 ### Accessibility
 Designed to be user-friendly and inclusive, with multiple game types to accommodate different abilities.
 
@@ -46,4 +49,11 @@ For more details on the technical implementation, see the [How it Works](/guide/
 
 ## Next Steps
 
-Ready to get started with Gameshield? Check out our [Getting Started](/guide/getting-started) guide to begin integrating it into your website.
+Ready to get started with Gameshield? Here's how to proceed:
+
+- [Getting Started](/guide/getting-started) - Begin integrating Gameshield
+- [Installation](/guide/installation) - Install the SDK in your project
+- [Game Types](/guide/game-types) - Explore the different game challenges
+- [Tech Stack & Architecture](/guide/tech-stack) - Understand the technical implementation
+- [Admin Dashboard](/guide/admin-dashboard) - Monitor your CAPTCHA performance
+- [Analytics System](/guide/analytics-system) - Understand the analytics architecture

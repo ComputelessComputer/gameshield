@@ -41,6 +41,14 @@ export default defineConfig({
             { text: 'How it Works', link: '/guide/how-it-works' },
             { text: 'Game Types', link: '/guide/game-types' },
             { text: 'Security Features', link: '/guide/security-features' },
+            { text: 'Tech Stack & Architecture', link: '/guide/tech-stack' },
+          ]
+        },
+        {
+          text: 'Analytics & Monitoring',
+          items: [
+            { text: 'Admin Dashboard', link: '/guide/admin-dashboard' },
+            { text: 'Analytics System', link: '/guide/analytics-system' },
           ]
         },
         {

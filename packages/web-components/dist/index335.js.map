@@ -1,0 +1,1 @@
+{"version":3,"file":"index335.js","sources":["../../../node_modules/.pnpm/es-errors@1.3.0/node_modules/es-errors/uri.js"],"sourcesContent":["'use strict';\n\n/** @type {import('./uri')} */\nmodule.exports = URIError;\n"],"names":["uri"],"mappings":"AAGA,IAAAA,IAAiB;","x_google_ignoreList":[0]}

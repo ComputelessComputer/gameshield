@@ -1,0 +1,5 @@
+
+
+> @gameshield/web-components@0.1.0 typecheck /Users/johnjeong/dev/Projects/gameshield/packages/web-components
+> tsc --noEmit
+

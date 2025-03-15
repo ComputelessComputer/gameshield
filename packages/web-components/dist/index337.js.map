@@ -1,0 +1,1 @@
+{"version":3,"file":"index337.js","sources":["../../../node_modules/.pnpm/math-intrinsics@1.1.0/node_modules/math-intrinsics/floor.js"],"sourcesContent":["'use strict';\n\n/** @type {import('./floor')} */\nmodule.exports = Math.floor;\n"],"names":["floor"],"mappings":"IAGAA,IAAiB,KAAK;","x_google_ignoreList":[0]}

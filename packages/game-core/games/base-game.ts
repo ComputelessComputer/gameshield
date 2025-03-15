@@ -1,4 +1,5 @@
 import * as PIXI from "pixi.js";
+import { BehaviorAnalyzer } from "../behavior-analysis";
 
 export interface GameConfig {
   width?: number;
@@ -13,6 +14,10 @@ export interface GameResult {
   success: boolean;
   score: number;
   message: string;
+  behaviorAnalysis?: {
+    isHuman: boolean;
+    confidence: number;
+  };
 }
 
 export abstract class BaseGame {
@@ -20,6 +25,7 @@ export abstract class BaseGame {
   protected config: GameConfig;
   protected container: HTMLElement | null = null;
   protected onComplete: (result: GameResult) => void = () => {};
+  protected behaviorAnalyzer: BehaviorAnalyzer;
 
   constructor(config: GameConfig = {}) {
     this.config = {
@@ -36,6 +42,9 @@ export abstract class BaseGame {
       height: this.config.height,
       backgroundColor: this.config.backgroundColor
     });
+    
+    // Initialize behavior analyzer
+    this.behaviorAnalyzer = new BehaviorAnalyzer();
   }
 
   public setCompletionCallback(callback: (result: GameResult) => void): void {
@@ -55,14 +64,69 @@ export abstract class BaseGame {
     
     if (this.container) {
       this.container.appendChild(this.app.view as unknown as HTMLElement);
+      this.setupInteractionTracking();
       this.init();
     }
+  }
+  
+  protected setupInteractionTracking(): void {
+    // Track mouse/touch movements
+    if (this.app.view) {
+      this.app.view.addEventListener('mousemove', (e) => {
+        const rect = (this.app.view as HTMLCanvasElement).getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        this.behaviorAnalyzer.recordInteraction(x, y, 'move');
+      });
+      
+      this.app.view.addEventListener('click', (e) => {
+        const rect = (this.app.view as HTMLCanvasElement).getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        this.behaviorAnalyzer.recordInteraction(x, y, 'click');
+      });
+      
+      this.app.view.addEventListener('touchmove', (e) => {
+        const rect = (this.app.view as HTMLCanvasElement).getBoundingClientRect();
+        const touch = e.touches[0];
+        const x = touch.clientX - rect.left;
+        const y = touch.clientY - rect.top;
+        this.behaviorAnalyzer.recordInteraction(x, y, 'touch');
+      });
+      
+      // Track keyboard input
+      window.addEventListener('keydown', (e) => {
+        this.behaviorAnalyzer.recordInteraction(0, 0, 'keypress', e.key);
+      });
+    }
+  }
+
+  protected completeGame(success: boolean, score: number, message: string): void {
+    // Include behavior analysis in the game result
+    const behaviorResult = this.behaviorAnalyzer.isHumanBehavior();
+    
+    const result: GameResult = {
+      success,
+      score,
+      message,
+      behaviorAnalysis: behaviorResult
+    };
+    
+    this.onComplete(result);
   }
 
   public destroy(): void {
     this.cleanup();
     if (this.app) {
       this.app.destroy(true);
+    }
+    
+    // Remove event listeners
+    if (this.app.view) {
+      this.app.view.removeEventListener('mousemove', () => {});
+      this.app.view.removeEventListener('click', () => {});
+      this.app.view.removeEventListener('touchmove', () => {});
+      window.removeEventListener('keydown', () => {});
     }
   }
 

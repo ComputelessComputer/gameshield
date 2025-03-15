@@ -10,25 +10,7 @@ Gameshield consists of three main components:
 2. **Game Engine**: A WebGL-powered engine that generates and runs the verification games
 3. **Verification API**: A server-side component that validates the authenticity of completed challenges
 
-🖥️ Client Browser
-    │
-    ▼
-📦 Client SDK ◄───────┐
-    │                 │
-    ▼                 │
-🎮 Game Engine        │
-    │                 │
-    ▼                 │
-🔄 User Interaction   │
-    │                 │
-    ▼                 │
-🔑 Token Generation ──┘
-    │
-    ▼
-🔐 Verification API
-    │
-    ▼
-✅ Authentication Result
+<img src="/gameshield_how_it_works.png" darkSrc="/gameshield_how_it_works_dark.png" alt="Gameshield Architecture" width="300px"/>
 
 ## Verification Process
 

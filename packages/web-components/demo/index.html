@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GameShield Web Components Demo</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f5f5f5;
+      color: #333;
+    }
+    
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+    }
+    
+    .demo-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 30px;
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .controls {
+      margin-top: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+    
+    button {
+      padding: 8px 16px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.2s;
+    }
+    
+    button:hover {
+      background-color: #2980b9;
+    }
+    
+    select {
+      padding: 8px;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+    }
+    
+    .token-display {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #f8f9fa;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+      max-width: 100%;
+      overflow-x: auto;
+      font-family: monospace;
+      font-size: 12px;
+      display: none;
+    }
+    
+    .status {
+      margin-top: 15px;
+      padding: 10px;
+      border-radius: 4px;
+      text-align: center;
+      font-weight: bold;
+    }
+    
+    .success {
+      background-color: #d4edda;
+      color: #155724;
+    }
+    
+    .failure {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+    
+    .hidden {
+      display: none;
+    }
+    
+    .form-demo {
+      margin-top: 40px;
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 500px;
+    }
+    
+    .form-group {
+      margin-bottom: 15px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    
+    input[type="text"],
+    input[type="email"],
+    textarea {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    
+    .captcha-container {
+      margin: 20px 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>GameShield Web Components Demo</h1>
+  
+  <div class="demo-container">
+    <h2>CAPTCHA Component Demo</h2>
+    <p>Try out different game types and difficulty levels:</p>
+    
+    <div class="controls">
+      <select id="game-type">
+        <option value="random">Random Game</option>
+        <option value="pong">Pong</option>
+        <option value="snake">Snake</option>
+        <option value="breakout">Breakout</option>
+        <option value="dino-run">Dino Run</option>
+      </select>
+      
+      <select id="difficulty">
+        <option value="easy">Easy</option>
+        <option value="medium">Medium</option>
+        <option value="hard">Hard</option>
+      </select>
+      
+      <button id="reset-btn">Reset CAPTCHA</button>
+    </div>
+    
+    <game-shield
+      id="demo-captcha"
+      game-type="random"
+      difficulty="medium">
+    </game-shield>
+    
+    <div id="status" class="status hidden"></div>
+    
+    <div id="token-display" class="token-display"></div>
+  </div>
+  
+  <div class="form-demo">
+    <h2>Contact Form Example</h2>
+    <p>This form demonstrates how GameShield can be integrated into a real form:</p>
+    
+    <form id="contact-form">
+      <div class="form-group">
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="message">Message</label>
+        <textarea id="message" name="message" rows="4" required></textarea>
+      </div>
+      
+      <div class="captcha-container">
+        <p>Please complete the CAPTCHA to submit:</p>
+        <game-shield
+          id="form-captcha"
+          game-type="random"
+          difficulty="easy">
+        </game-shield>
+      </div>
+      
+      <button type="submit" id="submit-btn" disabled>Submit Form</button>
+    </form>
+  </div>
+  
+  <script type="module">
+    // Import the GameShield component
+    import '../dist/index.js';
+    
+    // Get references to elements
+    const demoCaptcha = document.getElementById('demo-captcha');
+    const formCaptcha = document.getElementById('form-captcha');
+    const gameTypeSelect = document.getElementById('game-type');
+    const difficultySelect = document.getElementById('difficulty');
+    const resetBtn = document.getElementById('reset-btn');
+    const tokenDisplay = document.getElementById('token-display');
+    const statusEl = document.getElementById('status');
+    const submitBtn = document.getElementById('submit-btn');
+    const contactForm = document.getElementById('contact-form');
+    
+    // Update CAPTCHA when controls change
+    gameTypeSelect.addEventListener('change', () => {
+      demoCaptcha.setAttribute('game-type', gameTypeSelect.value);
+      demoCaptcha.reset();
+    });
+    
+    difficultySelect.addEventListener('change', () => {
+      demoCaptcha.setAttribute('difficulty', difficultySelect.value);
+      demoCaptcha.reset();
+    });
+    
+    // Reset button
+    resetBtn.addEventListener('click', () => {
+      demoCaptcha.reset();
+      statusEl.classList.add('hidden');
+      tokenDisplay.style.display = 'none';
+    });
+    
+    // Demo CAPTCHA events
+    demoCaptcha.addEventListener('success', (e) => {
+      console.log('CAPTCHA success event received', e.detail);
+      
+      // Display token
+      tokenDisplay.textContent = e.detail.token;
+      tokenDisplay.style.display = 'block';
+      
+      // Show success message
+      statusEl.textContent = 'CAPTCHA verification successful!';
+      statusEl.className = 'status success';
+    });
+    
+    demoCaptcha.addEventListener('failure', () => {
+      console.log('CAPTCHA failure event received');
+      
+      // Hide token
+      tokenDisplay.style.display = 'none';
+      
+      // Show failure message
+      statusEl.textContent = 'CAPTCHA verification failed. Please try again.';
+      statusEl.className = 'status failure';
+    });
+    
+    // Form CAPTCHA events
+    formCaptcha.addEventListener('success', () => {
+      // Enable submit button when CAPTCHA is passed
+      submitBtn.disabled = false;
+    });
+    
+    formCaptcha.addEventListener('failure', () => {
+      // Disable submit button on failure
+      submitBtn.disabled = true;
+    });
+    
+    // Form submission
+    contactForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      // In a real application, you would send the form data along with the CAPTCHA token
+      alert('Form submitted successfully! In a real application, this would be sent to your server with the CAPTCHA token for verification.');
+      
+      // Reset form
+      contactForm.reset();
+      formCaptcha.reset();
+      submitBtn.disabled = true;
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,1 @@
+{"version":3,"file":"index356.js","sources":["../../../node_modules/.pnpm/gopd@1.2.0/node_modules/gopd/gOPD.js"],"sourcesContent":["'use strict';\n\n/** @type {import('./gOPD')} */\nmodule.exports = Object.getOwnPropertyDescriptor;\n"],"names":["gOPD"],"mappings":"IAGAA,IAAiB,OAAO;","x_google_ignoreList":[0]}
