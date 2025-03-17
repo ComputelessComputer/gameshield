@@ -1,142 +1,328 @@
 # Security Features
 
-Gameshield provides robust security through multiple layers of protection that work together to effectively distinguish between human users and automated bots.
+Gameshield provides comprehensive security through game-based CAPTCHA challenges, risk scoring, and real-time analytics.
 
-## Multi-layered Security Approach 🔐
+## Core Security Features
 
-### 1. Dynamic Challenge Generation 🎲
+### Risk Scoring System
 
-Unlike traditional CAPTCHAs that use a finite set of challenges, Gameshield:
+Gameshield employs a sophisticated risk scoring system that analyzes multiple factors:
 
-- Generates unique game instances for every verification attempt
-- Randomizes game parameters, layouts, and solutions
-- Uses procedural generation to create virtually infinite variations
-- Prevents pattern recognition and database-based attacks
+```typescript
+interface RiskScore {
+  score: number;        // 0-100, higher means more risky
+  factors: RiskFactor[];
+  confidence: number;   // 0-1, confidence in the score
+  timestamp: number;
+}
 
-```javascript
-// Example of how challenges are dynamically generated
-function generateChallenge(difficulty, userContext) {
-  return {
-    gameType: selectRandomGame(userContext),
-    parameters: generateRandomParameters(difficulty),
-    seed: generateCryptographicallySafeRandomSeed(),
-    timestamp: Date.now()
+interface RiskFactor {
+  name: string;         // Factor identifier
+  weight: number;       // Impact on final score
+  value: number;        // Factor-specific value
+  threshold: number;    // Trigger threshold
+}
+```
+
+#### Behavioral Analysis
+- Input patterns
+- Movement precision
+- Timing consistency
+- Error patterns
+- Game completion speed
+
+#### Technical Indicators
+- Browser fingerprinting
+- Network patterns
+- Client environment
+- Device capabilities
+- Session characteristics
+
+### Malicious Activity Detection
+
+Real-time monitoring for suspicious behavior:
+
+```typescript
+interface MaliciousActivity {
+  type: string;
+  timestamp: number;
+  riskScore: number;
+  evidence: {
+    behavioralFlags: string[];
+    technicalFlags: string[];
+    patterns: Pattern[];
+  };
+  response: {
+    action: 'block' | 'challenge' | 'monitor';
+    duration: number;
+    reason: string;
   };
 }
 ```
 
-### 2. Behavioral Analysis 👤
+#### Detection Capabilities
+1. Bot Detection
+   - Automated input detection
+   - Pattern recognition
+   - Timing analysis
+   - Behavioral inconsistencies
 
-Beyond just verifying the completion of a game, Gameshield analyzes how users interact:
+2. Attack Prevention
+   - Brute force protection
+   - Rate limiting
+   - IP-based tracking
+   - Session validation
 
-- Mouse/touch movement patterns (speed, acceleration, pauses)
-- Timing between actions
-- Error correction behaviors
-- Decision-making processes
+### Token Security
 
-These patterns are compared against known human interaction models to detect automation.
+Secure token generation and validation:
 
-### 3. Machine Learning Detection 🧠
+```typescript
+interface VerificationToken {
+  token: string;       // Encrypted token
+  timestamp: number;   // Generation time
+  metadata: {
+    gameType: string;
+    difficulty: string;
+    completionTime: number;
+    riskScore: number;
+  };
+  signature: string;   // Digital signature
+}
+```
 
-Gameshield employs advanced machine learning models to:
+#### Token Features
+- Encrypted payload
+- Time-based expiration
+- Digital signatures
+- Replay prevention
+- Metadata validation
 
-- Identify suspicious interaction patterns
-- Adapt to new bot techniques in real-time
-- Improve detection accuracy over time
-- Balance security with user experience
+## Implementation
 
-### 4. Cryptographic Token Verification 🔑
+### Basic Security Setup
 
-After successful completion:
+```typescript
+const captcha = new CaptchaSDK({
+  container: element,
+  security: {
+    riskScoring: true,
+    tokenExpiry: 300,    // 5 minutes
+    maxAttempts: 3,
+    rateLimiting: true
+  }
+});
+```
 
-- The client generates a cryptographically signed token
-- Tokens include challenge parameters, completion data, and timestamps
-- All tokens are verified server-side to prevent client-side manipulation
-- Tokens expire after a short time window to prevent replay attacks
+### Advanced Configuration
 
-## Bot Prevention Techniques
+```typescript
+const captcha = new CaptchaSDK({
+  container: element,
+  security: {
+    riskScoring: {
+      sensitivity: 'high',
+      customFactors: [{
+        name: 'custom_factor',
+        weight: 0.5,
+        threshold: 0.7
+      }]
+    },
+    maliciousDetection: {
+      autoBlock: true,
+      blockDuration: 3600,
+      notifyAdmin: true
+    },
+    tokenSecurity: {
+      algorithm: 'ES256',
+      rotateKeys: true,
+      keyRotationInterval: 86400
+    }
+  }
+});
+```
 
-### Preventing Automated Solvers 🤖
+### Server-Side Verification
 
-Gameshield games are specifically designed to target weaknesses in automated systems:
+```typescript
+import { verifyToken, RiskAssessment } from '@gameshield/captcha-sdk/server';
 
-- **Visual Understanding**: Games require contextual understanding of visual elements
-- **Physical Intuition**: Physics-based games leverage human intuitive understanding
-- **Cognitive Decision-Making**: Challenges require human-like decision processes
-- **Motor Control**: Games test natural human interaction patterns
-
-### Resistance to AI-based Attacks 🛡️
-
-Modern AI systems have become adept at solving traditional CAPTCHAs. Gameshield counters this by:
-
-- Creating challenges that require embodied intelligence
-- Leveraging the gap between current AI capabilities and human intuition
-- Continuously evolving game mechanics to stay ahead of AI advancements
-- Implementing detection systems that identify AI-specific interaction patterns
-
-### Protection Against Farming Attacks 👥
-
-CAPTCHA farming (where humans are paid to solve CAPTCHAs) is countered by:
-
-- Time-limited tokens that expire quickly
-- Rate limiting based on IP address and user profiles
-- Contextual validation that ties the CAPTCHA to specific user sessions
-- Progressive difficulty for suspicious patterns
-
-## Security Best Practices
-
-### Implementation Recommendations
-
-For maximum security, we recommend:
-
-1. **Always verify server-side**: Never trust client-side verification alone
-2. **Implement rate limiting**: Restrict the number of verification attempts
-3. **Use secure communication**: Always use HTTPS for all API calls
-4. **Enable contextual binding**: Tie CAPTCHA tokens to specific user sessions
-5. **Monitor and alert**: Set up monitoring for unusual verification patterns
-
-### Example Server-Side Verification
-
-```javascript
-// Server-side verification example
-async function verifyUserCaptcha(token, userContext) {
+async function validateRequest(token: string): Promise<boolean> {
   try {
-    // Verify the token with Gameshield API
-    const verification = await gameshieldApi.verify({
-      token,
-      siteKey: process.env.GAMESHIELD_SITE_KEY,
-      secret: process.env.GAMESHIELD_SECRET_KEY,
-      userContext
-    });
+    const result = await verifyToken(token);
     
-    if (verification.success) {
-      // Token is valid
-      return true;
-    } else {
-      // Token is invalid
-      console.warn('Invalid CAPTCHA token:', verification.reason);
+    if (!result.valid) {
       return false;
     }
+
+    // Check risk score
+    if (result.riskScore > 70) {
+      // High risk, require additional verification
+      return requireAdditionalVerification(result);
+    }
+
+    // Check for suspicious patterns
+    if (result.flags.length > 0) {
+      // Log suspicious activity
+      await logSuspiciousActivity(result);
+    }
+
+    return true;
   } catch (error) {
-    console.error('CAPTCHA verification error:', error);
+    console.error('Verification error:', error);
     return false;
   }
 }
 ```
 
-## Security Updates and Improvements
+## Analytics Integration
 
-Gameshield is continuously improved to address emerging threats:
+### Security Events
 
-- Regular security updates to counter new attack vectors
-- Performance optimizations to reduce verification time
-- Accessibility improvements to ensure inclusive security
-- New game types to enhance security and user experience
+Monitor security-related events:
 
-Stay updated with the latest security features by following our [release notes](https://github.com/your-username/gameshield/releases) and subscribing to our security newsletter.
+```typescript
+const analyticsProvider = new CustomAnalyticsProvider({
+  onSecurityEvent: (event) => {
+    switch (event.type) {
+      case 'high_risk_score':
+        notifyAdmin(event);
+        break;
+      case 'malicious_activity':
+        blockIP(event.data.ip);
+        break;
+      case 'token_validation_failure':
+        logFailure(event);
+        break;
+    }
+  }
+});
+```
+
+### Reporting
+
+Access security metrics and reports:
+
+```typescript
+interface SecurityReport {
+  period: {
+    start: number;
+    end: number;
+  };
+  metrics: {
+    totalAttempts: number;
+    blockedAttempts: number;
+    averageRiskScore: number;
+    highRiskCount: number;
+  };
+  threats: {
+    type: string;
+    count: number;
+    trend: number;
+  }[];
+}
+```
+
+## Best Practices
+
+### Configuration
+1. Enable risk scoring
+2. Set appropriate thresholds
+3. Configure rate limiting
+4. Implement token expiration
+5. Use secure token validation
+
+### Monitoring
+1. Track risk scores
+2. Monitor failed attempts
+3. Analyze traffic patterns
+4. Review security logs
+5. Set up alerts
+
+### Response
+1. Block high-risk traffic
+2. Implement progressive challenges
+3. Rate limit suspicious IPs
+4. Log security events
+5. Notify administrators
+
+## Security Headers
+
+Recommended security headers:
+
+```typescript
+// Express.js example
+app.use(helmet());
+app.use(helmet.contentSecurityPolicy({
+  directives: {
+    defaultSrc: ["'self'"],
+    scriptSrc: ["'self'", "'unsafe-inline'"],
+    styleSrc: ["'self'", "'unsafe-inline'"],
+    imgSrc: ["'self'", 'data:', 'https:'],
+    connectSrc: ["'self'", 'https://api.gameshield.dev']
+  }
+}));
+```
+
+## Rate Limiting
+
+Implement rate limiting:
+
+```typescript
+// Express.js example
+import rateLimit from 'express-rate-limit';
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  handler: (req, res) => {
+    res.status(429).json({
+      error: 'Too many requests',
+      retryAfter: res.getHeader('Retry-After')
+    });
+  }
+});
+
+app.use('/api/verify', limiter);
+```
+
+## Error Handling
+
+Handle security-related errors:
+
+```typescript
+function handleSecurityError(error: SecurityError) {
+  switch (error.code) {
+    case 'TOKEN_EXPIRED':
+      return {
+        status: 401,
+        message: 'Verification expired, please try again'
+      };
+    case 'INVALID_TOKEN':
+      return {
+        status: 400,
+        message: 'Invalid verification token'
+      };
+    case 'RATE_LIMITED':
+      return {
+        status: 429,
+        message: 'Too many attempts, please wait'
+      };
+    case 'HIGH_RISK':
+      return {
+        status: 403,
+        message: 'Additional verification required'
+      };
+    default:
+      return {
+        status: 500,
+        message: 'Security check failed'
+      };
+  }
+}
+```
 
 ## Next Steps
-
-- Learn about [customization options](/guide/customization) to balance security and user experience
-- Explore [integration examples](/guide/integration-examples) for secure implementation
-- Check out the [API reference](/api/server) for detailed server-side verification options
+1. Review [Analytics Setup](/guide/analytics-system)
+2. Configure [Admin Dashboard](/guide/admin-dashboard)
+3. Explore [Integration Examples](/guide/integration-examples)

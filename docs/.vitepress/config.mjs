@@ -39,7 +39,22 @@ export default defineConfig({
           text: 'Core Concepts',
           items: [
             { text: 'How it Works', link: '/guide/how-it-works' },
-            { text: 'Game Types', link: '/guide/game-types' },
+            { 
+              text: 'Game Types', 
+              link: '/guide/game-types',
+              collapsed: false,
+              items: [
+                { text: '🏓 Pong', link: '/guide/games/pong' },
+                { text: '🐍 Snake', link: '/guide/games/snake' },
+                { text: '🧱 Breakout', link: '/guide/games/breakout' },
+                { text: '🌀 Maze', link: '/guide/games/maze' },
+                { text: '🎯 Pattern', link: '/guide/games/pattern' },
+                { text: '🦖 Dino Run', link: '/guide/games/dino-run' },
+                { text: '🧩 Puzzle Slider', link: '/guide/games/puzzle-slider' },
+                { text: '⚖️ Physics Puzzles', link: '/guide/games/physics-puzzles' },
+                { text: '📝 Sequence Memory', link: '/guide/games/sequence-memory' }
+              ]
+            },
             { text: 'Security Features', link: '/guide/security-features' },
             { text: 'Tech Stack & Architecture', link: '/guide/tech-stack' },
           ]

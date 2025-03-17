@@ -1,130 +1,94 @@
-# Admin Dashboard
+# Admin Dashboard Guide
 
-The GameShield Admin Dashboard provides a comprehensive view of your CAPTCHA verification statistics and security metrics. It helps you monitor user interactions, detect malicious activity, and optimize your verification process.
+The GameShield Admin Dashboard provides comprehensive analytics and monitoring capabilities for your CAPTCHA implementation.
 
 ## Overview
 
-The admin dashboard is accessible at the `/admin` route of your application and provides:
-
-- Key performance metrics for CAPTCHA verifications
-- Visualization of verification trends over time
-- Distribution of game types and difficulty levels
-- Detailed logs of malicious activity
-
-![Admin Dashboard](/images/admin-dashboard.png)
+The dashboard offers:
+- Real-time verification metrics
+- Malicious activity detection
+- Risk scoring analysis
+- Analytics provider configuration
 
 ## Key Features
 
-### Real-time Analytics
-
-The dashboard displays real-time analytics for your GameShield CAPTCHA implementation, including:
-
-- **Total Verifications**: The total number of CAPTCHA verification attempts
-- **Success Rate**: The percentage of successful verifications
-- **Average Completion Time**: The average time users take to complete the CAPTCHA
-- **Malicious Attempts**: The number of detected suspicious or malicious verification attempts
-
-### Verification Trends
-
-Track verification patterns over time with interactive charts that show:
-
-- Daily/weekly/monthly verification volumes
-- Success rates over time
-- Malicious activity trends
-
-### Game Type Distribution
-
-Understand which game types are most effective with distribution charts showing:
-
-- Verification attempts by game type (puzzle, maze, pattern, etc.)
-- Success rates by game type
-- Completion times by game type
+### Analytics Dashboard
+- Verification attempt trends
+- Success/failure rates
+- Average completion times
+- Game type distribution
 
 ### Malicious Activity Monitoring
+- Real-time threat detection
+- Risk score analysis
+- Detailed activity logs
+- IP-based tracking
 
-The dashboard includes a detailed log of suspicious activities:
+### Configuration
+- Analytics provider selection
+  - Built-in localStorage provider
+  - Custom provider implementation
+  - Cloud service integration (coming soon)
+- Game settings management
+- Security threshold configuration
 
-- High-risk verification attempts
-- Automated bot detection events
-- Unusual behavior patterns
-- Risk scores and specific flags for each incident
+## Getting Started
 
-## Configuration
+1. Access the dashboard at `/admin` route
+2. Sign in with your admin credentials
+3. Navigate through the following sections:
+   - Overview: Key metrics at a glance
+   - Analytics: Detailed verification data
+   - Security: Malicious activity monitoring
+   - Settings: System configuration
 
-### Analytics Provider
+## Analytics System
 
-The admin dashboard can be configured to use different analytics providers:
+### Data Collection
+The analytics system automatically collects:
+- Verification attempts
+- Success/failure events
+- Completion times
+- Risk indicators
+- User behavior patterns
 
-```javascript
-import { createCaptcha, LocalStorageAnalyticsProvider } from 'captcha-sdk';
+### Provider Options
 
-// Use the built-in localStorage provider (for demos)
-const captcha = createCaptcha({
-  // other options...
-  analyticsProvider: new LocalStorageAnalyticsProvider(),
-  enableAnalytics: true
-});
+#### LocalStorage Provider
+- Built-in solution for demos
+- No external dependencies
+- Limited data retention
 
-// Or implement your own provider
-const captcha = createCaptcha({
-  // other options...
-  analyticsProvider: new MyCustomAnalyticsProvider(),
-  enableAnalytics: true
-});
-```
-
-### Data Retention and Privacy
-
-By default, the analytics system anonymizes user data and only stores essential information for security and performance analysis. You can configure:
-
-- Data retention periods
-- Level of detail in logs
-- IP anonymization options
-
-## Custom Analytics Providers
-
-GameShield follows a provider pattern for analytics, allowing you to:
-
-1. Use the included `LocalStorageProvider` for demos and testing
-2. Implement your own analytics provider for self-hosting
-3. Connect to a premium cloud service (coming soon)
-
-### Implementing a Custom Provider
-
-To create your own analytics provider, implement the `GameShieldAnalyticsProvider` interface:
+#### Custom Provider
+Implement your own provider by:
+1. Creating a class implementing `AnalyticsProvider` interface
+2. Configuring the provider in the admin settings
+3. Managing data storage and retrieval
 
 ```typescript
-import { GameShieldAnalyticsProvider, VerificationData, MaliciousActivityData } from 'captcha-sdk';
-
-class MyDatabaseProvider implements GameShieldAnalyticsProvider {
-  async recordVerificationAttempt(data: VerificationData): Promise<void> {
-    // Store verification data in your database
-  }
-  
-  async recordMaliciousActivity(data: MaliciousActivityData): Promise<void> {
-    // Store malicious activity data in your database
-  }
-  
-  async getStats(filters?: StatsFilters): Promise<GameShieldStats> {
-    // Retrieve and calculate statistics from your database
-  }
-  
-  async getVerificationData(filters?: DataFilters): Promise<VerificationData[]> {
-    // Retrieve verification data with optional filtering
-  }
-  
-  async getMaliciousActivityData(filters?: DataFilters): Promise<MaliciousActivityData[]> {
-    // Retrieve malicious activity data with optional filtering
-  }
+interface AnalyticsProvider {
+  initialize(): Promise<void>;
+  trackEvent(eventName: string, data: any): void;
+  getMetrics(): Promise<AnalyticsMetrics>;
 }
 ```
 
 ## Best Practices
 
-- **Regular Monitoring**: Check your dashboard regularly to identify unusual patterns
-- **Adjust Difficulty**: Use the analytics to fine-tune game difficulty based on user success rates
-- **Security Alerts**: Set up notifications for spikes in malicious activity
-- **Performance Optimization**: Monitor completion times to ensure a smooth user experience
+1. **Regular Monitoring**
+   - Check verification trends daily
+   - Review malicious activity alerts
+   - Adjust security thresholds as needed
+
+2. **Data Management**
+   - Configure appropriate retention periods
+   - Export important data regularly
+   - Back up custom provider data
+
+3. **Security**
+   - Regularly rotate admin credentials
+   - Monitor API access patterns
+   - Review security logs
 
 ## Next Steps
 

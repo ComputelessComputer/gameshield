@@ -9,26 +9,44 @@ GameShield follows a monorepo structure using pnpm workspaces, organized as foll
 ```
 gameshield/
 ├── apps/
-│   ├── frontend/         # Next.js frontend application
-│   └── backend/          # API server (if applicable)
+│   ├── frontend/          # Next.js frontend application
+│   │   ├── src/
+│   │   │   ├── app/      # App router components
+│   │   │   ├── admin/    # Admin dashboard
+│   │   │   └── components/
+│   │   └── public/
+│   └── backend/          # Backend API server
 ├── packages/
-│   ├── captcha-sdk/      # Core SDK for CAPTCHA functionality
-│   ├── game-core/        # Game engine and mechanics
-│   ├── security-utils/   # Security utilities
-│   ├── web-components/   # Reusable web components
-│   └── utils/            # Shared utilities
-└── docs/                 # Documentation (VitePress)
+│   ├── captcha-sdk/     # Core SDK package
+│   ├── ui/             # Shared UI components
+│   └── utils/          # Shared utilities
+└── docs/               # Documentation
 ```
 
 ## Tech Stack
 
 ### Core Technologies
 
-| Technology | Purpose         | Description                                                                |
-| ---------- | --------------- | -------------------------------------------------------------------------- |
-| TypeScript | Language        | Strongly-typed JavaScript for better developer experience and code quality |
-| pnpm       | Package Manager | Fast, disk-efficient package manager with built-in monorepo support        |
-| Turbo      | Build System    | High-performance build system for monorepos                                |
+#### Frontend Stack
+- **Next.js**: React framework for the main application
+- **TypeScript**: Type-safe development
+- **TailwindCSS**: Utility-first styling
+- **Zustand**: State management
+- **React Query**: Data fetching and caching
+
+#### Backend Stack
+- **Node.js**: Runtime environment
+- **Hono**: Lightweight web framework
+- **TypeScript**: Type safety across the stack
+- **PostgreSQL**: Primary database
+- **Redis**: Caching and session management
+
+#### Development Tools
+- **pnpm**: Package management
+- **ESLint**: Code linting
+- **Prettier**: Code formatting
+- **Jest**: Unit testing
+- **Playwright**: E2E testing
 
 ### Frontend
 

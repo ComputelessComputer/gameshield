@@ -287,7 +287,7 @@ export class ContactFormComponent {
 
 ```javascript
 const express = require('express');
-const { verifyToken } = require('@gameshield/captcha-sdk-server');
+const { verifyToken } from '@gameshield/captcha-sdk-server';
 
 const app = express();
 app.use(express.json());

@@ -1,184 +1,189 @@
+---
+layout: doc
+---
+
 # Game Types
 
-Gameshield offers a variety of game types to provide both security and accessibility. Each game type is designed to be easy for humans but challenging for bots.
+GameShield offers a variety of game-based CAPTCHA challenges, each designed to be engaging while effectively preventing automated access.
 
-## Available Game Types
+## Available Games
 
-### Pong (Human Reflex Test) 🏓
+<div class="game-grid">
+  <div class="game-card">
+    <a href="/guide/games/pong" class="game-link">
+      <div class="game-icon">🏓</div>
+      <h3>Pong</h3>
+      <p>Classic paddle-and-ball game testing reflexes and timing. Perfect for quick verifications.</p>
+    </a>
+  </div>
+  
+  <div class="game-card">
+    <a href="/guide/games/snake" class="game-link">
+      <div class="game-icon">🐍</div>
+      <h3>Snake</h3>
+      <p>Pattern-based challenge where players collect items in sequence, testing planning and control.</p>
+    </a>
+  </div>
+  
+  <div class="game-card">
+    <a href="/guide/games/breakout" class="game-link">
+      <div class="game-icon">🧱</div>
+      <h3>Breakout</h3>
+      <p>Block-breaking arcade game that tests precision and strategic planning abilities.</p>
+    </a>
+  </div>
+  
+  <div class="game-card">
+    <a href="/guide/games/maze" class="game-link">
+      <div class="game-icon">🌀</div>
+      <h3>Maze</h3>
+      <p>Dynamic maze navigation challenge testing pathfinding and spatial reasoning.</p>
+    </a>
+  </div>
+  
+  <div class="game-card">
+    <a href="/guide/games/pattern" class="game-link">
+      <div class="game-icon">🎯</div>
+      <h3>Pattern</h3>
+      <p>Memory-based challenge requiring players to recreate specific visual sequences.</p>
+    </a>
+  </div>
+  
+  <div class="game-card">
+    <a href="/guide/games/dino-run" class="game-link">
+      <div class="game-icon">🦖</div>
+      <h3>Dino Run</h3>
+      <p>Timing-based challenge requiring precise jumps and obstacle avoidance.</p>
+    </a>
+  </div>
+  
+  <div class="game-card">
+    <a href="/guide/games/puzzle-slider" class="game-link">
+      <div class="game-icon">🧩</div>
+      <h3>Puzzle Slider</h3>
+      <p>Sliding puzzle that tests spatial reasoning and planning abilities.</p>
+    </a>
+  </div>
+  
+  <div class="game-card">
+    <a href="/guide/games/physics-puzzles" class="game-link">
+      <div class="game-icon">⚖️</div>
+      <h3>Physics Puzzles</h3>
+      <p>Physics-based challenges requiring intuitive understanding of object interactions.</p>
+    </a>
+  </div>
+  
+  <div class="game-card">
+    <a href="/guide/games/sequence-memory" class="game-link">
+      <div class="game-icon">📝</div>
+      <h3>Sequence Memory</h3>
+      <p>Memory challenge testing sequence recall and attention to detail.</p>
+    </a>
+  </div>
+</div>
 
-**Description**: A classic Pong game where users must hit a ball with a paddle.
+<style>
+.game-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
 
-**How it works**:
-- The user controls a paddle at the bottom of the screen
-- A ball bounces around the screen
-- The user must hit the ball a specific number of times to pass
-- The ball moves with unpredictable patterns, making it hard for bots
+.game-card {
+  border-radius: 8px;
+  background-color: var(--vp-c-bg-soft);
+  transition: all 0.3s ease;
+  height: 100%;
+}
 
-**Security features**:
-- Ball movement has randomized angles and speeds
-- The system tracks natural movement patterns of the paddle
-- Requires human-like reflexes and prediction
+.game-card:hover {
+  background-color: var(--vp-c-bg-mute);
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
 
-**Accessibility**: Moderate - requires hand-eye coordination and reflexes
+.game-link {
+  display: block;
+  padding: 1.5rem;
+  color: var(--vp-c-text-1);
+  text-decoration: none;
+  height: 100%;
+  box-sizing: border-box;
+}
 
-### Snake (Pattern Completion Challenge) 🐍
+.game-icon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
 
-**Description**: Users control a snake to collect specific food items while avoiding obstacles.
+.game-card h3 {
+  font-size: 1.25rem;
+  margin: 0.5rem 0;
+}
 
-**How it works**:
-- The player controls a snake that moves around a grid
-- The snake must collect food in a specific order (e.g., "Eat 3 apples, but avoid bananas")
-- The snake grows longer with each food item, increasing difficulty
+.game-card p {
+  margin: 0;
+  color: var(--vp-c-text-2);
+  line-height: 1.5;
+}
+</style>
 
-**Security features**:
-- Food placement is randomized
-- Requires decision-making rather than random movements
-- The system analyzes movement patterns for bot detection
+## Game Selection
 
-**Accessibility**: High - simple controls with clear visual feedback
+GameShield automatically selects the most appropriate game type based on various factors:
 
-### Breakout (Brick Breaking Challenge) 🧱
+### Device Capabilities
+- Screen size and orientation
+- Input methods available
+- Processing power
+- Network conditions
 
-**Description**: Users control a paddle to bounce a ball and break bricks.
+### User Context
+- Previous verification history
+- Session characteristics
+- Risk assessment score
+- Accessibility requirements
 
-**How it works**:
-- The user controls a paddle at the bottom of the screen
-- A ball bounces off the paddle and walls
-- The user must break a specific number of bricks to pass
-- The ball's speed changes to make it unpredictable for bots
+### Security Requirements
+- Current threat level
+- Site-specific settings
+- Traffic patterns
+- Historical attack data
 
-**Security features**:
-- Ball physics include randomized angles and speeds
-- The system tracks paddle movement patterns
-- Requires human-like prediction and reaction
+## Customization
 
-**Accessibility**: Moderate - requires hand-eye coordination
+You can customize the game selection and behavior:
 
-### Dino Run (Jump Timing Test) 🦖
-
-**Description**: Users control a character that must jump over obstacles.
-
-**How it works**:
-- The player controls a character that automatically runs
-- Obstacles appear at varying intervals and speeds
-- The player must time jumps correctly to avoid obstacles
-- The player must successfully clear a specific number of obstacles to pass
-
-**Security features**:
-- Obstacle timing and spacing is randomized
-- Requires human timing and prediction
-- The system analyzes jump patterns for bot detection
-
-**Accessibility**: High - simple controls with clear visual feedback
-
-### Puzzle Slider 🧩
-
-**Description**: A classic sliding puzzle where users must arrange tiles to complete an image.
-
-**How it works**:
-- A complete image is divided into a grid of tiles (typically 3x3 or 4x4)
-- One tile is removed, creating an empty space
-- Tiles adjacent to the empty space can be moved into it
-- The user must arrange the tiles to form the complete image
-
-**Security features**:
-- Each puzzle is randomly generated with different images
-- The solution requires spatial reasoning and planning
-- The system tracks natural movement patterns during solving
-
-**Accessibility**: Moderate - requires visual recognition and spatial reasoning
-
-### Pattern Matching 🔍
-
-**Description**: Users must identify and select elements that match a specific pattern or category.
-
-**How it works**:
-- A set of visual elements is displayed (shapes, icons, etc.)
-- The user must select all elements that match a given criteria
-- Criteria might include "select all red items" or "select items in a specific order"
-
-**Security features**:
-- Patterns and criteria are randomly generated
-- The system analyzes selection timing and accuracy
-- Multiple valid solutions with varying efficiency
-
-**Accessibility**: High - can be adapted for color blindness and other visual impairments
-
-### Maze Navigation 🌀
-
-**Description**: Users guide an object through a randomly generated maze.
-
-**How it works**:
-- A procedurally generated maze is displayed
-- Users must navigate from start to finish by drawing a path
-- Obstacles and dead ends create complexity
-
-**Security features**:
-- Each maze is uniquely generated
-- The system analyzes path efficiency and correction patterns
-- Speed and accuracy metrics help identify automated attempts
-
-**Accessibility**: Moderate - requires fine motor control
-
-### Physics Puzzles ⚖️
-
-**Description**: Users solve simple physics-based challenges that require intuitive understanding of physical properties.
-
-**How it works**:
-- Objects with physical properties (gravity, collision, etc.) are presented
-- Users must interact with these objects to achieve a goal
-- Examples include stacking blocks, balancing objects, or directing a ball to a target
-
-**Security features**:
-- Challenges leverage human intuitive understanding of physics
-- The system analyzes interaction patterns and solution approach
-- Multiple valid solutions with varying efficiency
-
-**Accessibility**: Moderate to High - intuitive and adaptable
-
-### Sequence Memory 🔢
-
-**Description**: Users must remember and reproduce a sequence of events.
-
-**How it works**:
-- A sequence of visual or audio cues is presented
-- Users must reproduce the sequence in the correct order
-- Difficulty scales with sequence length and complexity
-
-**Security features**:
-- Sequences are randomly generated
-- The system analyzes timing between inputs
-- Pattern recognition that's natural for humans but difficult for bots
-
-**Accessibility**: Variable - can be adapted for different abilities (visual, audio, etc.)
-
-## Game Selection Algorithm
-
-Gameshield uses a smart selection algorithm to determine which game to present to each user:
-
-1. **Device Detection**: Identifies the user's device type and capabilities
-2. **Accessibility Awareness**: Considers any detected accessibility tools
-3. **Progressive Challenge**: Starts with simpler games and increases difficulty if suspicious behavior is detected
-4. **Rotation Strategy**: Varies game types to prevent learning attacks
-
-## Customization Options
-
-You can customize which games appear in your integration:
-
-```javascript
-import { generateCaptcha } from '@gameshield/captcha-sdk';
-
-generateCaptcha({
-  container: document.getElementById('captcha-container'),
-  gameTypes: ['pong', 'snake', 'breakout', 'dino-run', 'puzzle', 'pattern', 'maze', 'physics', 'sequence'], // Only use these game types
-  preferredGameType: 'pong', // Try to use this game type when possible
-  excludeGameTypes: [], // Never use these game types
-  difficulty: 'medium', // 'easy', 'medium', or 'hard'
+```typescript
+const captcha = new CaptchaSDK({
+  preferredGames: ['pong', 'snake'],
+  excludedGames: ['maze'],
+  difficulty: 'adaptive',
+  accessibility: {
+    highContrast: true,
+    reducedMotion: false,
+    audioFeedback: true
+  }
 });
 ```
 
-## Next Steps
+### Available Options
+- `preferredGames`: Prioritize specific game types
+- `excludedGames`: Disable certain game types
+- `difficulty`: Set fixed or adaptive difficulty
+- `accessibility`: Configure accessibility features
 
-- Learn how to [customize](/guide/customization) the appearance and behavior of games
-- See [integration examples](/guide/integration-examples) for implementation guidance
-- Check out the [API reference](/api/sdk-methods) for detailed configuration options
+## Implementation
+
+For detailed configuration options and implementation guidelines, visit each game's dedicated page:
+
+- [Pong](/guide/games/pong)
+- [Snake](/guide/games/snake)
+- [Breakout](/guide/games/breakout)
+- [Maze](/guide/games/maze)
+- [Pattern](/guide/games/pattern)
+- [Dino Run](/guide/games/dino-run)
+- [Puzzle Slider](/guide/games/puzzle-slider)
+- [Physics Puzzles](/guide/games/physics-puzzles)
+- [Sequence Memory](/guide/games/sequence-memory)
