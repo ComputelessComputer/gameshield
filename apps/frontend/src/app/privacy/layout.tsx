@@ -1,4 +1,4 @@
-import LegalLayout from "../components/legal-layout";
+import LegalLayout from "../../components/legal-layout";
 import { type ReactNode } from "react";
 
 export const metadata = {
