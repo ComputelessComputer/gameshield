@@ -6,11 +6,11 @@ import { useEffect, useState, useRef } from "react";
 // @ts-ignore
 declare namespace JSX {
   interface IntrinsicElements {
-    'game-shield': any;
+    "game-shield": any;
   }
 }
 
-export default function GameShieldDemo() {
+export default function GameshieldDemo() {
   const [isVerified, setIsVerified] = useState(false);
   const gameShieldRef = useRef<HTMLElement | null>(null);
 
@@ -35,7 +35,7 @@ export default function GameShieldDemo() {
   };
 
   return (
-    <div className="flex flex-col items-center gap-8 w-full max-w-2xl mx-auto p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+    <div className="flex flex-col items-center gap-8 w-full max-w-2xl mx-auto p-6 bg-white border border-neutral-200">
       <h2 className="text-2xl font-bold text-center">
         GameShield CAPTCHA Demo
       </h2>
@@ -82,7 +82,7 @@ export default function GameShieldDemo() {
 
       <button
         onClick={() => {
-          if (gameShieldRef.current && 'reset' in gameShieldRef.current) {
+          if (gameShieldRef.current && "reset" in gameShieldRef.current) {
             // @ts-ignore - Custom element method
             gameShieldRef.current.reset();
             setIsVerified(false);

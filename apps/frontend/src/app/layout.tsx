@@ -3,8 +3,9 @@ import "./globals.css";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "GameShield - Secure CAPTCHA Alternative",
-  description: "GameShield provides a fun and secure CAPTCHA alternative using interactive mini-games to verify human users.",
+  title: "GameShield - Generative Game CAPTCHA",
+  description:
+    "Protect your website from bots with interactive, fun game challenges",
 };
 
 export default function RootLayout({
