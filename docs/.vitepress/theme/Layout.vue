@@ -7,10 +7,9 @@
 </template>
 
 <script setup>
-import DefaultTheme from 'vitepress/theme'
-import FilterSearch from '../components/FilterSearch.vue'
+import DefaultTheme from "vitepress/theme";
 
-const { Layout } = DefaultTheme
+const { Layout } = DefaultTheme;
 </script>
 
 <style>

@@ -8,53 +8,46 @@
         @keyup.enter="applyFilter"
       />
       <button @click="applyFilter" class="filter-button">Filter</button>
-      <button v-if="currentFilter" @click="clearFilter" class="clear-button">Clear</button>
+      <button v-if="currentFilter" @click="clearFilter" class="clear-button">
+        Clear
+      </button>
     </div>
     <div v-if="currentFilter" class="current-filter">
-      <span>Current filter: <strong>{{ currentFilter }}</strong></span>
+      <span
+        >Current filter: <strong>{{ currentFilter }}</strong></span
+      >
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { useRouter } from 'vitepress'
+import { ref, onMounted } from "vue";
 
-const router = useRouter()
-const searchQuery = ref('')
-const currentFilter = ref('')
+const searchQuery = ref("");
+const currentFilter = ref("");
 
-// Get the current filter from meta tag
 onMounted(() => {
-  const filterMeta = document.querySelector('meta[name="filter"]')
+  const filterMeta = document.querySelector('meta[name="filter"]');
   if (filterMeta) {
-    currentFilter.value = filterMeta.getAttribute('content')
-    searchQuery.value = currentFilter.value
+    currentFilter.value = filterMeta.getAttribute("content");
+    searchQuery.value = currentFilter.value;
   }
-})
+});
 
-// Apply the filter by reloading with the filter parameter
 const applyFilter = () => {
   if (!searchQuery.value.trim()) {
-    clearFilter()
-    return
+    clearFilter();
+    return;
   }
-  
-  // Store the current path
-  const currentPath = window.location.pathname
-  
-  // Reload the page with the filter parameter
-  window.location.href = `/?filter=${encodeURIComponent(searchQuery.value.trim())}`
-}
 
-// Clear the filter
+  window.location.href = `/?filter=${encodeURIComponent(
+    searchQuery.value.trim()
+  )}`;
+};
+
 const clearFilter = () => {
-  // Store the current path
-  const currentPath = window.location.pathname
-  
-  // Reload without the filter
-  window.location.href = '/'
-}
+  window.location.href = "/";
+};
 </script>
 
 <style scoped>
@@ -76,7 +69,8 @@ const clearFilter = () => {
   font-size: 0.9rem;
 }
 
-.filter-button, .clear-button {
+.filter-button,
+.clear-button {
   padding: 0.5rem 1rem;
   border-radius: 4px;
   font-size: 0.9rem;
