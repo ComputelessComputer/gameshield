@@ -101,25 +101,25 @@ The easiest way to integrate GameShield is using our Web Components, which work 
 
 ```html
 <!-- Via CDN -->
-<script type="module" src="https://cdn.jsdelivr.net/npm/gameshield-web-components/dist/index.js"></script>
+<script
+  type="module"
+  src="https://cdn.jsdelivr.net/npm/gameshield-web-components/dist/index.js"
+></script>
 
 <!-- In your HTML -->
-<game-shield
-  api-key="your-api-key"
-  game-type="random"
-  difficulty="medium">
+<game-shield api-key="your-api-key" game-type="random" difficulty="medium">
 </game-shield>
 
 <script>
-  const captcha = document.querySelector('game-shield');
-  
-  captcha.addEventListener('success', (e) => {
-    console.log('CAPTCHA verified with token:', e.detail.token);
+  const captcha = document.querySelector("game-shield");
+
+  captcha.addEventListener("success", (e) => {
+    console.log("CAPTCHA verified with token:", e.detail.token);
     // Send token to your server for verification
   });
-  
-  captcha.addEventListener('failure', () => {
-    console.log('CAPTCHA verification failed');
+
+  captcha.addEventListener("failure", () => {
+    console.log("CAPTCHA verification failed");
   });
 </script>
 ```
@@ -148,7 +148,7 @@ const captcha = generateCaptcha({
   onFailure: () => {
     console.log("Verification failed");
   },
-  apiEndpoint: "https://your-api.com/verify" // Optional: for server-side verification
+  apiEndpoint: "https://your-api.com/verify", // Optional: for server-side verification
 });
 ```
 
@@ -162,23 +162,23 @@ import { SecurityUtils } from "@gameshield/security-utils";
 // Initialize with your secret keys
 const securityUtils = new SecurityUtils({
   jwtSecret: process.env.JWT_SECRET,
-  encryptionKey: process.env.ENCRYPTION_KEY
+  encryptionKey: process.env.ENCRYPTION_KEY,
 });
 
 // In your API route handler
 app.post("/verify", (req, res) => {
   const { token } = req.body;
-  
+
   const result = securityUtils.verifyCaptcha(token);
-  
+
   if (result.valid && result.isHuman) {
     // Token is valid and user is human
     res.json({ success: true });
   } else {
     // Invalid token or bot detected
-    res.status(400).json({ 
-      success: false, 
-      message: result.error || "Verification failed" 
+    res.status(400).json({
+      success: false,
+      message: result.error || "Verification failed",
     });
   }
 });
@@ -277,3 +277,7 @@ This project is licensed under the MIT License.
 ## Contact
 
 For any questions, feel free to open an issue or reach out at jeeheontransformers@gmail.com.
+
+## Tasks
+
+- [ ] Need to support correct rendering for multiple browser types.
