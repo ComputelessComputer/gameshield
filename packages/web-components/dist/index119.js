@@ -21,7 +21,7 @@ import "./index42.js";
 import "./index43.js";
 import "./index44.js";
 import "./index45.js";
-import { getResolutionOfUrl as _ } from "./index154.js";
+import { getResolutionOfUrl as _ } from "./index147.js";
 import "./index46.js";
 import "./index47.js";
 import "./index48.js";

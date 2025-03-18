@@ -1,15 +1,5 @@
-function i(c, f, l) {
-  const g = c.length;
-  let n;
-  if (f >= g || l === 0)
-    return;
-  l = f + l > g ? g - f : l;
-  const h = g - l;
-  for (n = f; n < h; ++n)
-    c[n] = c[n + l];
-  c.length = h;
-}
+const a = (r, s, y = !1) => (Array.isArray(r) || (r = [r]), s ? r.map((o) => typeof o == "string" || y ? s(o) : o) : r);
 export {
-  i as removeItems
+  a as convertToList
 };
 //# sourceMappingURL=index160.js.map

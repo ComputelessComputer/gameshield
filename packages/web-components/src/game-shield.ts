@@ -14,6 +14,8 @@ import { SecurityUtils } from './security/security-utils';
  * 
  * @prop {string} apiKey - API key for server verification
  * @prop {string} apiEndpoint - Endpoint for server verification
+ * @prop {string} width - Width of the component
+ * @prop {string} height - Height of the component
  * 
  * @fires success - When CAPTCHA is successfully completed
  * @fires failure - When CAPTCHA fails
@@ -25,6 +27,8 @@ export class GameShield extends LitElement {
   @property({ type: String, attribute: 'game-type' }) gameType: GameType = 'random';
   @property({ type: String }) difficulty: Difficulty = 'medium';
   @property({ type: String }) apiEndpoint = '';
+  @property({ type: String }) width = '400px';
+  @property({ type: String }) height = '400px';
   
   // Internal state
   @state() private isVerified = false;
@@ -42,11 +46,13 @@ export class GameShield extends LitElement {
   static styles = css`
     :host {
       display: block;
-      width: 400px;
-      height: 300px;
+      width: var(--game-shield-width, 400px);
+      height: var(--game-shield-height, 400px);
+      max-width: 500px;
+      max-height: 500px;
+      aspect-ratio: 1 / 1;
       border: 1px solid #ccc;
       border-radius: 8px;
-      overflow: hidden;
       position: relative;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     }
@@ -119,6 +125,10 @@ export class GameShield extends LitElement {
     
     // Always force random game type for security
     this.gameType = 'random';
+    
+    // Set CSS variables for width and height
+    this.style.setProperty('--game-shield-width', this.width);
+    this.style.setProperty('--game-shield-height', this.height);
   }
   
   firstUpdated() {

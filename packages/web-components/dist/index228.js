@@ -1,22 +1,10 @@
-import { mapSize as c } from "./index232.js";
-import { mapType as s } from "./index310.js";
-function p(a, t) {
-  const n = {}, r = t.getProgramParameter(a, t.ACTIVE_ATTRIBUTES);
-  for (let i = 0; i < r; i++) {
-    const e = t.getActiveAttrib(a, i);
-    if (e.name.startsWith("gl_"))
-      continue;
-    const o = s(t, e.type), m = {
-      type: o,
-      name: e.name,
-      size: c(o),
-      location: t.getAttribLocation(a, e.name)
-    };
-    n[e.name] = m;
+import { TYPES as i, FORMATS as s } from "./index146.js";
+class e {
+  constructor(t) {
+    this.texture = t, this.width = -1, this.height = -1, this.dirtyId = -1, this.dirtyStyleId = -1, this.mipmap = !1, this.wrapMode = 33071, this.type = i.UNSIGNED_BYTE, this.internalFormat = s.RGBA, this.samplerType = 0;
   }
-  return n;
 }
 export {
-  p as getAttributeData
+  e as GLTexture
 };
 //# sourceMappingURL=index228.js.map

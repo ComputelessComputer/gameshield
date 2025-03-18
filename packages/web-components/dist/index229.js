@@ -1,21 +1,83 @@
-import { defaultValue as s } from "./index227.js";
-import { mapType as p } from "./index310.js";
-function y(a, t) {
-  const i = {}, n = t.getProgramParameter(a, t.ACTIVE_UNIFORMS);
-  for (let r = 0; r < n; r++) {
-    const e = t.getActiveUniform(a, r), m = e.name.replace(/\[.*?\]$/, ""), f = !!e.name.match(/\[.*?\]$/), o = p(t, e.type);
-    i[m] = {
-      name: m,
-      index: r,
-      type: o,
-      size: e.size,
-      isArray: f,
-      value: s(o, e.size)
-    };
+import { TARGETS as a } from "./index146.js";
+import { AbstractMultiResource as A } from "./index238.js";
+class m extends A {
+  /**
+   * @param source - Number of items in array or the collection
+   *        of image URLs to use. Can also be resources, image elements, canvas, etc.
+   * @param options - Options to apply to {@link PIXI.autoDetectResource}
+   * @param {number} [options.width] - Width of the resource
+   * @param {number} [options.height] - Height of the resource
+   */
+  constructor(r, t) {
+    const { width: e, height: h } = t || {};
+    let i, d;
+    Array.isArray(r) ? (i = r, d = r.length) : d = r, super(d, { width: e, height: h }), i && this.initFromArray(i, t);
   }
-  return i;
+  /**
+   * Set a baseTexture by ID,
+   * ArrayResource just takes resource from it, nothing more
+   * @param baseTexture
+   * @param index - Zero-based index of resource to set
+   * @returns - Instance for chaining
+   */
+  addBaseTextureAt(r, t) {
+    if (r.resource)
+      this.addResourceAt(r.resource, t);
+    else
+      throw new Error("ArrayResource does not support RenderTexture");
+    return this;
+  }
+  /**
+   * Add binding
+   * @param baseTexture
+   */
+  bind(r) {
+    super.bind(r), r.target = a.TEXTURE_2D_ARRAY;
+  }
+  /**
+   * Upload the resources to the GPU.
+   * @param renderer
+   * @param texture
+   * @param glTexture
+   * @returns - whether texture was uploaded
+   */
+  upload(r, t, e) {
+    const { length: h, itemDirtyIds: i, items: d } = this, { gl: n } = r;
+    e.dirtyId < 0 && n.texImage3D(
+      n.TEXTURE_2D_ARRAY,
+      0,
+      e.internalFormat,
+      this._width,
+      this._height,
+      h,
+      0,
+      t.format,
+      e.type,
+      null
+    );
+    for (let s = 0; s < h; s++) {
+      const o = d[s];
+      i[s] < o.dirtyId && (i[s] = o.dirtyId, o.valid && n.texSubImage3D(
+        n.TEXTURE_2D_ARRAY,
+        0,
+        0,
+        // xoffset
+        0,
+        // yoffset
+        s,
+        // zoffset
+        o.resource.width,
+        o.resource.height,
+        1,
+        t.format,
+        e.type,
+        o.resource.source
+      ));
+    }
+    return !0;
+  }
 }
 export {
-  y as getUniformData
+  m as ArrayResource
 };
 //# sourceMappingURL=index229.js.map

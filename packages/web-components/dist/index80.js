@@ -1,4 +1,4 @@
-import { settings as n } from "./index150.js";
+import { settings as n } from "./index145.js";
 import "./index36.js";
 import "./index40.js";
 import "./index41.js";
@@ -8,7 +8,7 @@ import "./index24.js";
 import "./index44.js";
 import { uid as g } from "./index129.js";
 import "./index45.js";
-import { BaseImageResource as d } from "./index246.js";
+import { BaseImageResource as d } from "./index236.js";
 const a = class o extends d {
   /**
    * @param sourceBase64 - Base64 encoded SVG element or URL for SVG file.

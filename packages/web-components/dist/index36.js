@@ -1,4 +1,4 @@
-import i from "./index309.js";
+import i from "./index308.js";
 const o = i.default ?? i, a = o(globalThis.navigator);
 export {
   a as isMobile

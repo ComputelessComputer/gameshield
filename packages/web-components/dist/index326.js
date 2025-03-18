@@ -4,8 +4,8 @@ import { _ as N } from "./index331.js";
 import { r as j } from "./index332.js";
 import { r as T } from "./index333.js";
 import { s as k } from "./index334.js";
-import { t as C } from "./index320.js";
-import { u as q } from "./index335.js";
+import { t as q } from "./index320.js";
+import { u as C } from "./index335.js";
 import { a as D } from "./index336.js";
 import { f as W } from "./index337.js";
 import { m as J } from "./index338.js";
@@ -19,28 +19,28 @@ import { __require as Q } from "./index345.js";
 import { __require as X } from "./index346.js";
 import { __require as Z } from "./index347.js";
 import { __require as rr } from "./index348.js";
-import { __require as tr } from "./index349.js";
-import { f as er } from "./index350.js";
+import { __require as er } from "./index349.js";
+import { __require as tr } from "./index350.js";
 import { f as or } from "./index351.js";
 import { __require as ar } from "./index352.js";
-var r, nr = G, ir = M, yr = N, pr = j, fr = T, d = k, A = C, sr = q, cr = D, lr = W, ur = J, Ar = V, dr = z, mr = H, vr = L, B = Function, w = function(y) {
+var r, nr = G, ir = M, yr = N, pr = j, fr = T, d = k, A = q, sr = C, cr = D, lr = W, ur = J, Ar = V, dr = z, mr = H, vr = L, B = Function, _ = function(y) {
   try {
     return B('"use strict"; return (' + y + ").constructor;")();
   } catch {
   }
-}, v = Y, Pr = K, _ = function() {
+}, v = Y, Pr = K, w = function() {
   throw new A();
 }, gr = v ? function() {
   try {
-    return arguments.callee, _;
+    return arguments.callee, w;
   } catch {
     try {
       return v(arguments, "callee").get;
     } catch {
-      return _;
+      return w;
     }
   }
-}() : _, l = Q()(), o = X(), hr = Z(), Sr = rr(), x = tr(), P = er, u = {}, Er = typeof Uint8Array > "u" || !o ? r : o(Uint8Array), s = {
+}() : w, l = Q()(), o = X(), hr = Z(), Sr = rr(), x = er(), P = tr(), u = {}, Er = typeof Uint8Array > "u" || !o ? r : o(Uint8Array), s = {
   __proto__: null,
   "%AggregateError%": typeof AggregateError > "u" ? r : AggregateError,
   "%Array%": Array,
@@ -131,22 +131,22 @@ if (o)
     var Ir = o(o(y));
     s["%Error.prototype%"] = Ir;
   }
-var br = function y(t) {
+var br = function y(e) {
   var a;
-  if (t === "%AsyncFunction%")
-    a = w("async function () {}");
-  else if (t === "%GeneratorFunction%")
-    a = w("function* () {}");
-  else if (t === "%AsyncGeneratorFunction%")
-    a = w("async function* () {}");
-  else if (t === "%AsyncGenerator%") {
-    var e = y("%AsyncGeneratorFunction%");
-    e && (a = e.prototype);
-  } else if (t === "%AsyncIteratorPrototype%") {
+  if (e === "%AsyncFunction%")
+    a = _("async function () {}");
+  else if (e === "%GeneratorFunction%")
+    a = _("function* () {}");
+  else if (e === "%AsyncGeneratorFunction%")
+    a = _("async function* () {}");
+  else if (e === "%AsyncGenerator%") {
+    var t = y("%AsyncGeneratorFunction%");
+    t && (a = t.prototype);
+  } else if (e === "%AsyncIteratorPrototype%") {
     var n = y("%AsyncGenerator%");
     n && o && (a = o(n.prototype));
   }
-  return s[t] = a, a;
+  return s[e] = a, a;
 }, $ = {
   __proto__: null,
   "%ArrayBufferPrototype%": ["ArrayBuffer", "prototype"],
@@ -200,40 +200,40 @@ var br = function y(t) {
   "%URIErrorPrototype%": ["URIError", "prototype"],
   "%WeakMapPrototype%": ["WeakMap", "prototype"],
   "%WeakSetPrototype%": ["WeakSet", "prototype"]
-}, g = or, F = ar(), Fr = g.call(P, Array.prototype.concat), Rr = g.call(x, Array.prototype.splice), O = g.call(P, String.prototype.replace), R = g.call(P, String.prototype.slice), Ur = g.call(P, RegExp.prototype.exec), wr = /[^%.[\]]+|\[(?:(-?\d+(?:\.\d+)?)|(["'])((?:(?!\2)[^\\]|\\.)*?)\2)\]|(?=(?:\.|\[\])(?:\.|\[\]|%$))/g, _r = /\\(\\)?/g, $r = function(t) {
-  var a = R(t, 0, 1), e = R(t, -1);
-  if (a === "%" && e !== "%")
+}, g = or, F = ar(), Fr = g.call(P, Array.prototype.concat), Rr = g.call(x, Array.prototype.splice), O = g.call(P, String.prototype.replace), R = g.call(P, String.prototype.slice), Ur = g.call(P, RegExp.prototype.exec), _r = /[^%.[\]]+|\[(?:(-?\d+(?:\.\d+)?)|(["'])((?:(?!\2)[^\\]|\\.)*?)\2)\]|(?=(?:\.|\[\])(?:\.|\[\]|%$))/g, wr = /\\(\\)?/g, $r = function(e) {
+  var a = R(e, 0, 1), t = R(e, -1);
+  if (a === "%" && t !== "%")
     throw new d("invalid intrinsic syntax, expected closing `%`");
-  if (e === "%" && a !== "%")
+  if (t === "%" && a !== "%")
     throw new d("invalid intrinsic syntax, expected opening `%`");
   var n = [];
-  return O(t, wr, function(p, c, i, h) {
-    n[n.length] = i ? O(h, _r, "$1") : c || p;
+  return O(e, _r, function(p, c, i, h) {
+    n[n.length] = i ? O(h, wr, "$1") : c || p;
   }), n;
-}, Or = function(t, a) {
-  var e = t, n;
-  if (F($, e) && (n = $[e], e = "%" + n[0] + "%"), F(s, e)) {
-    var p = s[e];
-    if (p === u && (p = br(e)), typeof p > "u" && !a)
-      throw new A("intrinsic " + t + " exists, but is not available. Please file an issue!");
+}, Or = function(e, a) {
+  var t = e, n;
+  if (F($, t) && (n = $[t], t = "%" + n[0] + "%"), F(s, t)) {
+    var p = s[t];
+    if (p === u && (p = br(t)), typeof p > "u" && !a)
+      throw new A("intrinsic " + e + " exists, but is not available. Please file an issue!");
     return {
       alias: n,
-      name: e,
+      name: t,
       value: p
     };
   }
-  throw new d("intrinsic " + t + " does not exist!");
-}, ot = function(t, a) {
-  if (typeof t != "string" || t.length === 0)
+  throw new d("intrinsic " + e + " does not exist!");
+}, oe = function(e, a) {
+  if (typeof e != "string" || e.length === 0)
     throw new A("intrinsic name must be a non-empty string");
   if (arguments.length > 1 && typeof a != "boolean")
     throw new A('"allowMissing" argument must be a boolean');
-  if (Ur(/^%?[^%]*%?$/, t) === null)
+  if (Ur(/^%?[^%]*%?$/, e) === null)
     throw new d("`%` may not be present anywhere but at the beginning and end of the intrinsic name");
-  var e = $r(t), n = e.length > 0 ? e[0] : "", p = Or("%" + n + "%", a), c = p.name, i = p.value, h = !1, U = p.alias;
-  U && (n = U[0], Rr(e, Fr([0, 1], U)));
-  for (var S = 1, m = !0; S < e.length; S += 1) {
-    var f = e[S], E = R(f, 0, 1), I = R(f, -1);
+  var t = $r(e), n = t.length > 0 ? t[0] : "", p = Or("%" + n + "%", a), c = p.name, i = p.value, h = !1, U = p.alias;
+  U && (n = U[0], Rr(t, Fr([0, 1], U)));
+  for (var S = 1, m = !0; S < t.length; S += 1) {
+    var f = t[S], E = R(f, 0, 1), I = R(f, -1);
     if ((E === '"' || E === "'" || E === "`" || I === '"' || I === "'" || I === "`") && E !== I)
       throw new d("property names with quotes must have matching quotes");
     if ((f === "constructor" || !m) && (h = !0), n += "." + f, c = "%" + n + "%", F(s, c))
@@ -241,10 +241,10 @@ var br = function y(t) {
     else if (i != null) {
       if (!(f in i)) {
         if (!a)
-          throw new A("base intrinsic for " + t + " exists, but the property is not available.");
+          throw new A("base intrinsic for " + e + " exists, but the property is not available.");
         return;
       }
-      if (v && S + 1 >= e.length) {
+      if (v && S + 1 >= t.length) {
         var b = v(i, f);
         m = !!b, m && "get" in b && !("originalValue" in b.get) ? i = b.get : i = i[f];
       } else
@@ -255,6 +255,6 @@ var br = function y(t) {
   return i;
 };
 export {
-  ot as g
+  oe as g
 };
 //# sourceMappingURL=index326.js.map

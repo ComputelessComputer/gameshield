@@ -1,4 +1,4 @@
-import { SHAPES as C } from "./index165.js";
+import { SHAPES as C } from "./index240.js";
 import { Point as d } from "./index33.js";
 const g = [new d(), new d(), new d(), new d()];
 class b {

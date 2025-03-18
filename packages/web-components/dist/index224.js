@@ -1,37 +1,17 @@
-import { GLProgram as u } from "./index216.js";
-import { compileShader as c } from "./index226.js";
-import { defaultValue as S } from "./index227.js";
-import { getAttributeData as b } from "./index228.js";
-import { getUniformData as D } from "./index229.js";
-import { logProgramError as T } from "./index230.js";
-function V(t, a) {
-  var m;
-  const n = c(t, t.VERTEX_SHADER, a.vertexSrc), i = c(t, t.FRAGMENT_SHADER, a.fragmentSrc), e = t.createProgram();
-  t.attachShader(e, n), t.attachShader(e, i);
-  const s = (m = a.extra) == null ? void 0 : m.transformFeedbackVaryings;
-  if (s && (typeof t.transformFeedbackVaryings != "function" ? console.warn("TransformFeedback is not supported but TransformFeedbackVaryings are given.") : t.transformFeedbackVaryings(
-    e,
-    s.names,
-    s.bufferMode === "separate" ? t.SEPARATE_ATTRIBS : t.INTERLEAVED_ATTRIBS
-  )), t.linkProgram(e), t.getProgramParameter(e, t.LINK_STATUS) || T(t, e, n, i), a.attributeData = b(e, t), a.uniformData = D(e, t), !/^[ \t]*#[ \t]*version[ \t]+300[ \t]+es[ \t]*$/m.test(a.vertexSrc)) {
-    const o = Object.keys(a.attributeData);
-    o.sort((r, d) => r > d ? 1 : -1);
-    for (let r = 0; r < o.length; r++)
-      a.attributeData[o[r]].location = r, t.bindAttribLocation(e, r, o[r]);
-    t.linkProgram(e);
+import { ENV as s } from "./index146.js";
+import { settings as o } from "./index145.js";
+import "./index36.js";
+const r = {};
+let e = r;
+function x() {
+  if (e === r || e != null && e.isContextLost()) {
+    const n = o.ADAPTER.createCanvas();
+    let t;
+    o.PREFER_ENV >= s.WEBGL2 && (t = n.getContext("webgl2", {})), t || (t = n.getContext("webgl", {}) || n.getContext("experimental-webgl", {}), t ? t.getExtension("WEBGL_draw_buffers") : t = null), e = t;
   }
-  t.deleteShader(n), t.deleteShader(i);
-  const f = {};
-  for (const o in a.uniformData) {
-    const r = a.uniformData[o];
-    f[o] = {
-      location: t.getUniformLocation(e, o),
-      value: S(r.type, r.size)
-    };
-  }
-  return new u(e, f);
+  return e;
 }
 export {
-  V as generateProgram
+  x as getTestContext
 };
 //# sourceMappingURL=index224.js.map

@@ -1,3 +1,8 @@
+// Export analytics types
 export * from './types';
+
+// Export analytics manager
 export * from './analytics-manager';
-export * from './providers/local-storage-provider';
+
+// Export all providers
+export * from './providers';

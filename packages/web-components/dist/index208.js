@@ -1,9 +1,7 @@
-class s {
-  constructor(t) {
-    this.buffer = t || null, this.updateID = -1, this.byteLength = -1, this.refCount = 0;
-  }
-}
+const e = {}, c = /* @__PURE__ */ Object.create(null), t = /* @__PURE__ */ Object.create(null);
 export {
-  s as GLBuffer
+  t as BaseTextureCache,
+  e as ProgramCache,
+  c as TextureCache
 };
 //# sourceMappingURL=index208.js.map

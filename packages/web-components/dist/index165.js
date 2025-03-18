@@ -1,9 +1,60 @@
-const I = Math.PI * 2, t = 180 / Math.PI, _ = Math.PI / 180;
-var C = /* @__PURE__ */ ((R) => (R[R.POLY = 0] = "POLY", R[R.RECT = 1] = "RECT", R[R.CIRC = 2] = "CIRC", R[R.ELIP = 3] = "ELIP", R[R.RREC = 4] = "RREC", R))(C || {});
+import i from "./index298.js";
+import h from "./index299.js";
+let o = 0, s;
+class u {
+  constructor() {
+    this._initialized = !1, this._createdWorkers = 0, this.workerPool = [], this.queue = [], this.resolveHash = {};
+  }
+  isImageBitmapSupported() {
+    return this._isImageBitmapSupported !== void 0 ? this._isImageBitmapSupported : (this._isImageBitmapSupported = new Promise((e) => {
+      const { worker: r } = new i();
+      r.addEventListener("message", (t) => {
+        r.terminate(), i.revokeObjectURL(), e(t.data);
+      });
+    }), this._isImageBitmapSupported);
+  }
+  loadImageBitmap(e) {
+    return this._run("loadImageBitmap", [e]);
+  }
+  async _initWorkers() {
+    this._initialized || (this._initialized = !0);
+  }
+  getWorker() {
+    s === void 0 && (s = navigator.hardwareConcurrency || 4);
+    let e = this.workerPool.pop();
+    return !e && this._createdWorkers < s && (this._createdWorkers++, e = new h().worker, e.addEventListener("message", (r) => {
+      this.complete(r.data), this.returnWorker(r.target), this.next();
+    })), e;
+  }
+  returnWorker(e) {
+    this.workerPool.push(e);
+  }
+  complete(e) {
+    e.error !== void 0 ? this.resolveHash[e.uuid].reject(e.error) : this.resolveHash[e.uuid].resolve(e.data), this.resolveHash[e.uuid] = null;
+  }
+  async _run(e, r) {
+    await this._initWorkers();
+    const t = new Promise((a, n) => {
+      this.queue.push({ id: e, arguments: r, resolve: a, reject: n });
+    });
+    return this.next(), t;
+  }
+  next() {
+    if (!this.queue.length)
+      return;
+    const e = this.getWorker();
+    if (!e)
+      return;
+    const r = this.queue.pop(), t = r.id;
+    this.resolveHash[o] = { resolve: r.resolve, reject: r.reject }, e.postMessage({
+      data: r.arguments,
+      uuid: o++,
+      id: t
+    });
+  }
+}
+const l = new u();
 export {
-  _ as DEG_TO_RAD,
-  I as PI_2,
-  t as RAD_TO_DEG,
-  C as SHAPES
+  l as WorkerManager
 };
 //# sourceMappingURL=index165.js.map

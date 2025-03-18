@@ -12,7 +12,7 @@ import "./index32.js";
 import "./index33.js";
 import "./index34.js";
 import "./index35.js";
-import { settings as f } from "./index150.js";
+import { settings as f } from "./index145.js";
 import "./index36.js";
 import "./index37.js";
 import "./index38.js";
@@ -21,7 +21,7 @@ import "./index40.js";
 import "./index41.js";
 import "./index42.js";
 import "./index43.js";
-import { path as l } from "./index153.js";
+import { path as l } from "./index151.js";
 import "./index44.js";
 import "./index45.js";
 import "./index46.js";
@@ -60,8 +60,8 @@ import "./index78.js";
 import "./index79.js";
 import "./index80.js";
 import "./index81.js";
-import { checkDataUrl as w } from "./index151.js";
-import { checkExtension as A } from "./index152.js";
+import { checkDataUrl as w } from "./index164.js";
+import { checkExtension as A } from "./index148.js";
 import { LoaderParserPriority as E } from "./index149.js";
 const y = [
   "normal",

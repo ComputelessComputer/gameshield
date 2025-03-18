@@ -1,8 +1,8 @@
-import e from "./index203.js";
-import t from "./index204.js";
-const l = e, o = t;
+const r = (s, c) => {
+  const a = c.split("?")[1];
+  return a && (s += `?${a}`), s;
+};
 export {
-  o as defaultFilterVertex,
-  l as defaultVertex
+  r as copySearchParams
 };
 //# sourceMappingURL=index167.js.map

@@ -1,79 +1,67 @@
-import { ALPHA_MODES as l } from "./index164.js";
-import { settings as o } from "./index150.js";
+import { settings as s } from "./index145.js";
 import "./index36.js";
-import { BaseImageResource as h } from "./index246.js";
-class r extends h {
+class c {
   /**
-   * @param source - ImageBitmap or URL to use.
-   * @param options - Options to use.
+   * @param width - the width for the newly created canvas
+   * @param height - the height for the newly created canvas
+   * @param {number} [resolution=PIXI.settings.RESOLUTION] - The resolution / device pixel ratio of the canvas
    */
-  constructor(s, t) {
-    t = t || {};
-    let e, i, a;
-    typeof s == "string" ? (e = r.EMPTY, i = s, a = !0) : (e = s, i = null, a = !1), super(e), this.url = i, this.crossOrigin = t.crossOrigin ?? !0, this.alphaMode = typeof t.alphaMode == "number" ? t.alphaMode : null, this.ownsImageBitmap = t.ownsImageBitmap ?? a, this._load = null, t.autoLoad !== !1 && this.load();
-  }
-  load() {
-    return this._load ? this._load : (this._load = new Promise(async (s, t) => {
-      if (this.url === null) {
-        s(this);
-        return;
-      }
-      try {
-        const e = await o.ADAPTER.fetch(this.url, {
-          mode: this.crossOrigin ? "cors" : "no-cors"
-        });
-        if (this.destroyed)
-          return;
-        const i = await e.blob();
-        if (this.destroyed)
-          return;
-        const a = await createImageBitmap(i, {
-          premultiplyAlpha: this.alphaMode === null || this.alphaMode === l.UNPACK ? "premultiply" : "none"
-        });
-        if (this.destroyed) {
-          a.close();
-          return;
-        }
-        this.source = a, this.update(), s(this);
-      } catch (e) {
-        if (this.destroyed)
-          return;
-        t(e), this.onError.emit(e);
-      }
-    }), this._load);
+  constructor(t, e, h) {
+    this._canvas = s.ADAPTER.createCanvas(), this._context = this._canvas.getContext("2d"), this.resolution = h || s.RESOLUTION, this.resize(t, e);
   }
   /**
-   * Upload the image bitmap resource to GPU.
-   * @param renderer - Renderer to upload to
-   * @param baseTexture - BaseTexture for this resource
-   * @param glTexture - GLTexture to use
-   * @returns {boolean} true is success
+   * Clears the canvas that was created by the CanvasRenderTarget class.
+   * @private
    */
-  upload(s, t, e) {
-    return this.source instanceof ImageBitmap ? (typeof this.alphaMode == "number" && (t.alphaMode = this.alphaMode), super.upload(s, t, e)) : (this.load(), !1);
-  }
-  /** Destroys this resource. */
-  dispose() {
-    this.ownsImageBitmap && this.source instanceof ImageBitmap && this.source.close(), super.dispose(), this._load = null;
+  clear() {
+    this._checkDestroyed(), this._context.setTransform(1, 0, 0, 1, 0, 0), this._context.clearRect(0, 0, this._canvas.width, this._canvas.height);
   }
   /**
-   * Used to auto-detect the type of resource.
-   * @param {*} source - The source object
-   * @returns {boolean} `true` if current environment support ImageBitmap, and source is string or ImageBitmap
+   * Resizes the canvas to the specified width and height.
+   * @param desiredWidth - the desired width of the canvas
+   * @param desiredHeight - the desired height of the canvas
    */
-  static test(s) {
-    return !!globalThis.createImageBitmap && typeof ImageBitmap < "u" && (typeof s == "string" || s instanceof ImageBitmap);
+  resize(t, e) {
+    this._checkDestroyed(), this._canvas.width = Math.round(t * this.resolution), this._canvas.height = Math.round(e * this.resolution);
+  }
+  /** Destroys this canvas. */
+  destroy() {
+    this._context = null, this._canvas = null;
   }
   /**
-   * ImageBitmap cannot be created synchronously, so a empty placeholder canvas is needed when loading from URLs.
-   * Only for internal usage.
-   * @returns The cached placeholder canvas.
+   * The width of the canvas buffer in pixels.
+   * @member {number}
    */
-  static get EMPTY() {
-    return r._EMPTY = r._EMPTY ?? o.ADAPTER.createCanvas(0, 0), r._EMPTY;
+  get width() {
+    return this._checkDestroyed(), this._canvas.width;
+  }
+  set width(t) {
+    this._checkDestroyed(), this._canvas.width = Math.round(t);
+  }
+  /**
+   * The height of the canvas buffer in pixels.
+   * @member {number}
+   */
+  get height() {
+    return this._checkDestroyed(), this._canvas.height;
+  }
+  set height(t) {
+    this._checkDestroyed(), this._canvas.height = Math.round(t);
+  }
+  /** The Canvas object that belongs to this CanvasRenderTarget. */
+  get canvas() {
+    return this._checkDestroyed(), this._canvas;
+  }
+  /** A CanvasRenderingContext2D object representing a two-dimensional rendering context. */
+  get context() {
+    return this._checkDestroyed(), this._context;
+  }
+  _checkDestroyed() {
+    if (this._canvas === null)
+      throw new TypeError("The CanvasRenderTarget has already been destroyed");
   }
 }
 export {
-  r as ImageBitmapResource
+  c as CanvasRenderTarget
 };
 //# sourceMappingURL=index241.js.map

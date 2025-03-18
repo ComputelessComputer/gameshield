@@ -1,182 +1,79 @@
-const t = [
-  // a float cache layer
-  {
-    test: (v) => v.type === "float" && v.size === 1 && !v.isArray,
-    code: (v) => `
-            if(uv["${v}"] !== ud["${v}"].value)
-            {
-                ud["${v}"].value = uv["${v}"]
-                gl.uniform1f(ud["${v}"].location, uv["${v}"])
-            }
-            `
-  },
-  // handling samplers
-  {
-    test: (v, e) => (
-      // eslint-disable-next-line max-len,no-eq-null,eqeqeq
-      (v.type === "sampler2D" || v.type === "samplerCube" || v.type === "sampler2DArray") && v.size === 1 && !v.isArray && (e == null || e.castToBaseTexture !== void 0)
-    ),
-    code: (v) => `t = syncData.textureCount++;
-
-            renderer.texture.bind(uv["${v}"], t);
-
-            if(ud["${v}"].value !== t)
-            {
-                ud["${v}"].value = t;
-                gl.uniform1i(ud["${v}"].location, t);
-; // eslint-disable-line max-len
-            }`
-  },
-  // uploading pixi matrix object to mat3
-  {
-    test: (v, e) => v.type === "mat3" && v.size === 1 && !v.isArray && e.a !== void 0,
-    code: (v) => (
-      // TODO and some smart caching dirty ids here!
-      `
-            gl.uniformMatrix3fv(ud["${v}"].location, false, uv["${v}"].toArray(true));
-            `
-    ),
-    codeUbo: (v) => `
-                var ${v}_matrix = uv.${v}.toArray(true);
-
-                data[offset] = ${v}_matrix[0];
-                data[offset+1] = ${v}_matrix[1];
-                data[offset+2] = ${v}_matrix[2];
-        
-                data[offset + 4] = ${v}_matrix[3];
-                data[offset + 5] = ${v}_matrix[4];
-                data[offset + 6] = ${v}_matrix[5];
-        
-                data[offset + 8] = ${v}_matrix[6];
-                data[offset + 9] = ${v}_matrix[7];
-                data[offset + 10] = ${v}_matrix[8];
-            `
-  },
-  // uploading a pixi point as a vec2 with caching layer
-  {
-    test: (v, e) => v.type === "vec2" && v.size === 1 && !v.isArray && e.x !== void 0,
-    code: (v) => `
-                cv = ud["${v}"].value;
-                v = uv["${v}"];
-
-                if(cv[0] !== v.x || cv[1] !== v.y)
-                {
-                    cv[0] = v.x;
-                    cv[1] = v.y;
-                    gl.uniform2f(ud["${v}"].location, v.x, v.y);
-                }`,
-    codeUbo: (v) => `
-                v = uv.${v};
-
-                data[offset] = v.x;
-                data[offset+1] = v.y;
-            `
-  },
-  // caching layer for a vec2
-  {
-    test: (v) => v.type === "vec2" && v.size === 1 && !v.isArray,
-    code: (v) => `
-                cv = ud["${v}"].value;
-                v = uv["${v}"];
-
-                if(cv[0] !== v[0] || cv[1] !== v[1])
-                {
-                    cv[0] = v[0];
-                    cv[1] = v[1];
-                    gl.uniform2f(ud["${v}"].location, v[0], v[1]);
-                }
-            `
-  },
-  // upload a pixi rectangle as a vec4 with caching layer
-  {
-    test: (v, e) => v.type === "vec4" && v.size === 1 && !v.isArray && e.width !== void 0,
-    code: (v) => `
-                cv = ud["${v}"].value;
-                v = uv["${v}"];
-
-                if(cv[0] !== v.x || cv[1] !== v.y || cv[2] !== v.width || cv[3] !== v.height)
-                {
-                    cv[0] = v.x;
-                    cv[1] = v.y;
-                    cv[2] = v.width;
-                    cv[3] = v.height;
-                    gl.uniform4f(ud["${v}"].location, v.x, v.y, v.width, v.height)
-                }`,
-    codeUbo: (v) => `
-                    v = uv.${v};
-
-                    data[offset] = v.x;
-                    data[offset+1] = v.y;
-                    data[offset+2] = v.width;
-                    data[offset+3] = v.height;
-                `
-  },
-  // upload a pixi color as vec4 with caching layer
-  {
-    test: (v, e) => v.type === "vec4" && v.size === 1 && !v.isArray && e.red !== void 0,
-    code: (v) => `
-                cv = ud["${v}"].value;
-                v = uv["${v}"];
-
-                if(cv[0] !== v.red || cv[1] !== v.green || cv[2] !== v.blue || cv[3] !== v.alpha)
-                {
-                    cv[0] = v.red;
-                    cv[1] = v.green;
-                    cv[2] = v.blue;
-                    cv[3] = v.alpha;
-                    gl.uniform4f(ud["${v}"].location, v.red, v.green, v.blue, v.alpha)
-                }`,
-    codeUbo: (v) => `
-                    v = uv.${v};
-
-                    data[offset] = v.red;
-                    data[offset+1] = v.green;
-                    data[offset+2] = v.blue;
-                    data[offset+3] = v.alpha;
-                `
-  },
-  // upload a pixi color as a vec3 with caching layer
-  {
-    test: (v, e) => v.type === "vec3" && v.size === 1 && !v.isArray && e.red !== void 0,
-    code: (v) => `
-                cv = ud["${v}"].value;
-                v = uv["${v}"];
-
-                if(cv[0] !== v.red || cv[1] !== v.green || cv[2] !== v.blue || cv[3] !== v.a)
-                {
-                    cv[0] = v.red;
-                    cv[1] = v.green;
-                    cv[2] = v.blue;
-    
-                    gl.uniform3f(ud["${v}"].location, v.red, v.green, v.blue)
-                }`,
-    codeUbo: (v) => `
-                    v = uv.${v};
-
-                    data[offset] = v.red;
-                    data[offset+1] = v.green;
-                    data[offset+2] = v.blue;
-                `
-  },
-  // a caching layer for vec4 uploading
-  {
-    test: (v) => v.type === "vec4" && v.size === 1 && !v.isArray,
-    code: (v) => `
-                cv = ud["${v}"].value;
-                v = uv["${v}"];
-
-                if(cv[0] !== v[0] || cv[1] !== v[1] || cv[2] !== v[2] || cv[3] !== v[3])
-                {
-                    cv[0] = v[0];
-                    cv[1] = v[1];
-                    cv[2] = v[2];
-                    cv[3] = v[3];
-
-                    gl.uniform4f(ud["${v}"].location, v[0], v[1], v[2], v[3])
-                }`
+import { ALPHA_MODES as l } from "./index146.js";
+import { settings as o } from "./index145.js";
+import "./index36.js";
+import { BaseImageResource as h } from "./index236.js";
+class r extends h {
+  /**
+   * @param source - ImageBitmap or URL to use.
+   * @param options - Options to use.
+   */
+  constructor(s, t) {
+    t = t || {};
+    let e, i, a;
+    typeof s == "string" ? (e = r.EMPTY, i = s, a = !0) : (e = s, i = null, a = !1), super(e), this.url = i, this.crossOrigin = t.crossOrigin ?? !0, this.alphaMode = typeof t.alphaMode == "number" ? t.alphaMode : null, this.ownsImageBitmap = t.ownsImageBitmap ?? a, this._load = null, t.autoLoad !== !1 && this.load();
   }
-];
+  load() {
+    return this._load ? this._load : (this._load = new Promise(async (s, t) => {
+      if (this.url === null) {
+        s(this);
+        return;
+      }
+      try {
+        const e = await o.ADAPTER.fetch(this.url, {
+          mode: this.crossOrigin ? "cors" : "no-cors"
+        });
+        if (this.destroyed)
+          return;
+        const i = await e.blob();
+        if (this.destroyed)
+          return;
+        const a = await createImageBitmap(i, {
+          premultiplyAlpha: this.alphaMode === null || this.alphaMode === l.UNPACK ? "premultiply" : "none"
+        });
+        if (this.destroyed) {
+          a.close();
+          return;
+        }
+        this.source = a, this.update(), s(this);
+      } catch (e) {
+        if (this.destroyed)
+          return;
+        t(e), this.onError.emit(e);
+      }
+    }), this._load);
+  }
+  /**
+   * Upload the image bitmap resource to GPU.
+   * @param renderer - Renderer to upload to
+   * @param baseTexture - BaseTexture for this resource
+   * @param glTexture - GLTexture to use
+   * @returns {boolean} true is success
+   */
+  upload(s, t, e) {
+    return this.source instanceof ImageBitmap ? (typeof this.alphaMode == "number" && (t.alphaMode = this.alphaMode), super.upload(s, t, e)) : (this.load(), !1);
+  }
+  /** Destroys this resource. */
+  dispose() {
+    this.ownsImageBitmap && this.source instanceof ImageBitmap && this.source.close(), super.dispose(), this._load = null;
+  }
+  /**
+   * Used to auto-detect the type of resource.
+   * @param {*} source - The source object
+   * @returns {boolean} `true` if current environment support ImageBitmap, and source is string or ImageBitmap
+   */
+  static test(s) {
+    return !!globalThis.createImageBitmap && typeof ImageBitmap < "u" && (typeof s == "string" || s instanceof ImageBitmap);
+  }
+  /**
+   * ImageBitmap cannot be created synchronously, so a empty placeholder canvas is needed when loading from URLs.
+   * Only for internal usage.
+   * @returns The cached placeholder canvas.
+   */
+  static get EMPTY() {
+    return r._EMPTY = r._EMPTY ?? o.ADAPTER.createCanvas(0, 0), r._EMPTY;
+  }
+}
 export {
-  t as uniformParsers
+  r as ImageBitmapResource
 };
 //# sourceMappingURL=index231.js.map

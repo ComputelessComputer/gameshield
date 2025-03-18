@@ -1,18 +1,33 @@
-import { FederatedMouseEvent as e } from "./index173.js";
-class s extends e {
-  constructor() {
-    super(...arguments), this.width = 0, this.height = 0, this.isPrimary = !1;
+const a = [
+  "precision mediump float;",
+  "void main(void){",
+  "float test = 0.1;",
+  "%forloop%",
+  "gl_FragColor = vec4(0.0);",
+  "}"
+].join(`
+`);
+function n(t) {
+  let e = "";
+  for (let r = 0; r < t; ++r)
+    r > 0 && (e += `
+else `), r < t - 1 && (e += `if(test == ${r}.0){}`);
+  return e;
+}
+function c(t, e) {
+  if (t === 0)
+    throw new Error("Invalid value of `0` passed to `checkMaxIfStatementsInShader`");
+  const r = e.createShader(e.FRAGMENT_SHADER);
+  for (; ; ) {
+    const o = a.replace(/%forloop%/gi, n(t));
+    if (e.shaderSource(r, o), e.compileShader(r), !e.getShaderParameter(r, e.COMPILE_STATUS))
+      t = t / 2 | 0;
+    else
+      break;
   }
-  // Only included for completeness for now
-  getCoalescedEvents() {
-    return this.type === "pointermove" || this.type === "mousemove" || this.type === "touchmove" ? [this] : [];
-  }
-  // Only included for completeness for now
-  getPredictedEvents() {
-    throw new Error("getPredictedEvents is not supported!");
-  }
+  return t;
 }
 export {
-  s as FederatedPointerEvent
+  c as checkMaxIfStatementsInShader
 };
 //# sourceMappingURL=index174.js.map

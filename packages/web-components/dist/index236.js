@@ -1,66 +1,64 @@
-import { ALPHA_MODES as o } from "./index164.js";
-import { Resource as A } from "./index237.js";
-class p extends A {
+import { ALPHA_MODES as d } from "./index146.js";
+import "./index40.js";
+import "./index36.js";
+import "./index41.js";
+import "./index42.js";
+import "./index43.js";
+import "./index24.js";
+import "./index44.js";
+import "./index45.js";
+import { determineCrossOrigin as n } from "./index237.js";
+import { Resource as m } from "./index227.js";
+class I extends m {
   /**
-   * @param source - Source buffer
-   * @param options - Options
-   * @param {number} options.width - Width of the texture
-   * @param {number} options.height - Height of the texture
-   * @param {1|2|4|8} [options.unpackAlignment=4] - The alignment of the pixel rows.
+   * @param {PIXI.ImageSourcee} source
    */
-  constructor(t, i) {
-    const { width: n, height: a } = i || {};
-    if (!n || !a)
-      throw new Error("BufferResource width or height invalid");
-    super(n, a), this.data = t, this.unpackAlignment = i.unpackAlignment ?? 4;
+  constructor(e) {
+    const t = e, i = t.naturalWidth || t.videoWidth || t.displayWidth || t.width, h = t.naturalHeight || t.videoHeight || t.displayHeight || t.height;
+    super(i, h), this.source = e, this.noSubImage = !1;
+  }
+  /**
+   * Set cross origin based detecting the url and the crossorigin
+   * @param element - Element to apply crossOrigin
+   * @param url - URL to check
+   * @param crossorigin - Cross origin value to use
+   */
+  static crossOrigin(e, t, i) {
+    i === void 0 && !t.startsWith("data:") ? e.crossOrigin = n(t) : i !== !1 && (e.crossOrigin = typeof i == "string" ? i : "anonymous");
   }
   /**
    * Upload the texture to the GPU.
    * @param renderer - Upload to the renderer
    * @param baseTexture - Reference to parent texture
-   * @param glTexture - glTexture
+   * @param glTexture
+   * @param {PIXI.ImageSourcee} [source] - (optional)
    * @returns - true is success
    */
-  upload(t, i, n) {
-    const a = t.gl;
-    a.pixelStorei(a.UNPACK_ALIGNMENT, this.unpackAlignment), a.pixelStorei(a.UNPACK_PREMULTIPLY_ALPHA_WEBGL, i.alphaMode === o.UNPACK);
-    const r = i.realWidth, h = i.realHeight;
-    return n.width === r && n.height === h ? a.texSubImage2D(
-      i.target,
-      0,
-      0,
-      0,
-      r,
-      h,
-      i.format,
-      n.type,
-      this.data
-    ) : (n.width = r, n.height = h, a.texImage2D(
-      i.target,
-      0,
-      n.internalFormat,
-      r,
-      h,
-      0,
-      i.format,
-      n.type,
-      this.data
-    )), !0;
-  }
-  /** Destroy and don't use after this. */
-  dispose() {
-    this.data = null;
+  upload(e, t, i, h) {
+    const o = e.gl, a = t.realWidth, r = t.realHeight;
+    if (h = h || this.source, typeof HTMLImageElement < "u" && h instanceof HTMLImageElement) {
+      if (!h.complete || h.naturalWidth === 0)
+        return !1;
+    } else if (typeof HTMLVideoElement < "u" && h instanceof HTMLVideoElement && h.readyState <= 1)
+      return !1;
+    return o.pixelStorei(o.UNPACK_PREMULTIPLY_ALPHA_WEBGL, t.alphaMode === d.UNPACK), !this.noSubImage && t.target === o.TEXTURE_2D && i.width === a && i.height === r ? o.texSubImage2D(o.TEXTURE_2D, 0, 0, 0, t.format, i.type, h) : (i.width = a, i.height = r, o.texImage2D(t.target, 0, i.internalFormat, t.format, i.type, h)), !0;
   }
   /**
-   * Used to auto-detect the type of resource.
-   * @param {*} source - The source object
-   * @returns {boolean} `true` if buffer source
+   * Checks if source width/height was changed, resize can cause extra baseTexture update.
+   * Triggers one update in any case.
    */
-  static test(t) {
-    return t === null || t instanceof Int8Array || t instanceof Uint8Array || t instanceof Uint8ClampedArray || t instanceof Int16Array || t instanceof Uint16Array || t instanceof Int32Array || t instanceof Uint32Array || t instanceof Float32Array;
+  update() {
+    if (this.destroyed)
+      return;
+    const e = this.source, t = e.naturalWidth || e.videoWidth || e.width, i = e.naturalHeight || e.videoHeight || e.height;
+    this.resize(t, i), super.update();
+  }
+  /** Destroy this {@link PIXI.BaseImageResource} */
+  dispose() {
+    this.source = null;
   }
 }
 export {
-  p as BufferResource
+  I as BaseImageResource
 };
 //# sourceMappingURL=index236.js.map

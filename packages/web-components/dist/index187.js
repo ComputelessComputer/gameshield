@@ -1,8 +1,19 @@
-import { isMobile as e } from "./index36.js";
-function r() {
-  return !e.apple.device;
+import { Geometry as t } from "./index172.js";
+class o extends t {
+  constructor() {
+    super(), this.addAttribute("aVertexPosition", new Float32Array([
+      0,
+      0,
+      1,
+      0,
+      1,
+      1,
+      0,
+      1
+    ])).addIndex([0, 1, 3, 2]);
+  }
 }
 export {
-  r as canUploadSameBuffer
+  o as Quad
 };
 //# sourceMappingURL=index187.js.map

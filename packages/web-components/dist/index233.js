@@ -1,17 +1,22 @@
-import { ENV as s } from "./index164.js";
-import { settings as o } from "./index150.js";
-import "./index36.js";
-const r = {};
-let e = r;
-function x() {
-  if (e === r || e != null && e.isContextLost()) {
-    const n = o.ADAPTER.createCanvas();
-    let t;
-    o.PREFER_ENV >= s.WEBGL2 && (t = n.getContext("webgl2", {})), t || (t = n.getContext("webgl", {}) || n.getContext("experimental-webgl", {}), t ? t.getExtension("WEBGL_draw_buffers") : t = null), e = t;
+import { BaseImageResource as o } from "./index236.js";
+class t extends o {
+  /**
+   * @param source - Image element to use
+   */
+  // eslint-disable-next-line @typescript-eslint/no-useless-constructor
+  constructor(e) {
+    super(e);
   }
-  return e;
+  /**
+   * Used to auto-detect the type of resource.
+   * @param {*} source - The source object
+   * @returns {boolean} `true` if source is an VideoFrame
+   */
+  static test(e) {
+    return !!globalThis.VideoFrame && e instanceof globalThis.VideoFrame;
+  }
 }
 export {
-  x as getTestContext
+  t as VideoFrameResource
 };
 //# sourceMappingURL=index233.js.map

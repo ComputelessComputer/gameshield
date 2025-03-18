@@ -1,9 +1,9 @@
-import { MSAA_QUALITY as s } from "./index164.js";
+import { MSAA_QUALITY as s } from "./index146.js";
 import { Program as a } from "./index49.js";
-import { Shader as u } from "./index192.js";
+import { Shader as u } from "./index182.js";
 import { State as n } from "./index72.js";
-import d from "./index194.js";
-import m from "./index195.js";
+import d from "./index184.js";
+import m from "./index185.js";
 const i = class e extends u {
   /**
    * @param vertexSrc - The source of the vertex shader.

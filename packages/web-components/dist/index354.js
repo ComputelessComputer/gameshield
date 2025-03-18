@@ -1,9 +1,7 @@
-import { f as r } from "./index351.js";
-import { __require as a } from "./index349.js";
-import { f as p } from "./index350.js";
-import { r as l } from "./index360.js";
-var o = r, i = a(), t = p, f = l, u = f || o.call(t, i);
+var a = Number.isNaN || function(N) {
+  return N !== N;
+};
 export {
-  u as a
+  a as _
 };
 //# sourceMappingURL=index354.js.map

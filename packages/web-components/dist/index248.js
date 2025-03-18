@@ -1,86 +1,25 @@
-import { BaseTexture as l } from "./index54.js";
-import { autoDetectResource as a } from "./index235.js";
-import { Resource as r } from "./index237.js";
-class p extends r {
-  /**
-   * @param length
-   * @param options - Options to for Resource constructor
-   * @param {number} [options.width] - Width of the resource
-   * @param {number} [options.height] - Height of the resource
-   */
-  constructor(t, i) {
-    const { width: e, height: h } = i || {};
-    super(e, h), this.items = [], this.itemDirtyIds = [];
-    for (let s = 0; s < t; s++) {
-      const o = new l();
-      this.items.push(o), this.itemDirtyIds.push(-2);
-    }
-    this.length = t, this._load = null, this.baseTexture = null;
-  }
-  /**
-   * Used from ArrayResource and CubeResource constructors.
-   * @param resources - Can be resources, image elements, canvas, etc. ,
-   *  length should be same as constructor length
-   * @param options - Detect options for resources
-   */
-  initFromArray(t, i) {
-    for (let e = 0; e < this.length; e++)
-      t[e] && (t[e].castToBaseTexture ? this.addBaseTextureAt(t[e].castToBaseTexture(), e) : t[e] instanceof r ? this.addResourceAt(t[e], e) : this.addResourceAt(a(t[e], i), e));
-  }
-  /** Destroy this BaseImageResource. */
-  dispose() {
-    for (let t = 0, i = this.length; t < i; t++)
-      this.items[t].destroy();
-    this.items = null, this.itemDirtyIds = null, this._load = null;
-  }
-  /**
-   * Set a resource by ID
-   * @param resource
-   * @param index - Zero-based index of resource to set
-   * @returns - Instance for chaining
-   */
-  addResourceAt(t, i) {
-    if (!this.items[i])
-      throw new Error(`Index ${i} is out of bounds`);
-    return t.valid && !this.valid && this.resize(t.width, t.height), this.items[i].setResource(t), this;
-  }
-  /**
-   * Set the parent base texture.
-   * @param baseTexture
-   */
-  bind(t) {
-    if (this.baseTexture !== null)
-      throw new Error("Only one base texture per TextureArray is allowed");
-    super.bind(t);
-    for (let i = 0; i < this.length; i++)
-      this.items[i].parentTextureArray = t, this.items[i].on("update", t.update, t);
-  }
-  /**
-   * Unset the parent base texture.
-   * @param baseTexture
-   */
-  unbind(t) {
-    super.unbind(t);
-    for (let i = 0; i < this.length; i++)
-      this.items[i].parentTextureArray = null, this.items[i].off("update", t.update, t);
-  }
-  /**
-   * Load all the resources simultaneously
-   * @returns - When load is resolved
-   */
-  load() {
-    if (this._load)
-      return this._load;
-    const t = this.items.map((i) => i.resource).filter((i) => i).map((i) => i.load());
-    return this._load = Promise.all(t).then(
-      () => {
-        const { realWidth: i, realHeight: e } = this.items[0];
-        return this.resize(i, e), this.update(), Promise.resolve(this);
-      }
-    ), this._load;
-  }
+var r = `varying vec2 vFilterCoord;
+varying vec2 vTextureCoord;
+
+uniform vec2 scale;
+uniform mat2 rotation;
+uniform sampler2D uSampler;
+uniform sampler2D mapSampler;
+
+uniform highp vec4 inputSize;
+uniform vec4 inputClamp;
+
+void main(void)
+{
+  vec4 map =  texture2D(mapSampler, vFilterCoord);
+
+  map -= 0.5;
+  map.xy = scale * inputSize.zw * (rotation * map.xy);
+
+  gl_FragColor = texture2D(uSampler, clamp(vec2(vTextureCoord.x + map.x, vTextureCoord.y + map.y), inputClamp.xy, inputClamp.zw));
 }
+`;
 export {
-  p as AbstractMultiResource
+  r as default
 };
 //# sourceMappingURL=index248.js.map

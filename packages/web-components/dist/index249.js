@@ -1,39 +1,34 @@
-var o = `precision highp float;
+var e = `attribute vec2 aVertexPosition;
+
+uniform mat3 projectionMatrix;
+uniform mat3 filterMatrix;
 
 varying vec2 vTextureCoord;
-varying vec4 vColor;
+varying vec2 vFilterCoord;
 
-uniform float uNoise;
-uniform float uSeed;
-uniform sampler2D uSampler;
+uniform vec4 inputSize;
+uniform vec4 outputFrame;
 
-float rand(vec2 co)
+vec4 filterVertexPosition( void )
 {
-    return fract(sin(dot(co.xy, vec2(12.9898, 78.233))) * 43758.5453);
+    vec2 position = aVertexPosition * max(outputFrame.zw, vec2(0.)) + outputFrame.xy;
+
+    return vec4((projectionMatrix * vec3(position, 1.0)).xy, 0.0, 1.0);
 }
 
-void main()
+vec2 filterTextureCoord( void )
 {
-    vec4 color = texture2D(uSampler, vTextureCoord);
-    float randomValue = rand(gl_FragCoord.xy * uSeed);
-    float diff = (randomValue - 0.5) * uNoise;
+    return aVertexPosition * (outputFrame.zw * inputSize.zw);
+}
 
-    // Un-premultiply alpha before applying the color matrix. See issue #3539.
-    if (color.a > 0.0) {
-        color.rgb /= color.a;
-    }
-
-    color.r += diff;
-    color.g += diff;
-    color.b += diff;
-
-    // Premultiply alpha again.
-    color.rgb *= color.a;
-
-    gl_FragColor = color;
+void main(void)
+{
+	gl_Position = filterVertexPosition();
+	vTextureCoord = filterTextureCoord();
+	vFilterCoord = ( filterMatrix * vec3( vTextureCoord, 1.0)  ).xy;
 }
 `;
 export {
-  o as default
+  e as default
 };
 //# sourceMappingURL=index249.js.map

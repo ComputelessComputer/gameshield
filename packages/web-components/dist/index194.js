@@ -1,12 +1,16 @@
-var r = `varying vec2 vTextureCoord;
+var e = `attribute vec2 aVertexPosition;
+attribute vec2 aTextureCoord;
 
-uniform sampler2D uSampler;
+uniform mat3 projectionMatrix;
 
-void main(void){
-   gl_FragColor = texture2D(uSampler, vTextureCoord);
-}
-`;
+varying vec2 vTextureCoord;
+
+void main(void)
+{
+    gl_Position = vec4((projectionMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);
+    vTextureCoord = aTextureCoord;
+}`;
 export {
-  r as default
+  e as default
 };
 //# sourceMappingURL=index194.js.map

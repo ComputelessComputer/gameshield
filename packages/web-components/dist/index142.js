@@ -8,7 +8,7 @@ import "./index29.js";
 import "./index30.js";
 import "./index31.js";
 import "./index32.js";
-import "./index33.js";
+import { Point as i } from "./index33.js";
 import "./index34.js";
 import "./index35.js";
 import "./index36.js";
@@ -29,7 +29,7 @@ import "./index50.js";
 import "./index51.js";
 import "./index52.js";
 import "./index53.js";
-import { BaseTexture as m } from "./index54.js";
+import "./index54.js";
 import "./index55.js";
 import "./index56.js";
 import "./index57.js";
@@ -42,7 +42,7 @@ import "./index63.js";
 import "./index64.js";
 import "./index65.js";
 import "./index66.js";
-import { Texture as p } from "./index131.js";
+import "./index67.js";
 import "./index68.js";
 import "./index69.js";
 import "./index70.js";
@@ -54,93 +54,87 @@ import "./index75.js";
 import "./index76.js";
 import "./index77.js";
 import "./index78.js";
-import "./index67.js";
 import "./index79.js";
 import "./index80.js";
 import "./index81.js";
-import { convertToList as h } from "./index145.js";
-class n {
-  constructor() {
-    this._parsers = [], this._cache = /* @__PURE__ */ new Map(), this._cacheMap = /* @__PURE__ */ new Map();
+class r {
+  /**
+   * @param manager - The event boundary which manages this event. Propagation can only occur
+   *  within the boundary's jurisdiction.
+   */
+  constructor(t) {
+    this.bubbles = !0, this.cancelBubble = !0, this.cancelable = !1, this.composed = !1, this.defaultPrevented = !1, this.eventPhase = r.prototype.NONE, this.propagationStopped = !1, this.propagationImmediatelyStopped = !1, this.layer = new i(), this.page = new i(), this.NONE = 0, this.CAPTURING_PHASE = 1, this.AT_TARGET = 2, this.BUBBLING_PHASE = 3, this.manager = t;
   }
-  /** Clear all entries. */
-  reset() {
-    this._cacheMap.clear(), this._cache.clear();
+  /** @readonly */
+  get layerX() {
+    return this.layer.x;
+  }
+  /** @readonly */
+  get layerY() {
+    return this.layer.y;
+  }
+  /** @readonly */
+  get pageX() {
+    return this.page.x;
+  }
+  /** @readonly */
+  get pageY() {
+    return this.page.y;
   }
   /**
-   * Check if the key exists
-   * @param key - The key to check
+   * Fallback for the deprecated @code{PIXI.InteractionEvent.data}.
+   * @deprecated since 7.0.0
    */
-  has(o) {
-    return this._cache.has(o);
+  get data() {
+    return this;
+  }
+  /** The propagation path for this event. Alias for {@link PIXI.EventBoundary.propagationPath}. */
+  composedPath() {
+    return this.manager && (!this.path || this.path[this.path.length - 1] !== this.target) && (this.path = this.target ? this.manager.propagationPath(this.target) : []), this.path;
   }
   /**
-   * Fetch entry by key
-   * @param key - The key of the entry to get
+   * Unimplemented method included for implementing the DOM interface {@code Event}. It will throw an {@code Error}.
+   * @deprecated
+   * @param _type
+   * @param _bubbles
+   * @param _cancelable
    */
-  get(o) {
-    const r = this._cache.get(o);
-    return r || console.warn(`[Assets] Asset id ${o} was not found in the Cache`), r;
+  initEvent(t, e, p) {
+    throw new Error("initEvent() is a legacy DOM API. It is not implemented in the Federated Events API.");
   }
   /**
-   * Set a value by key or keys name
-   * @param key - The key or keys to set
-   * @param value - The value to store in the cache or from which cacheable assets will be derived.
+   * Unimplemented method included for implementing the DOM interface {@code UIEvent}. It will throw an {@code Error}.
+   * @deprecated
+   * @param _typeArg
+   * @param _bubblesArg
+   * @param _cancelableArg
+   * @param _viewArg
+   * @param _detailArg
    */
-  set(o, r) {
-    const e = h(o);
-    let i;
-    for (let t = 0; t < this.parsers.length; t++) {
-      const s = this.parsers[t];
-      if (s.test(r)) {
-        i = s.getCacheableAssets(e, r);
-        break;
-      }
-    }
-    i || (i = {}, e.forEach((t) => {
-      i[t] = r;
-    }));
-    const c = Object.keys(i), a = {
-      cacheKeys: c,
-      keys: e
-    };
-    if (e.forEach((t) => {
-      this._cacheMap.set(t, a);
-    }), c.forEach((t) => {
-      const s = i ? i[t] : r;
-      this._cache.has(t) && this._cache.get(t) !== s && console.warn("[Cache] already has key:", t), this._cache.set(t, i[t]);
-    }), r instanceof p) {
-      const t = r;
-      e.forEach((s) => {
-        t.baseTexture !== p.EMPTY.baseTexture && m.addToCache(t.baseTexture, s), p.addToCache(t, s);
-      });
-    }
+  initUIEvent(t, e, p, o, m) {
+    throw new Error("initUIEvent() is a legacy DOM API. It is not implemented in the Federated Events API.");
+  }
+  /** Prevent default behavior of PixiJS and the user agent. */
+  preventDefault() {
+    this.nativeEvent instanceof Event && this.nativeEvent.cancelable && this.nativeEvent.preventDefault(), this.defaultPrevented = !0;
   }
   /**
-   * Remove entry by key
-   *
-   * This function will also remove any associated alias from the cache also.
-   * @param key - The key of the entry to remove
+   * Stop this event from propagating to any addition listeners, including on the
+   * {@link PIXI.FederatedEventTarget.currentTarget currentTarget} and also the following
+   * event targets on the propagation path.
    */
-  remove(o) {
-    if (!this._cacheMap.has(o)) {
-      console.warn(`[Assets] Asset id ${o} was not found in the Cache`);
-      return;
-    }
-    const r = this._cacheMap.get(o);
-    r.cacheKeys.forEach((e) => {
-      this._cache.delete(e);
-    }), r.keys.forEach((e) => {
-      this._cacheMap.delete(e);
-    });
+  stopImmediatePropagation() {
+    this.propagationImmediatelyStopped = !0;
   }
-  /** All loader parsers registered */
-  get parsers() {
-    return this._parsers;
+  /**
+   * Stop this event from propagating to the next {@link PIXI.FederatedEventTarget}. The rest of the listeners
+   * on the {@link PIXI.FederatedEventTarget.currentTarget currentTarget} will still be notified.
+   */
+  stopPropagation() {
+    this.propagationStopped = !0;
   }
 }
-const wt = new n();
 export {
-  wt as Cache
+  r as FederatedEvent
 };
 //# sourceMappingURL=index142.js.map

@@ -1,7 +1,7 @@
 import "./index37.js";
 import { Ticker as r } from "./index38.js";
 import "./index39.js";
-import { BaseImageResource as _ } from "./index246.js";
+import { BaseImageResource as _ } from "./index236.js";
 const n = class d extends _ {
   /**
    * @param {HTMLVideoElement|object|string|Array<string|object>} source - Video element to use.

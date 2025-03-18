@@ -1,6 +1,6 @@
 import "./index23.js";
 import "./index24.js";
-import { TYPES as r } from "./index164.js";
+import { TYPES as r } from "./index146.js";
 import "./index25.js";
 import "./index26.js";
 import "./index27.js";
@@ -24,8 +24,8 @@ import "./index44.js";
 import "./index45.js";
 import "./index46.js";
 import "./index47.js";
-import { Buffer as t } from "./index180.js";
-import { Geometry as s } from "./index181.js";
+import { Buffer as t } from "./index171.js";
+import { Geometry as s } from "./index172.js";
 import "./index48.js";
 import "./index49.js";
 import "./index50.js";

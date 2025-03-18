@@ -1,6 +1,6 @@
 import "./index23.js";
 import "./index24.js";
-import { FORMATS as w } from "./index164.js";
+import { FORMATS as w } from "./index146.js";
 import { ExtensionType as f, extensions as g } from "./index140.js";
 import "./index25.js";
 import "./index26.js";
@@ -23,7 +23,7 @@ import "./index42.js";
 import "./index43.js";
 import "./index44.js";
 import "./index45.js";
-import { CanvasRenderTarget as y } from "./index166.js";
+import { CanvasRenderTarget as y } from "./index241.js";
 import "./index46.js";
 import "./index47.js";
 import "./index48.js";

@@ -1,7 +1,7 @@
 import { Color as S } from "./index24.js";
-import { ENV as g } from "./index164.js";
+import { ENV as g } from "./index146.js";
 import { ExtensionType as y, extensions as I } from "./index140.js";
-import { settings as C } from "./index150.js";
+import { settings as C } from "./index145.js";
 import "./index36.js";
 import "./index40.js";
 import "./index41.js";
@@ -9,21 +9,21 @@ import "./index42.js";
 import "./index43.js";
 import { deprecation as w } from "./index133.js";
 import { premultiplyBlendMode as G } from "./index44.js";
-import { nextPow2 as B, log2 as b } from "./index182.js";
+import { nextPow2 as B, log2 as b } from "./index173.js";
 import "./index45.js";
-import { ViewableBuffer as z } from "./index183.js";
-import { checkMaxIfStatementsInShader as A } from "./index184.js";
+import { ViewableBuffer as z } from "./index155.js";
+import { checkMaxIfStatementsInShader as A } from "./index174.js";
 import { State as M } from "./index72.js";
 import { BaseTexture as T } from "./index54.js";
-import { BatchDrawCall as P } from "./index178.js";
-import { BatchGeometry as E } from "./index179.js";
-import { BatchShaderGenerator as v } from "./index185.js";
-import { BatchTextureArray as k } from "./index186.js";
-import { canUploadSameBuffer as R } from "./index187.js";
-import { maxRecommendedTextures as U } from "./index188.js";
-import { ObjectRenderer as D } from "./index189.js";
-import V from "./index190.js";
-import X from "./index191.js";
+import { BatchDrawCall as P } from "./index169.js";
+import { BatchGeometry as E } from "./index170.js";
+import { BatchShaderGenerator as v } from "./index175.js";
+import { BatchTextureArray as k } from "./index176.js";
+import { canUploadSameBuffer as R } from "./index177.js";
+import { maxRecommendedTextures as U } from "./index178.js";
+import { ObjectRenderer as D } from "./index179.js";
+import V from "./index180.js";
+import X from "./index181.js";
 const c = class f extends D {
   /**
    * This will hook onto the renderer's `contextChange`

@@ -1,38 +1,46 @@
-class t {
-  /**
-   * @param renderer - The renderer this manager works for.
-   */
-  constructor(e) {
-    this.renderer = e;
-  }
-  /** Stub method that should be used to empty the current batch by rendering objects now. */
-  flush() {
-  }
-  /** Generic destruction method that frees all resources. This should be called by subclasses. */
-  destroy() {
-    this.renderer = null;
-  }
-  /**
-   * Stub method that initializes any state required before
-   * rendering starts. It is different from the `prerender`
-   * signal, which occurs every frame, in that it is called
-   * whenever an object requests _this_ renderer specifically.
-   */
-  start() {
-  }
-  /** Stops the renderer. It should free up any state and become dormant. */
-  stop() {
-    this.flush();
+import "./index25.js";
+import "./index26.js";
+import "./index27.js";
+import "./index28.js";
+import "./index29.js";
+import "./index30.js";
+import { Matrix as m } from "./index31.js";
+import "./index32.js";
+import "./index33.js";
+import "./index34.js";
+import { TextureMatrix as e } from "./index190.js";
+import { Filter as o } from "./index52.js";
+import h from "./index191.js";
+import l from "./index192.js";
+class A extends o {
+  /** @ignore */
+  constructor(t, r, p) {
+    let a = null;
+    typeof t != "string" && r === void 0 && p === void 0 && (a = t, t = void 0, r = void 0, p = void 0), super(t || l, r || h, p), this.maskSprite = a, this.maskMatrix = new m();
   }
   /**
-   * Keeps the object to render. It doesn't have to be
-   * rendered immediately.
-   * @param {PIXI.DisplayObject} _object - The object to render.
+   * Sprite mask
+   * @type {PIXI.DisplayObject}
    */
-  render(e) {
+  get maskSprite() {
+    return this._maskSprite;
+  }
+  set maskSprite(t) {
+    this._maskSprite = t, this._maskSprite && (this._maskSprite.renderable = !1);
+  }
+  /**
+   * Applies the filter
+   * @param filterManager - The renderer to retrieve the filter from
+   * @param input - The input render target.
+   * @param output - The target to output to.
+   * @param clearMode - Should the output be cleared before rendering to it.
+   */
+  apply(t, r, p, a) {
+    const s = this._maskSprite, i = s._texture;
+    i.valid && (i.uvMatrix || (i.uvMatrix = new e(i, 0)), i.uvMatrix.update(), this.uniforms.npmAlpha = i.baseTexture.alphaMode ? 0 : 1, this.uniforms.mask = i, this.uniforms.otherMatrix = t.calculateSpriteMatrix(this.maskMatrix, s).prepend(i.uvMatrix.mapCoord), this.uniforms.alpha = s.worldAlpha, this.uniforms.maskClamp = i.uvMatrix.uClampFrame, t.applyFilter(this, r, p, a));
   }
 }
 export {
-  t as ObjectRenderer
+  A as SpriteMaskFilter
 };
 //# sourceMappingURL=index189.js.map

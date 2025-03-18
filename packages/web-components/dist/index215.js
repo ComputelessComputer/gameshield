@@ -1,73 +1,37 @@
-import { Color as a } from "./index24.js";
-import { MSAA_QUALITY as l, MIPMAP_MODES as m } from "./index164.js";
-import { Framebuffer as u } from "./index205.js";
-import { BaseTexture as f } from "./index54.js";
-class b extends f {
-  /**
-   * @param options
-   * @param {number} [options.width=100] - The width of the base render texture.
-   * @param {number} [options.height=100] - The height of the base render texture.
-   * @param {PIXI.SCALE_MODES} [options.scaleMode=PIXI.BaseTexture.defaultOptions.scaleMode] - See {@link PIXI.SCALE_MODES}
-   *   for possible values.
-   * @param {number} [options.resolution=PIXI.settings.RESOLUTION] - The resolution / device pixel ratio
-   *   of the texture being generated.
-   * @param {PIXI.MSAA_QUALITY} [options.multisample=PIXI.MSAA_QUALITY.NONE] - The number of samples of the frame buffer.
-   */
-  constructor(e = {}) {
-    if (typeof e == "number") {
-      const r = arguments[0], t = arguments[1], s = arguments[2], i = arguments[3];
-      e = { width: r, height: t, scaleMode: s, resolution: i };
-    }
-    e.width = e.width ?? 100, e.height = e.height ?? 100, e.multisample ?? (e.multisample = l.NONE), super(null, e), this.mipmap = m.OFF, this.valid = !0, this._clear = new a([0, 0, 0, 0]), this.framebuffer = new u(this.realWidth, this.realHeight).addColorTexture(0, this), this.framebuffer.multisample = e.multisample, this.maskStack = [], this.filterStack = [{}];
+import { GLProgram as u } from "./index207.js";
+import { compileShader as c } from "./index217.js";
+import { defaultValue as S } from "./index218.js";
+import { getAttributeData as b } from "./index219.js";
+import { getUniformData as D } from "./index220.js";
+import { logProgramError as T } from "./index221.js";
+function V(t, a) {
+  var m;
+  const n = c(t, t.VERTEX_SHADER, a.vertexSrc), i = c(t, t.FRAGMENT_SHADER, a.fragmentSrc), e = t.createProgram();
+  t.attachShader(e, n), t.attachShader(e, i);
+  const s = (m = a.extra) == null ? void 0 : m.transformFeedbackVaryings;
+  if (s && (typeof t.transformFeedbackVaryings != "function" ? console.warn("TransformFeedback is not supported but TransformFeedbackVaryings are given.") : t.transformFeedbackVaryings(
+    e,
+    s.names,
+    s.bufferMode === "separate" ? t.SEPARATE_ATTRIBS : t.INTERLEAVED_ATTRIBS
+  )), t.linkProgram(e), t.getProgramParameter(e, t.LINK_STATUS) || T(t, e, n, i), a.attributeData = b(e, t), a.uniformData = D(e, t), !/^[ \t]*#[ \t]*version[ \t]+300[ \t]+es[ \t]*$/m.test(a.vertexSrc)) {
+    const o = Object.keys(a.attributeData);
+    o.sort((r, d) => r > d ? 1 : -1);
+    for (let r = 0; r < o.length; r++)
+      a.attributeData[o[r]].location = r, t.bindAttribLocation(e, r, o[r]);
+    t.linkProgram(e);
   }
-  /** Color when clearning the texture. */
-  set clearColor(e) {
-    this._clear.setValue(e);
+  t.deleteShader(n), t.deleteShader(i);
+  const f = {};
+  for (const o in a.uniformData) {
+    const r = a.uniformData[o];
+    f[o] = {
+      location: t.getUniformLocation(e, o),
+      value: S(r.type, r.size)
+    };
   }
-  get clearColor() {
-    return this._clear.value;
-  }
-  /**
-   * Color object when clearning the texture.
-   * @readonly
-   * @since 7.2.0
-   */
-  get clear() {
-    return this._clear;
-  }
-  /**
-   * Shortcut to `this.framebuffer.multisample`.
-   * @default PIXI.MSAA_QUALITY.NONE
-   */
-  get multisample() {
-    return this.framebuffer.multisample;
-  }
-  set multisample(e) {
-    this.framebuffer.multisample = e;
-  }
-  /**
-   * Resizes the BaseRenderTexture.
-   * @param desiredWidth - The desired width to resize to.
-   * @param desiredHeight - The desired height to resize to.
-   */
-  resize(e, r) {
-    this.framebuffer.resize(e * this.resolution, r * this.resolution), this.setRealSize(this.framebuffer.width, this.framebuffer.height);
-  }
-  /**
-   * Frees the texture and framebuffer from WebGL memory without destroying this texture object.
-   * This means you can still use the texture later which will upload it to GPU
-   * memory again.
-   * @fires PIXI.BaseTexture#dispose
-   */
-  dispose() {
-    this.framebuffer.dispose(), super.dispose();
-  }
-  /** Destroys this texture. */
-  destroy() {
-    super.destroy(), this.framebuffer.destroyDepthTexture(), this.framebuffer = null;
-  }
+  return new u(e, f);
 }
 export {
-  b as BaseRenderTexture
+  V as generateProgram
 };
 //# sourceMappingURL=index215.js.map

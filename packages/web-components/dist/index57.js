@@ -1,5 +1,5 @@
 import { ExtensionType as d, extensions as f } from "./index140.js";
-import { GLBuffer as B } from "./index208.js";
+import { GLBuffer as B } from "./index199.js";
 class r {
   /**
    * @param {PIXI.Renderer} renderer - The renderer this System works for.

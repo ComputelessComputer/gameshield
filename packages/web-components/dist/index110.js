@@ -10,7 +10,7 @@ import "./index31.js";
 import "./index32.js";
 import "./index33.js";
 import "./index34.js";
-import { SHAPES as o } from "./index165.js";
+import { SHAPES as o } from "./index240.js";
 import "./index35.js";
 import "./index36.js";
 import "./index37.js";

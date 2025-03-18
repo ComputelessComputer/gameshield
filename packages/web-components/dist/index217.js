@@ -1,7 +1,8 @@
-const e = {}, c = /* @__PURE__ */ Object.create(null), t = /* @__PURE__ */ Object.create(null);
+function o(e, a, c) {
+  const r = e.createShader(a);
+  return e.shaderSource(r, c), e.compileShader(r), r;
+}
 export {
-  t as BaseTextureCache,
-  e as ProgramCache,
-  c as TextureCache
+  o as compileShader
 };
 //# sourceMappingURL=index217.js.map

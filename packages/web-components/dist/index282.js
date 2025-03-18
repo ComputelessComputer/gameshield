@@ -1,20 +1,25 @@
-var e = `#version 100
-#define SHADER_NAME Tiling-Sprite-Simple-100
+var r = `#version 100
+#define SHADER_NAME Tiling-Sprite-100
 
 precision lowp float;
 
-varying vec2 vTextureCoord;
+attribute vec2 aVertexPosition;
+attribute vec2 aTextureCoord;
 
-uniform sampler2D uSampler;
-uniform vec4 uColor;
+uniform mat3 projectionMatrix;
+uniform mat3 translationMatrix;
+uniform mat3 uTransform;
+
+varying vec2 vTextureCoord;
 
 void main(void)
 {
-    vec4 texSample = texture2D(uSampler, vTextureCoord);
-    gl_FragColor = texSample * uColor;
+    gl_Position = vec4((projectionMatrix * translationMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);
+
+    vTextureCoord = (uTransform * vec3(aTextureCoord, 1.0)).xy;
 }
 `;
 export {
-  e as default
+  r as default
 };
 //# sourceMappingURL=index282.js.map

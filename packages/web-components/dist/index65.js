@@ -1,4 +1,4 @@
-import { RENDERER_TYPE as u } from "./index164.js";
+import { RENDERER_TYPE as u } from "./index146.js";
 import { ExtensionType as i, extensions as o } from "./index140.js";
 import "./index25.js";
 import "./index26.js";
@@ -10,19 +10,19 @@ import { Matrix as d } from "./index31.js";
 import "./index32.js";
 import "./index33.js";
 import "./index34.js";
-import { settings as p } from "./index150.js";
+import { settings as p } from "./index145.js";
 import "./index36.js";
 import "./index40.js";
 import "./index41.js";
 import "./index42.js";
 import "./index43.js";
 import { deprecation as r } from "./index133.js";
-import { isWebGLSupported as l } from "./index213.js";
+import { isWebGLSupported as l } from "./index204.js";
 import "./index24.js";
 import "./index44.js";
 import "./index45.js";
-import { UniformGroup as h } from "./index193.js";
-import { SystemManager as c } from "./index214.js";
+import { UniformGroup as h } from "./index183.js";
+import { SystemManager as c } from "./index205.js";
 const n = class s extends c {
   /**
    * @param {PIXI.IRendererOptions} [options] - See {@link PIXI.settings.RENDER_OPTIONS} for defaults.

@@ -1,60 +1,46 @@
-import i from "./index298.js";
-import h from "./index299.js";
-let o = 0, s;
-class u {
-  constructor() {
-    this._initialized = !1, this._createdWorkers = 0, this.workerPool = [], this.queue = [], this.resolveHash = {};
+class h {
+  /**
+   * @param loader
+   * @param verbose - should the loader log to the console
+   */
+  constructor(s, t = !1) {
+    this._loader = s, this._assetList = [], this._isLoading = !1, this._maxConcurrent = 1, this.verbose = t;
   }
-  isImageBitmapSupported() {
-    return this._isImageBitmapSupported !== void 0 ? this._isImageBitmapSupported : (this._isImageBitmapSupported = new Promise((e) => {
-      const { worker: r } = new i();
-      r.addEventListener("message", (t) => {
-        r.terminate(), i.revokeObjectURL(), e(t.data);
-      });
-    }), this._isImageBitmapSupported);
+  /**
+   * Adds an array of assets to load.
+   * @param assetUrls - assets to load
+   */
+  add(s) {
+    s.forEach((t) => {
+      this._assetList.push(t);
+    }), this.verbose && console.log("[BackgroundLoader] assets: ", this._assetList), this._isActive && !this._isLoading && this._next();
   }
-  loadImageBitmap(e) {
-    return this._run("loadImageBitmap", [e]);
+  /**
+   * Loads the next set of assets. Will try to load as many assets as it can at the same time.
+   *
+   * The max assets it will try to load at one time will be 4.
+   */
+  async _next() {
+    if (this._assetList.length && this._isActive) {
+      this._isLoading = !0;
+      const s = [], t = Math.min(this._assetList.length, this._maxConcurrent);
+      for (let i = 0; i < t; i++)
+        s.push(this._assetList.pop());
+      await this._loader.load(s), this._isLoading = !1, this._next();
+    }
   }
-  async _initWorkers() {
-    this._initialized || (this._initialized = !0);
+  /**
+   * Activate/Deactivate the loading. If set to true then it will immediately continue to load the next asset.
+   * @returns whether the class is active
+   */
+  get active() {
+    return this._isActive;
   }
-  getWorker() {
-    s === void 0 && (s = navigator.hardwareConcurrency || 4);
-    let e = this.workerPool.pop();
-    return !e && this._createdWorkers < s && (this._createdWorkers++, e = new h().worker, e.addEventListener("message", (r) => {
-      this.complete(r.data), this.returnWorker(r.target), this.next();
-    })), e;
-  }
-  returnWorker(e) {
-    this.workerPool.push(e);
-  }
-  complete(e) {
-    e.error !== void 0 ? this.resolveHash[e.uuid].reject(e.error) : this.resolveHash[e.uuid].resolve(e.data), this.resolveHash[e.uuid] = null;
-  }
-  async _run(e, r) {
-    await this._initWorkers();
-    const t = new Promise((a, n) => {
-      this.queue.push({ id: e, arguments: r, resolve: a, reject: n });
-    });
-    return this.next(), t;
-  }
-  next() {
-    if (!this.queue.length)
-      return;
-    const e = this.getWorker();
-    if (!e)
-      return;
-    const r = this.queue.pop(), t = r.id;
-    this.resolveHash[o] = { resolve: r.resolve, reject: r.reject }, e.postMessage({
-      data: r.arguments,
-      uuid: o++,
-      id: t
-    });
+  set active(s) {
+    this._isActive !== s && (this._isActive = s, s && !this._isLoading && this._next());
   }
 }
-const l = new u();
 export {
-  l as WorkerManager
+  h as BackgroundLoader
 };
 //# sourceMappingURL=index156.js.map

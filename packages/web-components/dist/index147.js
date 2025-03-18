@@ -1,25 +1,12 @@
-async function r(e) {
-  if ("Image" in globalThis)
-    return new Promise((t) => {
-      const a = new Image();
-      a.onload = () => {
-        t(!0);
-      }, a.onerror = () => {
-        t(!1);
-      }, a.src = e;
-    });
-  if ("createImageBitmap" in globalThis && "fetch" in globalThis) {
-    try {
-      const t = await (await fetch(e)).blob();
-      await createImageBitmap(t);
-    } catch {
-      return !1;
-    }
-    return !0;
-  }
-  return !1;
+import "./index40.js";
+import { settings as i } from "./index145.js";
+import "./index36.js";
+function l(r, e = 1) {
+  var o;
+  const t = (o = i.RETINA_PREFIX) == null ? void 0 : o.exec(r);
+  return t ? parseFloat(t[1]) : e;
 }
 export {
-  r as testImageFormat
+  l as getResolutionOfUrl
 };
 //# sourceMappingURL=index147.js.map

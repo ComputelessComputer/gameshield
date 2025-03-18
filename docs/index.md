@@ -5,6 +5,9 @@ hero:
   name: "🎮 Gameshield 🛡️"
   text: "Generative Game CAPTCHA"
   tagline: Protect your website from bots with interactive, fun game challenges
+  image:
+    src: https://i.imgur.com/FRGCIc3.gif
+    alt: GameShield CAPTCHA illustration
   actions:
     - theme: brand
       text: Get Started

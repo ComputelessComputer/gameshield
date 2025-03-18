@@ -1,36 +1,14 @@
-class a {
-  /**
-   * @param renderer - The renderer this System works for.
-   */
-  constructor(t) {
-    this.renderer = t, this.maskStack = [], this.glConst = 0;
-  }
-  /** Gets count of masks of certain type. */
-  getStackLength() {
-    return this.maskStack.length;
-  }
-  /**
-   * Changes the mask stack that is used by this System.
-   * @param {PIXI.MaskData[]} maskStack - The mask stack
-   */
-  setMaskStack(t) {
-    const { gl: s } = this.renderer, n = this.getStackLength();
-    this.maskStack = t;
-    const e = this.getStackLength();
-    e !== n && (e === 0 ? s.disable(this.glConst) : (s.enable(this.glConst), this._useCurrent()));
-  }
-  /**
-   * Setup renderer to use the current mask data.
-   * @private
-   */
-  _useCurrent() {
-  }
-  /** Destroys the mask stack. */
-  destroy() {
-    this.renderer = null, this.maskStack = null;
-  }
+import { PRECISION as e } from "./index146.js";
+function t(i, n, r) {
+  if (i.substring(0, 9) !== "precision") {
+    let p = n;
+    return n === e.HIGH && r !== e.HIGH && (p = e.MEDIUM), `precision ${p} float;
+${i}`;
+  } else if (r !== e.HIGH && i.substring(0, 15) === "precision highp")
+    return i.replace("precision highp", "precision mediump");
+  return i;
 }
 export {
-  a as AbstractMaskSystem
+  t as setPrecision
 };
 //# sourceMappingURL=index212.js.map

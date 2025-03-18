@@ -1,5 +1,5 @@
-import { TARGETS as l } from "./index164.js";
-import { AbstractMultiResource as a } from "./index248.js";
+import { TARGETS as l } from "./index146.js";
+import { AbstractMultiResource as a } from "./index238.js";
 const n = class h extends a {
   /**
    * @param {Array<string|PIXI.Resource>} [source] - Collection of URLs or resources

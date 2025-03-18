@@ -1,4 +1,4 @@
-import { FederatedMouseEvent as E } from "./index173.js";
+import { FederatedMouseEvent as E } from "./index244.js";
 class e extends E {
   constructor() {
     super(...arguments), this.DOM_DELTA_PIXEL = 0, this.DOM_DELTA_LINE = 1, this.DOM_DELTA_PAGE = 2;

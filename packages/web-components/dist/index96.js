@@ -12,7 +12,7 @@ import "./index32.js";
 import "./index33.js";
 import "./index34.js";
 import "./index35.js";
-import { settings as n } from "./index150.js";
+import { settings as n } from "./index145.js";
 import "./index36.js";
 import "./index37.js";
 import "./index38.js";

@@ -37,7 +37,7 @@ export default function GameshieldDemo() {
         <button
           onClick={() => {
             if (gameShieldRef.current && "reset" in gameShieldRef.current) {
-              // @ts-ignore - Custom element method
+              // @ts-expect-error - Custom element method
               gameShieldRef.current.reset();
               setIsVerified(false);
             }
@@ -49,16 +49,21 @@ export default function GameshieldDemo() {
       </div>
 
       <div className="my-4 flex w-full justify-center">
-        {/* @ts-ignore - Custom element */}
+        {/* @ts-expect-error - Custom element */}
         <game-shield
           ref={gameShieldRef}
           game-type="random"
           difficulty="medium"
           width="400px"
-          height="300px"
+          height="400px"
           onSuccess={handleSuccess}
           onFailure={handleFailure}
           onTimeout={handleTimeout}
+          style={{ 
+            width: '100%',
+            maxWidth: '500px',
+            aspectRatio: '1 / 1'
+          }}
         />
       </div>
 

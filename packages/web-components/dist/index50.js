@@ -1,5 +1,5 @@
 import { ExtensionType as b, extensions as l } from "./index140.js";
-import { ObjectRenderer as m } from "./index189.js";
+import { ObjectRenderer as m } from "./index179.js";
 class a {
   /**
    * @param renderer - The renderer this System works for.

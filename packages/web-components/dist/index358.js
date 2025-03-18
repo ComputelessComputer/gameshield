@@ -1,31 +1,43 @@
-import { c as _ } from "./index353.js";
-import { g as s } from "./index343.js";
-var o, f;
-function g() {
-  if (f)
-    return o;
-  f = 1;
-  var i = _, c = s, p;
-  try {
-    p = /** @type {{ __proto__?: typeof Array.prototype }} */
-    [].__proto__ === Array.prototype;
-  } catch (t) {
-    if (!t || typeof t != "object" || !("code" in t) || t.code !== "ERR_PROTO_ACCESS")
-      throw t;
-  }
-  var r = !!p && c && c(
-    Object.prototype,
-    /** @type {keyof typeof Object.prototype} */
-    "__proto__"
-  ), a = Object, n = a.getPrototypeOf;
-  return o = r && typeof r.get == "function" ? i([r.get]) : typeof n == "function" ? (
-    /** @type {import('./get')} */
-    function(e) {
-      return n(e == null ? e : a(e));
+var l = "Function.prototype.bind called on incompatible ", y = Object.prototype.toString, g = Math.max, h = "[object Function]", v = function(o, t) {
+  for (var r = [], n = 0; n < o.length; n += 1)
+    r[n] = o[n];
+  for (var e = 0; e < t.length; e += 1)
+    r[e + o.length] = t[e];
+  return r;
+}, s = function(o, t) {
+  for (var r = [], n = t || 0, e = 0; n < o.length; n += 1, e += 1)
+    r[e] = o[n];
+  return r;
+}, b = function(a, o) {
+  for (var t = "", r = 0; r < a.length; r += 1)
+    t += a[r], r + 1 < a.length && (t += o);
+  return t;
+}, d = function(o) {
+  var t = this;
+  if (typeof t != "function" || y.apply(t) !== h)
+    throw new TypeError(l + t);
+  for (var r = s(arguments, 1), n, e = function() {
+    if (this instanceof n) {
+      var u = t.apply(
+        this,
+        v(r, arguments)
+      );
+      return Object(u) === u ? u : this;
     }
-  ) : !1, o;
-}
+    return t.apply(
+      o,
+      v(r, arguments)
+    );
+  }, f = g(0, t.length - r.length), i = [], p = 0; p < f; p++)
+    i[p] = "$" + p;
+  if (n = Function("binder", "return function (" + b(i, ",") + "){ return binder.apply(this,arguments); }")(e), t.prototype) {
+    var c = function() {
+    };
+    c.prototype = t.prototype, n.prototype = new c(), c.prototype = null;
+  }
+  return n;
+};
 export {
-  g as __require
+  d as i
 };
 //# sourceMappingURL=index358.js.map

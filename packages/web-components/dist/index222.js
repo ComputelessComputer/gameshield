@@ -1,226 +1,182 @@
-import { uniformParsers as l } from "./index231.js";
-const t = {
-  float: `
-    if (cv !== v)
-    {
-        cu.value = v;
-        gl.uniform1f(location, v);
-    }`,
-  vec2: `
-    if (cv[0] !== v[0] || cv[1] !== v[1])
-    {
-        cv[0] = v[0];
-        cv[1] = v[1];
+const t = [
+  // a float cache layer
+  {
+    test: (v) => v.type === "float" && v.size === 1 && !v.isArray,
+    code: (v) => `
+            if(uv["${v}"] !== ud["${v}"].value)
+            {
+                ud["${v}"].value = uv["${v}"]
+                gl.uniform1f(ud["${v}"].location, uv["${v}"])
+            }
+            `
+  },
+  // handling samplers
+  {
+    test: (v, e) => (
+      // eslint-disable-next-line max-len,no-eq-null,eqeqeq
+      (v.type === "sampler2D" || v.type === "samplerCube" || v.type === "sampler2DArray") && v.size === 1 && !v.isArray && (e == null || e.castToBaseTexture !== void 0)
+    ),
+    code: (v) => `t = syncData.textureCount++;
 
-        gl.uniform2f(location, v[0], v[1])
-    }`,
-  vec3: `
-    if (cv[0] !== v[0] || cv[1] !== v[1] || cv[2] !== v[2])
-    {
-        cv[0] = v[0];
-        cv[1] = v[1];
-        cv[2] = v[2];
+            renderer.texture.bind(uv["${v}"], t);
 
-        gl.uniform3f(location, v[0], v[1], v[2])
-    }`,
-  vec4: `
-    if (cv[0] !== v[0] || cv[1] !== v[1] || cv[2] !== v[2] || cv[3] !== v[3])
-    {
-        cv[0] = v[0];
-        cv[1] = v[1];
-        cv[2] = v[2];
-        cv[3] = v[3];
+            if(ud["${v}"].value !== t)
+            {
+                ud["${v}"].value = t;
+                gl.uniform1i(ud["${v}"].location, t);
+; // eslint-disable-line max-len
+            }`
+  },
+  // uploading pixi matrix object to mat3
+  {
+    test: (v, e) => v.type === "mat3" && v.size === 1 && !v.isArray && e.a !== void 0,
+    code: (v) => (
+      // TODO and some smart caching dirty ids here!
+      `
+            gl.uniformMatrix3fv(ud["${v}"].location, false, uv["${v}"].toArray(true));
+            `
+    ),
+    codeUbo: (v) => `
+                var ${v}_matrix = uv.${v}.toArray(true);
 
-        gl.uniform4f(location, v[0], v[1], v[2], v[3]);
-    }`,
-  int: `
-    if (cv !== v)
-    {
-        cu.value = v;
+                data[offset] = ${v}_matrix[0];
+                data[offset+1] = ${v}_matrix[1];
+                data[offset+2] = ${v}_matrix[2];
+        
+                data[offset + 4] = ${v}_matrix[3];
+                data[offset + 5] = ${v}_matrix[4];
+                data[offset + 6] = ${v}_matrix[5];
+        
+                data[offset + 8] = ${v}_matrix[6];
+                data[offset + 9] = ${v}_matrix[7];
+                data[offset + 10] = ${v}_matrix[8];
+            `
+  },
+  // uploading a pixi point as a vec2 with caching layer
+  {
+    test: (v, e) => v.type === "vec2" && v.size === 1 && !v.isArray && e.x !== void 0,
+    code: (v) => `
+                cv = ud["${v}"].value;
+                v = uv["${v}"];
 
-        gl.uniform1i(location, v);
-    }`,
-  ivec2: `
-    if (cv[0] !== v[0] || cv[1] !== v[1])
-    {
-        cv[0] = v[0];
-        cv[1] = v[1];
+                if(cv[0] !== v.x || cv[1] !== v.y)
+                {
+                    cv[0] = v.x;
+                    cv[1] = v.y;
+                    gl.uniform2f(ud["${v}"].location, v.x, v.y);
+                }`,
+    codeUbo: (v) => `
+                v = uv.${v};
 
-        gl.uniform2i(location, v[0], v[1]);
-    }`,
-  ivec3: `
-    if (cv[0] !== v[0] || cv[1] !== v[1] || cv[2] !== v[2])
-    {
-        cv[0] = v[0];
-        cv[1] = v[1];
-        cv[2] = v[2];
+                data[offset] = v.x;
+                data[offset+1] = v.y;
+            `
+  },
+  // caching layer for a vec2
+  {
+    test: (v) => v.type === "vec2" && v.size === 1 && !v.isArray,
+    code: (v) => `
+                cv = ud["${v}"].value;
+                v = uv["${v}"];
 
-        gl.uniform3i(location, v[0], v[1], v[2]);
-    }`,
-  ivec4: `
-    if (cv[0] !== v[0] || cv[1] !== v[1] || cv[2] !== v[2] || cv[3] !== v[3])
-    {
-        cv[0] = v[0];
-        cv[1] = v[1];
-        cv[2] = v[2];
-        cv[3] = v[3];
+                if(cv[0] !== v[0] || cv[1] !== v[1])
+                {
+                    cv[0] = v[0];
+                    cv[1] = v[1];
+                    gl.uniform2f(ud["${v}"].location, v[0], v[1]);
+                }
+            `
+  },
+  // upload a pixi rectangle as a vec4 with caching layer
+  {
+    test: (v, e) => v.type === "vec4" && v.size === 1 && !v.isArray && e.width !== void 0,
+    code: (v) => `
+                cv = ud["${v}"].value;
+                v = uv["${v}"];
 
-        gl.uniform4i(location, v[0], v[1], v[2], v[3]);
-    }`,
-  uint: `
-    if (cv !== v)
-    {
-        cu.value = v;
+                if(cv[0] !== v.x || cv[1] !== v.y || cv[2] !== v.width || cv[3] !== v.height)
+                {
+                    cv[0] = v.x;
+                    cv[1] = v.y;
+                    cv[2] = v.width;
+                    cv[3] = v.height;
+                    gl.uniform4f(ud["${v}"].location, v.x, v.y, v.width, v.height)
+                }`,
+    codeUbo: (v) => `
+                    v = uv.${v};
 
-        gl.uniform1ui(location, v);
-    }`,
-  uvec2: `
-    if (cv[0] !== v[0] || cv[1] !== v[1])
-    {
-        cv[0] = v[0];
-        cv[1] = v[1];
+                    data[offset] = v.x;
+                    data[offset+1] = v.y;
+                    data[offset+2] = v.width;
+                    data[offset+3] = v.height;
+                `
+  },
+  // upload a pixi color as vec4 with caching layer
+  {
+    test: (v, e) => v.type === "vec4" && v.size === 1 && !v.isArray && e.red !== void 0,
+    code: (v) => `
+                cv = ud["${v}"].value;
+                v = uv["${v}"];
 
-        gl.uniform2ui(location, v[0], v[1]);
-    }`,
-  uvec3: `
-    if (cv[0] !== v[0] || cv[1] !== v[1] || cv[2] !== v[2])
-    {
-        cv[0] = v[0];
-        cv[1] = v[1];
-        cv[2] = v[2];
+                if(cv[0] !== v.red || cv[1] !== v.green || cv[2] !== v.blue || cv[3] !== v.alpha)
+                {
+                    cv[0] = v.red;
+                    cv[1] = v.green;
+                    cv[2] = v.blue;
+                    cv[3] = v.alpha;
+                    gl.uniform4f(ud["${v}"].location, v.red, v.green, v.blue, v.alpha)
+                }`,
+    codeUbo: (v) => `
+                    v = uv.${v};
 
-        gl.uniform3ui(location, v[0], v[1], v[2]);
-    }`,
-  uvec4: `
-    if (cv[0] !== v[0] || cv[1] !== v[1] || cv[2] !== v[2] || cv[3] !== v[3])
-    {
-        cv[0] = v[0];
-        cv[1] = v[1];
-        cv[2] = v[2];
-        cv[3] = v[3];
+                    data[offset] = v.red;
+                    data[offset+1] = v.green;
+                    data[offset+2] = v.blue;
+                    data[offset+3] = v.alpha;
+                `
+  },
+  // upload a pixi color as a vec3 with caching layer
+  {
+    test: (v, e) => v.type === "vec3" && v.size === 1 && !v.isArray && e.red !== void 0,
+    code: (v) => `
+                cv = ud["${v}"].value;
+                v = uv["${v}"];
 
-        gl.uniform4ui(location, v[0], v[1], v[2], v[3]);
-    }`,
-  bool: `
-    if (cv !== v)
-    {
-        cu.value = v;
-        gl.uniform1i(location, v);
-    }`,
-  bvec2: `
-    if (cv[0] != v[0] || cv[1] != v[1])
-    {
-        cv[0] = v[0];
-        cv[1] = v[1];
+                if(cv[0] !== v.red || cv[1] !== v.green || cv[2] !== v.blue || cv[3] !== v.a)
+                {
+                    cv[0] = v.red;
+                    cv[1] = v.green;
+                    cv[2] = v.blue;
+    
+                    gl.uniform3f(ud["${v}"].location, v.red, v.green, v.blue)
+                }`,
+    codeUbo: (v) => `
+                    v = uv.${v};
 
-        gl.uniform2i(location, v[0], v[1]);
-    }`,
-  bvec3: `
-    if (cv[0] !== v[0] || cv[1] !== v[1] || cv[2] !== v[2])
-    {
-        cv[0] = v[0];
-        cv[1] = v[1];
-        cv[2] = v[2];
+                    data[offset] = v.red;
+                    data[offset+1] = v.green;
+                    data[offset+2] = v.blue;
+                `
+  },
+  // a caching layer for vec4 uploading
+  {
+    test: (v) => v.type === "vec4" && v.size === 1 && !v.isArray,
+    code: (v) => `
+                cv = ud["${v}"].value;
+                v = uv["${v}"];
 
-        gl.uniform3i(location, v[0], v[1], v[2]);
-    }`,
-  bvec4: `
-    if (cv[0] !== v[0] || cv[1] !== v[1] || cv[2] !== v[2] || cv[3] !== v[3])
-    {
-        cv[0] = v[0];
-        cv[1] = v[1];
-        cv[2] = v[2];
-        cv[3] = v[3];
+                if(cv[0] !== v[0] || cv[1] !== v[1] || cv[2] !== v[2] || cv[3] !== v[3])
+                {
+                    cv[0] = v[0];
+                    cv[1] = v[1];
+                    cv[2] = v[2];
+                    cv[3] = v[3];
 
-        gl.uniform4i(location, v[0], v[1], v[2], v[3]);
-    }`,
-  mat2: "gl.uniformMatrix2fv(location, false, v)",
-  mat3: "gl.uniformMatrix3fv(location, false, v)",
-  mat4: "gl.uniformMatrix4fv(location, false, v)",
-  sampler2D: `
-    if (cv !== v)
-    {
-        cu.value = v;
-
-        gl.uniform1i(location, v);
-    }`,
-  samplerCube: `
-    if (cv !== v)
-    {
-        cu.value = v;
-
-        gl.uniform1i(location, v);
-    }`,
-  sampler2DArray: `
-    if (cv !== v)
-    {
-        cu.value = v;
-
-        gl.uniform1i(location, v);
-    }`
-}, e = {
-  float: "gl.uniform1fv(location, v)",
-  vec2: "gl.uniform2fv(location, v)",
-  vec3: "gl.uniform3fv(location, v)",
-  vec4: "gl.uniform4fv(location, v)",
-  mat4: "gl.uniformMatrix4fv(location, false, v)",
-  mat3: "gl.uniformMatrix3fv(location, false, v)",
-  mat2: "gl.uniformMatrix2fv(location, false, v)",
-  int: "gl.uniform1iv(location, v)",
-  ivec2: "gl.uniform2iv(location, v)",
-  ivec3: "gl.uniform3iv(location, v)",
-  ivec4: "gl.uniform4iv(location, v)",
-  uint: "gl.uniform1uiv(location, v)",
-  uvec2: "gl.uniform2uiv(location, v)",
-  uvec3: "gl.uniform3uiv(location, v)",
-  uvec4: "gl.uniform4uiv(location, v)",
-  bool: "gl.uniform1iv(location, v)",
-  bvec2: "gl.uniform2iv(location, v)",
-  bvec3: "gl.uniform3iv(location, v)",
-  bvec4: "gl.uniform4iv(location, v)",
-  sampler2D: "gl.uniform1iv(location, v)",
-  samplerCube: "gl.uniform1iv(location, v)",
-  sampler2DArray: "gl.uniform1iv(location, v)"
-};
-function g(n, a) {
-  var u;
-  const i = [`
-        var v = null;
-        var cv = null;
-        var cu = null;
-        var t = 0;
-        var gl = renderer.gl;
-    `];
-  for (const v in n.uniforms) {
-    const o = a[v];
-    if (!o) {
-      ((u = n.uniforms[v]) == null ? void 0 : u.group) === !0 && (n.uniforms[v].ubo ? i.push(`
-                        renderer.shader.syncUniformBufferGroup(uv.${v}, '${v}');
-                    `) : i.push(`
-                        renderer.shader.syncUniformGroup(uv.${v}, syncData);
-                    `));
-      continue;
-    }
-    const r = n.uniforms[v];
-    let f = !1;
-    for (let c = 0; c < l.length; c++)
-      if (l[c].test(o, r)) {
-        i.push(l[c].code(v, r)), f = !0;
-        break;
-      }
-    if (!f) {
-      const c = (o.size === 1 && !o.isArray ? t : e)[o.type].replace("location", `ud["${v}"].location`);
-      i.push(`
-            cu = ud["${v}"];
-            cv = cu.value;
-            v = uv["${v}"];
-            ${c};`);
-    }
+                    gl.uniform4f(ud["${v}"].location, v[0], v[1], v[2], v[3])
+                }`
   }
-  return new Function("ud", "uv", "renderer", "syncData", i.join(`
-`));
-}
+];
 export {
-  g as generateUniformsSync
+  t as uniformParsers
 };
 //# sourceMappingURL=index222.js.map

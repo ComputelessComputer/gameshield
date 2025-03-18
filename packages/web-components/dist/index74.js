@@ -1,4 +1,4 @@
-import { GC_MODES as h } from "./index164.js";
+import { GC_MODES as h } from "./index146.js";
 import { ExtensionType as d, extensions as i } from "./index140.js";
 const s = class u {
   /** @param renderer - The renderer this System works for. */

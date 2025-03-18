@@ -1,4 +1,4 @@
-import { SHAPES as y } from "./index165.js";
+import { SHAPES as y } from "./index240.js";
 class l {
   /**
    * @param {PIXI.IPointData[]|number[]} points - This can be an array of Points

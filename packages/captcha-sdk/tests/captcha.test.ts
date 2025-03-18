@@ -1,113 +1,183 @@
-import { generateCaptcha } from '../src/index';
+import {
+  jest,
+  describe,
+  beforeEach,
+  afterEach,
+  test,
+  expect,
+} from "@jest/globals";
+import { createCaptcha } from "../src/index";
+import { GameResult } from "../src/types";
 
-// Mock the game-core module
-jest.mock('game-core', () => ({
-  createGameInstance: jest.fn().mockReturnValue({
-    init: jest.fn(),
+jest.mock("game-core", () => ({
+  createGame: jest.fn().mockReturnValue({
+    mount: jest.fn(),
     start: jest.fn(),
-    stop: jest.fn(),
-    isCompleted: jest.fn().mockReturnValue(false),
+    pause: jest.fn(),
+    resume: jest.fn(),
+    reset: jest.fn(),
+    destroy: jest.fn(),
     on: jest.fn((event, callback) => {
-      if (event === 'complete') {
-        // Store the callback to trigger it in tests
+      if (event === "complete") {
         (global as any).completeCallback = callback;
       }
+      return { off: jest.fn() };
     }),
   }),
-  GameTypes: {
-    PUZZLE: 'puzzle',
-    PATTERN: 'pattern',
-    TIMING: 'timing',
-    PHYSICS: 'physics',
+  GameType: {
+    PUZZLE: "puzzle",
+    SNAKE: "snake",
+    PONG: "pong",
+    BREAKOUT: "breakout",
+    DINO_RUN: "dino-run",
+  },
+  Difficulty: {
+    EASY: "easy",
+    MEDIUM: "medium",
+    HARD: "hard",
   },
 }));
 
-describe('Captcha SDK', () => {
+describe("Captcha SDK", () => {
   let container: HTMLDivElement;
-  
+
   beforeEach(() => {
-    // Create a container element for the captcha
-    container = document.createElement('div') as HTMLDivElement;
+    container = document.createElement("div") as HTMLDivElement;
     document.body.appendChild(container);
   });
-  
+
   afterEach(() => {
-    // Clean up
     document.body.removeChild(container);
     jest.clearAllMocks();
   });
-  
-  test('generateCaptcha should create a captcha instance', () => {
+
+  test("createCaptcha should create a captcha instance", () => {
     const onSuccess = jest.fn();
     const onFailure = jest.fn();
-    
-    const captcha = generateCaptcha({
+
+    const captcha = createCaptcha({
       container,
       onSuccess,
       onFailure,
     });
-    
-    // Check if the captcha instance has the expected methods
+
     expect(captcha).toBeDefined();
-    expect(typeof captcha.isVerified).toBe('function');
-    expect(typeof captcha.reset).toBe('function');
-    expect(typeof captcha.getToken).toBe('function');
+    expect(typeof captcha.isUserVerified).toBe("function");
+    expect(typeof captcha.reset).toBe("function");
+    expect(typeof captcha.getToken).toBe("function");
   });
-  
-  test('isVerified should return false initially', () => {
-    const captcha = generateCaptcha({ container });
-    expect(captcha.isVerified()).toBe(false);
+
+  test("isUserVerified should return false initially", () => {
+    const captcha = createCaptcha({ container });
+    expect(captcha.isUserVerified()).toBe(false);
   });
-  
-  test('should call onSuccess when captcha is completed', () => {
+
+  test("should call onSuccess when captcha is completed successfully", () => {
     const onSuccess = jest.fn();
-    
-    generateCaptcha({
+
+    createCaptcha({
       container,
       onSuccess,
+      minScore: 60,
     });
-    
-    // Simulate captcha completion
+
+    const mockResult: GameResult = {
+      success: true,
+      score: 100,
+      time: 5000,
+      metrics: {
+        mouseMovements: 10,
+        keyPresses: 5,
+        interactionPattern: "normal",
+      },
+    };
+
     if ((global as any).completeCallback) {
-      (global as any).completeCallback();
+      (global as any).completeCallback(mockResult);
     }
-    
+
     expect(onSuccess).toHaveBeenCalled();
   });
-  
-  test('getToken should return a valid token after completion', () => {
-    const captcha = generateCaptcha({ container });
-    
-    // Initially token should be null
-    expect(captcha.getToken()).toBeNull();
-    
-    // Simulate captcha completion
+
+  test("should call onFailure when captcha is completed unsuccessfully", () => {
+    const onSuccess = jest.fn();
+    const onFailure = jest.fn();
+
+    createCaptcha({
+      container,
+      onSuccess,
+      onFailure,
+      minScore: 60,
+    });
+
+    const mockResult: GameResult = {
+      success: false,
+      score: 30,
+      time: 5000,
+      metrics: {
+        mouseMovements: 2,
+        keyPresses: 1,
+        interactionPattern: "suspicious",
+      },
+    };
+
     if ((global as any).completeCallback) {
-      (global as any).completeCallback();
+      (global as any).completeCallback(mockResult);
     }
-    
-    // Now token should be a string
+
+    expect(onFailure).toHaveBeenCalled();
+    expect(onSuccess).not.toHaveBeenCalled();
+  });
+
+  test("getToken should return a valid token after successful completion", () => {
+    const captcha = createCaptcha({ container });
+
+    expect(captcha.getToken()).toBeNull();
+
+    const mockResult: GameResult = {
+      success: true,
+      score: 100,
+      time: 5000,
+      metrics: {
+        mouseMovements: 10,
+        keyPresses: 5,
+        interactionPattern: "normal",
+      },
+    };
+
+    if ((global as any).completeCallback) {
+      (global as any).completeCallback(mockResult);
+    }
+
     const token = captcha.getToken();
-    expect(typeof token).toBe('string');
+    expect(typeof token).toBe("string");
     expect(token?.length).toBeGreaterThan(0);
   });
-  
-  test('reset should reset the captcha state', () => {
-    const captcha = generateCaptcha({ container });
-    
-    // Simulate captcha completion
+
+  test("reset should reset the captcha state", () => {
+    const captcha = createCaptcha({ container });
+
+    const mockResult: GameResult = {
+      success: true,
+      score: 100,
+      time: 5000,
+      metrics: {
+        mouseMovements: 10,
+        keyPresses: 5,
+        interactionPattern: "normal",
+      },
+    };
+
     if ((global as any).completeCallback) {
-      (global as any).completeCallback();
+      (global as any).completeCallback(mockResult);
     }
-    
-    // Verify it's completed
-    expect(captcha.isVerified()).toBe(true);
-    
-    // Reset the captcha
+
+    expect(captcha.isUserVerified()).toBe(true);
+    expect(captcha.getToken()).not.toBeNull();
+
     captcha.reset();
-    
-    // Should be back to initial state
-    expect(captcha.isVerified()).toBe(false);
+
+    expect(captcha.isUserVerified()).toBe(false);
     expect(captcha.getToken()).toBeNull();
   });
 });

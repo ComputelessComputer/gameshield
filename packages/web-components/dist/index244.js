@@ -1,77 +1,173 @@
-import { SAMPLER_TYPES as A } from "./index164.js";
-function L(T) {
-  let R;
-  return "WebGL2RenderingContext" in globalThis && T instanceof globalThis.WebGL2RenderingContext ? R = {
-    [T.RGB]: A.FLOAT,
-    [T.RGBA]: A.FLOAT,
-    [T.ALPHA]: A.FLOAT,
-    [T.LUMINANCE]: A.FLOAT,
-    [T.LUMINANCE_ALPHA]: A.FLOAT,
-    [T.R8]: A.FLOAT,
-    [T.R8_SNORM]: A.FLOAT,
-    [T.RG8]: A.FLOAT,
-    [T.RG8_SNORM]: A.FLOAT,
-    [T.RGB8]: A.FLOAT,
-    [T.RGB8_SNORM]: A.FLOAT,
-    [T.RGB565]: A.FLOAT,
-    [T.RGBA4]: A.FLOAT,
-    [T.RGB5_A1]: A.FLOAT,
-    [T.RGBA8]: A.FLOAT,
-    [T.RGBA8_SNORM]: A.FLOAT,
-    [T.RGB10_A2]: A.FLOAT,
-    [T.RGB10_A2UI]: A.FLOAT,
-    [T.SRGB8]: A.FLOAT,
-    [T.SRGB8_ALPHA8]: A.FLOAT,
-    [T.R16F]: A.FLOAT,
-    [T.RG16F]: A.FLOAT,
-    [T.RGB16F]: A.FLOAT,
-    [T.RGBA16F]: A.FLOAT,
-    [T.R32F]: A.FLOAT,
-    [T.RG32F]: A.FLOAT,
-    [T.RGB32F]: A.FLOAT,
-    [T.RGBA32F]: A.FLOAT,
-    [T.R11F_G11F_B10F]: A.FLOAT,
-    [T.RGB9_E5]: A.FLOAT,
-    [T.R8I]: A.INT,
-    [T.R8UI]: A.UINT,
-    [T.R16I]: A.INT,
-    [T.R16UI]: A.UINT,
-    [T.R32I]: A.INT,
-    [T.R32UI]: A.UINT,
-    [T.RG8I]: A.INT,
-    [T.RG8UI]: A.UINT,
-    [T.RG16I]: A.INT,
-    [T.RG16UI]: A.UINT,
-    [T.RG32I]: A.INT,
-    [T.RG32UI]: A.UINT,
-    [T.RGB8I]: A.INT,
-    [T.RGB8UI]: A.UINT,
-    [T.RGB16I]: A.INT,
-    [T.RGB16UI]: A.UINT,
-    [T.RGB32I]: A.INT,
-    [T.RGB32UI]: A.UINT,
-    [T.RGBA8I]: A.INT,
-    [T.RGBA8UI]: A.UINT,
-    [T.RGBA16I]: A.INT,
-    [T.RGBA16UI]: A.UINT,
-    [T.RGBA32I]: A.INT,
-    [T.RGBA32UI]: A.UINT,
-    [T.DEPTH_COMPONENT16]: A.FLOAT,
-    [T.DEPTH_COMPONENT24]: A.FLOAT,
-    [T.DEPTH_COMPONENT32F]: A.FLOAT,
-    [T.DEPTH_STENCIL]: A.FLOAT,
-    [T.DEPTH24_STENCIL8]: A.FLOAT,
-    [T.DEPTH32F_STENCIL8]: A.FLOAT
-  } : R = {
-    [T.RGB]: A.FLOAT,
-    [T.RGBA]: A.FLOAT,
-    [T.ALPHA]: A.FLOAT,
-    [T.LUMINANCE]: A.FLOAT,
-    [T.LUMINANCE_ALPHA]: A.FLOAT,
-    [T.DEPTH_STENCIL]: A.FLOAT
-  }, R;
+import "./index23.js";
+import "./index24.js";
+import "./index25.js";
+import "./index26.js";
+import "./index27.js";
+import "./index28.js";
+import "./index29.js";
+import "./index30.js";
+import "./index31.js";
+import "./index32.js";
+import { Point as t } from "./index33.js";
+import "./index34.js";
+import "./index35.js";
+import "./index36.js";
+import "./index37.js";
+import "./index38.js";
+import "./index39.js";
+import "./index40.js";
+import "./index41.js";
+import "./index42.js";
+import "./index43.js";
+import "./index44.js";
+import "./index45.js";
+import "./index46.js";
+import "./index47.js";
+import "./index48.js";
+import "./index49.js";
+import "./index50.js";
+import "./index51.js";
+import "./index52.js";
+import "./index53.js";
+import "./index54.js";
+import "./index55.js";
+import "./index56.js";
+import "./index57.js";
+import "./index58.js";
+import "./index59.js";
+import "./index60.js";
+import "./index61.js";
+import "./index62.js";
+import "./index63.js";
+import "./index64.js";
+import "./index65.js";
+import "./index66.js";
+import "./index67.js";
+import "./index68.js";
+import "./index69.js";
+import "./index70.js";
+import "./index71.js";
+import "./index72.js";
+import "./index73.js";
+import "./index74.js";
+import "./index75.js";
+import "./index76.js";
+import "./index77.js";
+import "./index78.js";
+import "./index79.js";
+import "./index80.js";
+import "./index81.js";
+import { FederatedEvent as o } from "./index142.js";
+class Xt extends o {
+  constructor() {
+    super(...arguments), this.client = new t(), this.movement = new t(), this.offset = new t(), this.global = new t(), this.screen = new t();
+  }
+  /** @readonly */
+  get clientX() {
+    return this.client.x;
+  }
+  /** @readonly */
+  get clientY() {
+    return this.client.y;
+  }
+  /**
+   * Alias for {@link PIXI.FederatedMouseEvent.clientX this.clientX}.
+   * @readonly
+   */
+  get x() {
+    return this.clientX;
+  }
+  /**
+   * Alias for {@link PIXI.FederatedMouseEvent.clientY this.clientY}.
+   * @readonly
+   */
+  get y() {
+    return this.clientY;
+  }
+  /** @readonly */
+  get movementX() {
+    return this.movement.x;
+  }
+  /** @readonly */
+  get movementY() {
+    return this.movement.y;
+  }
+  /** @readonly */
+  get offsetX() {
+    return this.offset.x;
+  }
+  /** @readonly */
+  get offsetY() {
+    return this.offset.y;
+  }
+  /** @readonly */
+  get globalX() {
+    return this.global.x;
+  }
+  /** @readonly */
+  get globalY() {
+    return this.global.y;
+  }
+  /**
+   * The pointer coordinates in the renderer's screen. Alias for {@code screen.x}.
+   * @readonly
+   */
+  get screenX() {
+    return this.screen.x;
+  }
+  /**
+   * The pointer coordinates in the renderer's screen. Alias for {@code screen.y}.
+   * @readonly
+   */
+  get screenY() {
+    return this.screen.y;
+  }
+  /**
+   * This will return the local coordinates of the specified displayObject for this InteractionData
+   * @param {PIXI.DisplayObject} displayObject - The DisplayObject that you would like the local
+   *  coords off
+   * @param {PIXI.IPointData} point - A Point object in which to store the value, optional (otherwise
+   *  will create a new point)
+   * @param {PIXI.IPointData} globalPos - A Point object containing your custom global coords, optional
+   *  (otherwise will use the current global coords)
+   * @returns - A point containing the coordinates of the InteractionData position relative
+   *  to the DisplayObject
+   */
+  getLocalPosition(r, e, i) {
+    return r.worldTransform.applyInverse(i || this.global, e);
+  }
+  /**
+   * Whether the modifier key was pressed when this event natively occurred.
+   * @param key - The modifier key.
+   */
+  getModifierState(r) {
+    return "getModifierState" in this.nativeEvent && this.nativeEvent.getModifierState(r);
+  }
+  /**
+   * Not supported.
+   * @param _typeArg
+   * @param _canBubbleArg
+   * @param _cancelableArg
+   * @param _viewArg
+   * @param _detailArg
+   * @param _screenXArg
+   * @param _screenYArg
+   * @param _clientXArg
+   * @param _clientYArg
+   * @param _ctrlKeyArg
+   * @param _altKeyArg
+   * @param _shiftKeyArg
+   * @param _metaKeyArg
+   * @param _buttonArg
+   * @param _relatedTargetArg
+   * @deprecated since 7.0.0
+   */
+  // eslint-disable-next-line max-params
+  initMouseEvent(r, e, i, p, n, s, g, l, a, c, h, u, f, A, _) {
+    throw new Error("Method not implemented.");
+  }
 }
 export {
-  L as mapInternalFormatToSamplerType
+  Xt as FederatedMouseEvent
 };
 //# sourceMappingURL=index244.js.map

@@ -1,26 +1,30 @@
-var t = `precision highp float;
-attribute vec2 aVertexPosition;
-attribute vec2 aTextureCoord;
-attribute vec4 aColor;
-attribute float aTextureId;
-
-uniform mat3 projectionMatrix;
-uniform mat3 translationMatrix;
-uniform vec4 tint;
-
+var a = `varying vec2 vMaskCoord;
 varying vec2 vTextureCoord;
-varying vec4 vColor;
-varying float vTextureId;
 
-void main(void){
-    gl_Position = vec4((projectionMatrix * translationMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);
+uniform sampler2D uSampler;
+uniform sampler2D mask;
+uniform float alpha;
+uniform float npmAlpha;
+uniform vec4 maskClamp;
 
-    vTextureCoord = aTextureCoord;
-    vTextureId = aTextureId;
-    vColor = aColor * tint;
+void main(void)
+{
+    float clip = step(3.5,
+        step(maskClamp.x, vMaskCoord.x) +
+        step(maskClamp.y, vMaskCoord.y) +
+        step(vMaskCoord.x, maskClamp.z) +
+        step(vMaskCoord.y, maskClamp.w));
+
+    vec4 original = texture2D(uSampler, vTextureCoord);
+    vec4 masky = texture2D(mask, vMaskCoord);
+    float alphaMul = 1.0 - npmAlpha * (1.0 - masky.a);
+
+    original *= (alphaMul * masky.r * alpha * clip);
+
+    gl_FragColor = original;
 }
 `;
 export {
-  t as default
+  a as default
 };
 //# sourceMappingURL=index191.js.map

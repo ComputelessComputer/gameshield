@@ -1,6 +1,6 @@
 import "./index23.js";
 import "./index24.js";
-import { DRAW_MODES as g } from "./index164.js";
+import { DRAW_MODES as g } from "./index146.js";
 import "./index25.js";
 import "./index26.js";
 import { Polygon as v } from "./index27.js";
@@ -12,7 +12,7 @@ import "./index32.js";
 import { Point as D } from "./index33.js";
 import "./index34.js";
 import "./index35.js";
-import { settings as f } from "./index150.js";
+import { settings as f } from "./index145.js";
 import "./index36.js";
 import "./index37.js";
 import "./index38.js";

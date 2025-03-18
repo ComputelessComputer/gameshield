@@ -1,46 +1,16 @@
-const l = `
-    attribute vec2 aVertexPosition;
-
-    uniform mat3 projectionMatrix;
-
-    uniform float strength;
-
-    varying vec2 vBlurTexCoords[%size%];
-
-    uniform vec4 inputSize;
-    uniform vec4 outputFrame;
-
-    vec4 filterVertexPosition( void )
-    {
-        vec2 position = aVertexPosition * max(outputFrame.zw, vec2(0.)) + outputFrame.xy;
-
-        return vec4((projectionMatrix * vec3(position, 1.0)).xy, 0.0, 1.0);
-    }
-
-    vec2 filterTextureCoord( void )
-    {
-        return aVertexPosition * (outputFrame.zw * inputSize.zw);
-    }
-
-    void main(void)
-    {
-        gl_Position = filterVertexPosition();
-
-        vec2 textureCoord = filterTextureCoord();
-        %blur%
-    }`;
-function c(r, u) {
-  const a = Math.ceil(r / 2);
-  let e = l, o = "", i;
-  u ? i = "vBlurTexCoords[%index%] =  textureCoord + vec2(%sampleIndex% * strength, 0.0);" : i = "vBlurTexCoords[%index%] =  textureCoord + vec2(0.0, %sampleIndex% * strength);";
-  for (let t = 0; t < r; t++) {
-    let n = i.replace("%index%", t.toString());
-    n = n.replace("%sampleIndex%", `${t - (a - 1)}.0`), o += n, o += `
-`;
+import { TYPES as t } from "./index146.js";
+import { Buffer as r } from "./index171.js";
+import { Geometry as f } from "./index172.js";
+class s extends f {
+  /**
+   * @param {boolean} [_static=false] - Optimization flag, where `false`
+   *        is updated every frame, `true` doesn't change frame-to-frame.
+   */
+  constructor(e = !1) {
+    super(), this._buffer = new r(null, e, !1), this._indexBuffer = new r(null, e, !0), this.addAttribute("aVertexPosition", this._buffer, 2, !1, t.FLOAT).addAttribute("aTextureCoord", this._buffer, 2, !1, t.FLOAT).addAttribute("aColor", this._buffer, 4, !0, t.UNSIGNED_BYTE).addAttribute("aTextureId", this._buffer, 1, !0, t.FLOAT).addIndex(this._indexBuffer);
   }
-  return e = e.replace("%blur%", o), e = e.replace("%size%", r.toString()), e;
 }
 export {
-  c as generateBlurVertSource
+  s as BatchGeometry
 };
 //# sourceMappingURL=index170.js.map

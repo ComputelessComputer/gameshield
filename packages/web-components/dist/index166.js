@@ -1,67 +1,32 @@
-import { settings as s } from "./index150.js";
-import "./index36.js";
-class c {
-  /**
-   * @param width - the width for the newly created canvas
-   * @param height - the height for the newly created canvas
-   * @param {number} [resolution=PIXI.settings.RESOLUTION] - The resolution / device pixel ratio of the canvas
-   */
-  constructor(t, e, h) {
-    this._canvas = s.ADAPTER.createCanvas(), this._context = this._canvas.getContext("2d"), this.resolution = h || s.RESOLUTION, this.resize(t, e);
-  }
-  /**
-   * Clears the canvas that was created by the CanvasRenderTarget class.
-   * @private
-   */
-  clear() {
-    this._checkDestroyed(), this._context.setTransform(1, 0, 0, 1, 0, 0), this._context.clearRect(0, 0, this._canvas.width, this._canvas.height);
-  }
-  /**
-   * Resizes the canvas to the specified width and height.
-   * @param desiredWidth - the desired width of the canvas
-   * @param desiredHeight - the desired height of the canvas
-   */
-  resize(t, e) {
-    this._checkDestroyed(), this._canvas.width = Math.round(t * this.resolution), this._canvas.height = Math.round(e * this.resolution);
-  }
-  /** Destroys this canvas. */
-  destroy() {
-    this._context = null, this._canvas = null;
-  }
-  /**
-   * The width of the canvas buffer in pixels.
-   * @member {number}
-   */
-  get width() {
-    return this._checkDestroyed(), this._canvas.width;
-  }
-  set width(t) {
-    this._checkDestroyed(), this._canvas.width = Math.round(t);
-  }
-  /**
-   * The height of the canvas buffer in pixels.
-   * @member {number}
-   */
-  get height() {
-    return this._checkDestroyed(), this._canvas.height;
-  }
-  set height(t) {
-    this._checkDestroyed(), this._canvas.height = Math.round(t);
-  }
-  /** The Canvas object that belongs to this CanvasRenderTarget. */
-  get canvas() {
-    return this._checkDestroyed(), this._canvas;
-  }
-  /** A CanvasRenderingContext2D object representing a two-dimensional rendering context. */
-  get context() {
-    return this._checkDestroyed(), this._context;
-  }
-  _checkDestroyed() {
-    if (this._canvas === null)
-      throw new TypeError("The CanvasRenderTarget has already been destroyed");
-  }
+import { ALPHA_MODES as t } from "./index146.js";
+let o;
+async function l() {
+  return o ?? (o = (async () => {
+    var g;
+    const A = document.createElement("canvas").getContext("webgl");
+    if (!A)
+      return t.UNPACK;
+    const n = await new Promise((u) => {
+      const e = document.createElement("video");
+      e.onloadeddata = () => u(e), e.onerror = () => u(null), e.autoplay = !1, e.crossOrigin = "anonymous", e.preload = "auto", e.src = "data:video/webm;base64,GkXfo59ChoEBQveBAULygQRC84EIQoKEd2VibUKHgQJChYECGFOAZwEAAAAAAAHTEU2bdLpNu4tTq4QVSalmU6yBoU27i1OrhBZUrmtTrIHGTbuMU6uEElTDZ1OsggEXTbuMU6uEHFO7a1OsggG97AEAAAAAAABZAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVSalmoCrXsYMPQkBNgIRMYXZmV0GETGF2ZkSJiEBEAAAAAAAAFlSua8yuAQAAAAAAAEPXgQFzxYgAAAAAAAAAAZyBACK1nIN1bmSIgQCGhVZfVlA5g4EBI+ODhAJiWgDglLCBArqBApqBAlPAgQFVsIRVuYEBElTDZ9Vzc9JjwItjxYgAAAAAAAAAAWfInEWjh0VOQ09ERVJEh49MYXZjIGxpYnZweC12cDlnyKJFo4hEVVJBVElPTkSHlDAwOjAwOjAwLjA0MDAwMDAwMAAAH0O2dcfngQCgwqGggQAAAIJJg0IAABAAFgA4JBwYSgAAICAAEb///4r+AAB1oZ2mm+6BAaWWgkmDQgAAEAAWADgkHBhKAAAgIABIQBxTu2uRu4+zgQC3iveBAfGCAXHwgQM=", e.load();
+    });
+    if (!n)
+      return t.UNPACK;
+    const E = A.createTexture();
+    A.bindTexture(A.TEXTURE_2D, E);
+    const a = A.createFramebuffer();
+    A.bindFramebuffer(A.FRAMEBUFFER, a), A.framebufferTexture2D(
+      A.FRAMEBUFFER,
+      A.COLOR_ATTACHMENT0,
+      A.TEXTURE_2D,
+      E,
+      0
+    ), A.pixelStorei(A.UNPACK_PREMULTIPLY_ALPHA_WEBGL, !1), A.pixelStorei(A.UNPACK_COLORSPACE_CONVERSION_WEBGL, A.NONE), A.texImage2D(A.TEXTURE_2D, 0, A.RGBA, A.RGBA, A.UNSIGNED_BYTE, n);
+    const r = new Uint8Array(4);
+    return A.readPixels(0, 0, 1, 1, A.RGBA, A.UNSIGNED_BYTE, r), A.deleteFramebuffer(a), A.deleteTexture(E), (g = A.getExtension("WEBGL_lose_context")) == null || g.loseContext(), r[0] <= r[3] ? t.PMA : t.UNPACK;
+  })()), o;
 }
 export {
-  c as CanvasRenderTarget
+  l as detectVideoAlphaMode
 };
 //# sourceMappingURL=index166.js.map

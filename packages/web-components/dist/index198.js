@@ -1,46 +1,36 @@
-import { Buffer as e } from "./index180.js";
-import { Geometry as v } from "./index181.js";
-class c extends v {
-  constructor() {
-    super(), this.vertices = new Float32Array([
-      -1,
-      -1,
-      1,
-      -1,
-      1,
-      1,
-      -1,
-      1
-    ]), this.uvs = new Float32Array([
-      0,
-      0,
-      1,
-      0,
-      1,
-      1,
-      0,
-      1
-    ]), this.vertexBuffer = new e(this.vertices), this.uvBuffer = new e(this.uvs), this.addAttribute("aVertexPosition", this.vertexBuffer).addAttribute("aTextureCoord", this.uvBuffer).addIndex([0, 1, 2, 0, 2, 3]);
+import { TYPES as a } from "./index146.js";
+class h {
+  /**
+   * @param buffer - the id of the buffer that this attribute will look for
+   * @param size - the size of the attribute. If you have 2 floats per vertex (eg position x and y) this would be 2.
+   * @param normalized - should the data be normalized.
+   * @param {PIXI.TYPES} [type=PIXI.TYPES.FLOAT] - what type of number is the attribute. Check {@link PIXI.TYPES} to see the ones available
+   * @param [stride=0] - How far apart, in bytes, the start of each value is. (used for interleaving data)
+   * @param [start=0] - How far into the array to start reading values (used for interleaving data)
+   * @param [instance=false] - Whether the geometry is instanced.
+   * @param [divisor=1] - Divisor to use when doing instanced rendering
+   */
+  constructor(t, s = 0, i = !1, r = a.FLOAT, e, o, n, f = 1) {
+    this.buffer = t, this.size = s, this.normalized = i, this.type = r, this.stride = e, this.start = o, this.instance = n, this.divisor = f;
+  }
+  /** Destroys the Attribute. */
+  destroy() {
+    this.buffer = null;
   }
   /**
-   * Maps two Rectangle to the quad.
-   * @param targetTextureFrame - The first rectangle
-   * @param destinationFrame - The second rectangle
-   * @returns - Returns itself.
+   * Helper function that creates an Attribute based on the information provided
+   * @param buffer - the id of the buffer that this attribute will look for
+   * @param [size=0] - the size of the attribute. If you have 2 floats per vertex (eg position x and y) this would be 2
+   * @param [normalized=false] - should the data be normalized.
+   * @param [type=PIXI.TYPES.FLOAT] - what type of number is the attribute. Check {@link PIXI.TYPES} to see the ones available
+   * @param [stride=0] - How far apart, in bytes, the start of each value is. (used for interleaving data)
+   * @returns - A new {@link PIXI.Attribute} based on the information provided
    */
-  map(i, t) {
-    let h = 0, s = 0;
-    return this.uvs[0] = h, this.uvs[1] = s, this.uvs[2] = h + t.width / i.width, this.uvs[3] = s, this.uvs[4] = h + t.width / i.width, this.uvs[5] = s + t.height / i.height, this.uvs[6] = h, this.uvs[7] = s + t.height / i.height, h = t.x, s = t.y, this.vertices[0] = h, this.vertices[1] = s, this.vertices[2] = h + t.width, this.vertices[3] = s, this.vertices[4] = h + t.width, this.vertices[5] = s + t.height, this.vertices[6] = h, this.vertices[7] = s + t.height, this.invalidate(), this;
-  }
-  /**
-   * Legacy upload method, just marks buffers dirty.
-   * @returns - Returns itself.
-   */
-  invalidate() {
-    return this.vertexBuffer._updateID++, this.uvBuffer._updateID++, this;
+  static from(t, s, i, r, e) {
+    return new h(t, s, i, r, e);
   }
 }
 export {
-  c as QuadUv
+  h as Attribute
 };
 //# sourceMappingURL=index198.js.map

@@ -1,16 +1,38 @@
-import { TYPES as t } from "./index164.js";
-import { Buffer as r } from "./index180.js";
-import { Geometry as f } from "./index181.js";
-class s extends f {
+class t {
   /**
-   * @param {boolean} [_static=false] - Optimization flag, where `false`
-   *        is updated every frame, `true` doesn't change frame-to-frame.
+   * @param renderer - The renderer this manager works for.
    */
-  constructor(e = !1) {
-    super(), this._buffer = new r(null, e, !1), this._indexBuffer = new r(null, e, !0), this.addAttribute("aVertexPosition", this._buffer, 2, !1, t.FLOAT).addAttribute("aTextureCoord", this._buffer, 2, !1, t.FLOAT).addAttribute("aColor", this._buffer, 4, !0, t.UNSIGNED_BYTE).addAttribute("aTextureId", this._buffer, 1, !0, t.FLOAT).addIndex(this._indexBuffer);
+  constructor(e) {
+    this.renderer = e;
+  }
+  /** Stub method that should be used to empty the current batch by rendering objects now. */
+  flush() {
+  }
+  /** Generic destruction method that frees all resources. This should be called by subclasses. */
+  destroy() {
+    this.renderer = null;
+  }
+  /**
+   * Stub method that initializes any state required before
+   * rendering starts. It is different from the `prerender`
+   * signal, which occurs every frame, in that it is called
+   * whenever an object requests _this_ renderer specifically.
+   */
+  start() {
+  }
+  /** Stops the renderer. It should free up any state and become dormant. */
+  stop() {
+    this.flush();
+  }
+  /**
+   * Keeps the object to render. It doesn't have to be
+   * rendered immediately.
+   * @param {PIXI.DisplayObject} _object - The object to render.
+   */
+  render(e) {
   }
 }
 export {
-  s as BatchGeometry
+  t as ObjectRenderer
 };
 //# sourceMappingURL=index179.js.map

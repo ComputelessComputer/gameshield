@@ -1,86 +1,99 @@
-function n(e) {
-  const r = new Array(e);
-  for (let a = 0; a < r.length; a++)
-    r[a] = !1;
-  return r;
-}
-function t(e, r) {
-  switch (e) {
-    case "float":
-      return 0;
-    case "vec2":
-      return new Float32Array(2 * r);
-    case "vec3":
-      return new Float32Array(3 * r);
-    case "vec4":
-      return new Float32Array(4 * r);
-    case "int":
-    case "uint":
-    case "sampler2D":
-    case "sampler2DArray":
-      return 0;
-    case "ivec2":
-      return new Int32Array(2 * r);
-    case "ivec3":
-      return new Int32Array(3 * r);
-    case "ivec4":
-      return new Int32Array(4 * r);
-    case "uvec2":
-      return new Uint32Array(2 * r);
-    case "uvec3":
-      return new Uint32Array(3 * r);
-    case "uvec4":
-      return new Uint32Array(4 * r);
-    case "bool":
-      return !1;
-    case "bvec2":
-      return n(2 * r);
-    case "bvec3":
-      return n(3 * r);
-    case "bvec4":
-      return n(4 * r);
-    case "mat2":
-      return new Float32Array([
-        1,
-        0,
-        0,
-        1
-      ]);
-    case "mat3":
-      return new Float32Array([
-        1,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        1
-      ]);
-    case "mat4":
-      return new Float32Array([
-        1,
-        0,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        0,
-        1
-      ]);
+import { Runner as i } from "./index35.js";
+class o {
+  /**
+   * @param width - Width of the resource
+   * @param height - Height of the resource
+   */
+  constructor(t = 0, e = 0) {
+    this._width = t, this._height = e, this.destroyed = !1, this.internal = !1, this.onResize = new i("setRealSize"), this.onUpdate = new i("update"), this.onError = new i("onError");
   }
-  return null;
+  /**
+   * Bind to a parent BaseTexture
+   * @param baseTexture - Parent texture
+   */
+  bind(t) {
+    this.onResize.add(t), this.onUpdate.add(t), this.onError.add(t), (this._width || this._height) && this.onResize.emit(this._width, this._height);
+  }
+  /**
+   * Unbind to a parent BaseTexture
+   * @param baseTexture - Parent texture
+   */
+  unbind(t) {
+    this.onResize.remove(t), this.onUpdate.remove(t), this.onError.remove(t);
+  }
+  /**
+   * Trigger a resize event
+   * @param width - X dimension
+   * @param height - Y dimension
+   */
+  resize(t, e) {
+    (t !== this._width || e !== this._height) && (this._width = t, this._height = e, this.onResize.emit(t, e));
+  }
+  /**
+   * Has been validated
+   * @readonly
+   */
+  get valid() {
+    return !!this._width && !!this._height;
+  }
+  /** Has been updated trigger event. */
+  update() {
+    this.destroyed || this.onUpdate.emit();
+  }
+  /**
+   * This can be overridden to start preloading a resource
+   * or do any other prepare step.
+   * @protected
+   * @returns Handle the validate event
+   */
+  load() {
+    return Promise.resolve(this);
+  }
+  /**
+   * The width of the resource.
+   * @readonly
+   */
+  get width() {
+    return this._width;
+  }
+  /**
+   * The height of the resource.
+   * @readonly
+   */
+  get height() {
+    return this._height;
+  }
+  /**
+   * Set the style, optional to override
+   * @param _renderer - yeah, renderer!
+   * @param _baseTexture - the texture
+   * @param _glTexture - texture instance for this webgl context
+   * @returns - `true` is success
+   */
+  style(t, e, h) {
+    return !1;
+  }
+  /** Clean up anything, this happens when destroying is ready. */
+  dispose() {
+  }
+  /**
+   * Call when destroying resource, unbind any BaseTexture object
+   * before calling this method, as reference counts are maintained
+   * internally.
+   */
+  destroy() {
+    this.destroyed || (this.destroyed = !0, this.dispose(), this.onError.removeAll(), this.onError = null, this.onResize.removeAll(), this.onResize = null, this.onUpdate.removeAll(), this.onUpdate = null);
+  }
+  /**
+   * Abstract, used to auto-detect resource type.
+   * @param {*} _source - The source object
+   * @param {string} _extension - The extension of source, if set
+   */
+  static test(t, e) {
+    return !1;
+  }
 }
 export {
-  t as defaultValue
+  o as Resource
 };
 //# sourceMappingURL=index227.js.map

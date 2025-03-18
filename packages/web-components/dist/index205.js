@@ -1,90 +1,93 @@
-import { MSAA_QUALITY as u, SCALE_MODES as h, MIPMAP_MODES as o, FORMATS as n, TYPES as l } from "./index164.js";
-import { Runner as a } from "./index35.js";
-import { BaseTexture as d } from "./index54.js";
-class f {
-  /**
-   * @param width - Width of the frame buffer
-   * @param height - Height of the frame buffer
-   */
-  constructor(t, e) {
-    if (this.width = Math.round(t), this.height = Math.round(e), !this.width || !this.height)
-      throw new Error("Framebuffer width or height is zero");
-    this.stencil = !1, this.depth = !1, this.dirtyId = 0, this.dirtyFormat = 0, this.dirtySize = 0, this.depthTexture = null, this.colorTextures = [], this.glFramebuffers = {}, this.disposeRunner = new a("disposeFramebuffer"), this.multisample = u.NONE;
+import { Runner as h } from "./index35.js";
+import "./index40.js";
+import "./index36.js";
+import m from "./index41.js";
+import "./index42.js";
+import "./index43.js";
+import "./index24.js";
+import "./index44.js";
+import "./index45.js";
+class H extends m {
+  constructor() {
+    super(...arguments), this.runners = {}, this._systemsHash = {};
   }
   /**
-   * Reference to the colorTexture.
-   * @readonly
+   * Set up a system with a collection of SystemClasses and runners.
+   * Systems are attached dynamically to this class when added.
+   * @param config - the config for the system manager
    */
-  get colorTexture() {
-    return this.colorTextures[0];
+  setup(s) {
+    this.addRunners(...s.runners);
+    const t = (s.priority ?? []).filter((r) => s.systems[r]), e = [
+      ...t,
+      ...Object.keys(s.systems).filter((r) => !t.includes(r))
+    ];
+    for (const r of e)
+      this.addSystem(s.systems[r], r);
   }
   /**
-   * Add texture to the colorTexture array.
-   * @param index - Index of the array to add the texture to
-   * @param texture - Texture to add to the array
+   * Create a bunch of runners based of a collection of ids
+   * @param runnerIds - the runner ids to add
    */
-  addColorTexture(t = 0, e) {
-    return this.colorTextures[t] = e || new d(null, {
-      scaleMode: h.NEAREST,
-      resolution: 1,
-      mipmap: o.OFF,
-      width: this.width,
-      height: this.height
-    }), this.dirtyId++, this.dirtyFormat++, this;
+  addRunners(...s) {
+    s.forEach((t) => {
+      this.runners[t] = new h(t);
+    });
   }
   /**
-   * Add a depth texture to the frame buffer.
-   * @param texture - Texture to add.
+   * Add a new system to the renderer.
+   * @param ClassRef - Class reference
+   * @param name - Property name for system, if not specified
+   *        will use a static `name` property on the class itself. This
+   *        name will be assigned as s property on the Renderer so make
+   *        sure it doesn't collide with properties on Renderer.
+   * @returns Return instance of renderer
    */
-  addDepthTexture(t) {
-    return this.depthTexture = t || new d(null, {
-      scaleMode: h.NEAREST,
-      resolution: 1,
-      width: this.width,
-      height: this.height,
-      mipmap: o.OFF,
-      format: n.DEPTH_COMPONENT,
-      type: l.UNSIGNED_SHORT
-    }), this.dirtyId++, this.dirtyFormat++, this;
-  }
-  /** Enable depth on the frame buffer. */
-  enableDepth() {
-    return this.depth = !0, this.dirtyId++, this.dirtyFormat++, this;
-  }
-  /** Enable stencil on the frame buffer. */
-  enableStencil() {
-    return this.stencil = !0, this.dirtyId++, this.dirtyFormat++, this;
+  addSystem(s, t) {
+    const e = new s(this);
+    if (this[t])
+      throw new Error(`Whoops! The name "${t}" is already in use`);
+    this[t] = e, this._systemsHash[t] = e;
+    for (const r in this.runners)
+      this.runners[r].add(e);
+    return this;
   }
   /**
-   * Resize the frame buffer
-   * @param width - Width of the frame buffer to resize to
-   * @param height - Height of the frame buffer to resize to
+   * A function that will run a runner and call the runners function but pass in different options
+   * to each system based on there name.
+   *
+   * E.g. If you have two systems added called `systemA` and `systemB` you could call do the following:
+   *
+   * ```js
+   * system.emitWithCustomOptions(init, {
+   *     systemA: {...optionsForA},
+   *     systemB: {...optionsForB},
+   * });
+   * ```
+   *
+   * `init` would be called on system A passing `optionsForA` and on system B passing `optionsForB`.
+   * @param runner - the runner to target
+   * @param options - key value options for each system
    */
-  resize(t, e) {
-    if (t = Math.round(t), e = Math.round(e), !t || !e)
-      throw new Error("Framebuffer width and height must not be zero");
-    if (!(t === this.width && e === this.height)) {
-      this.width = t, this.height = e, this.dirtyId++, this.dirtySize++;
-      for (let i = 0; i < this.colorTextures.length; i++) {
-        const r = this.colorTextures[i], s = r.resolution;
-        r.setSize(t / s, e / s);
-      }
-      if (this.depthTexture) {
-        const i = this.depthTexture.resolution;
-        this.depthTexture.setSize(t / i, e / i);
-      }
-    }
+  emitWithCustomOptions(s, t) {
+    const e = Object.keys(this._systemsHash);
+    s.items.forEach((r) => {
+      const i = e.find((o) => this._systemsHash[o] === r);
+      r[s.name](t[i]);
+    });
   }
-  /** Disposes WebGL resources that are connected to this geometry. */
-  dispose() {
-    this.disposeRunner.emit(this, !1);
+  /** destroy the all runners and systems. Its apps job to */
+  destroy() {
+    Object.values(this.runners).forEach((s) => {
+      s.destroy();
+    }), this._systemsHash = {};
   }
-  /** Destroys and removes the depth texture added to this framebuffer. */
-  destroyDepthTexture() {
-    this.depthTexture && (this.depthTexture.destroy(), this.depthTexture = null, ++this.dirtyId, ++this.dirtyFormat);
-  }
+  // TODO implement!
+  // removeSystem(ClassRef: ISystemConstructor, name: string): void
+  // {
+  // }
 }
 export {
-  f as Framebuffer
+  H as SystemManager
 };
 //# sourceMappingURL=index205.js.map

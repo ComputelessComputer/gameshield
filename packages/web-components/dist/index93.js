@@ -12,7 +12,7 @@ import "./index32.js";
 import "./index33.js";
 import "./index34.js";
 import "./index35.js";
-import { settings as u } from "./index150.js";
+import { settings as u } from "./index145.js";
 import "./index36.js";
 import "./index37.js";
 import "./index38.js";
@@ -23,7 +23,7 @@ import "./index42.js";
 import "./index43.js";
 import "./index44.js";
 import "./index45.js";
-import { getResolutionOfUrl as I } from "./index154.js";
+import { getResolutionOfUrl as I } from "./index147.js";
 import "./index46.js";
 import "./index47.js";
 import "./index48.js";
@@ -60,11 +60,11 @@ import "./index78.js";
 import "./index79.js";
 import "./index80.js";
 import "./index81.js";
-import { checkDataUrl as B } from "./index151.js";
-import { checkExtension as x } from "./index152.js";
+import { checkDataUrl as B } from "./index164.js";
+import { checkExtension as x } from "./index148.js";
 import { LoaderParserPriority as h } from "./index149.js";
-import { WorkerManager as c } from "./index156.js";
-import { createTexture as y } from "./index155.js";
+import { WorkerManager as c } from "./index165.js";
+import { createTexture as y } from "./index150.js";
 const O = [".jpeg", ".jpg", ".png", ".webp", ".avif"], T = [
   "image/jpeg",
   "image/png",

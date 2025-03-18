@@ -59,18 +59,18 @@ import "./index78.js";
 import "./index79.js";
 import "./index80.js";
 import "./index81.js";
-import { BackgroundLoader as _ } from "./index141.js";
-import { Cache as l } from "./index142.js";
-import { Loader as k } from "./index143.js";
+import { BackgroundLoader as _ } from "./index156.js";
+import { Cache as l } from "./index157.js";
+import { Loader as k } from "./index158.js";
 import "./index89.js";
 import "./index90.js";
 import "./index91.js";
 import "./index92.js";
 import { loadTextures as w } from "./index93.js";
 import "./index94.js";
-import { Resolver as A } from "./index144.js";
-import { convertToList as h } from "./index145.js";
-import { isSingleItem as L } from "./index146.js";
+import { Resolver as A } from "./index159.js";
+import { convertToList as h } from "./index160.js";
+import { isSingleItem as L } from "./index161.js";
 class P {
   constructor() {
     this._detections = [], this._initialized = !1, this.resolver = new A(), this.loader = new k(), this.cache = l, this._backgroundLoader = new _(this.loader), this._backgroundLoader.active = !0, this.reset();

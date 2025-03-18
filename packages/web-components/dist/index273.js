@@ -1,6 +1,6 @@
 import "./index23.js";
 import "./index24.js";
-import { TYPES as p } from "./index164.js";
+import { TYPES as p } from "./index146.js";
 import "./index25.js";
 import "./index26.js";
 import "./index27.js";
@@ -25,8 +25,8 @@ import { createIndicesForQuads as n } from "./index305.js";
 import "./index45.js";
 import "./index46.js";
 import "./index47.js";
-import { Buffer as m } from "./index180.js";
-import { Geometry as c } from "./index181.js";
+import { Buffer as m } from "./index171.js";
+import { Geometry as c } from "./index172.js";
 import "./index48.js";
 import "./index49.js";
 import "./index50.js";

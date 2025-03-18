@@ -1,5 +1,5 @@
 import { Texture as a } from "./index131.js";
-import { BaseRenderTexture as o } from "./index215.js";
+import { BaseRenderTexture as o } from "./index206.js";
 class h extends a {
   /**
    * @param baseRenderTexture - The base texture object that this texture uses.

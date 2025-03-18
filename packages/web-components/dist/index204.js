@@ -1,31 +1,31 @@
-var e = `attribute vec2 aVertexPosition;
-
-uniform mat3 projectionMatrix;
-
-varying vec2 vTextureCoord;
-
-uniform vec4 inputSize;
-uniform vec4 outputFrame;
-
-vec4 filterVertexPosition( void )
-{
-    vec2 position = aVertexPosition * max(outputFrame.zw, vec2(0.)) + outputFrame.xy;
-
-    return vec4((projectionMatrix * vec3(position, 1.0)).xy, 0.0, 1.0);
+import "./index40.js";
+import { settings as e } from "./index145.js";
+import "./index36.js";
+let n;
+function p() {
+  return typeof n > "u" && (n = function() {
+    var r;
+    const o = {
+      stencil: !0,
+      failIfMajorPerformanceCaveat: e.FAIL_IF_MAJOR_PERFORMANCE_CAVEAT
+    };
+    try {
+      if (!e.ADAPTER.getWebGLRenderingContext())
+        return !1;
+      const s = e.ADAPTER.createCanvas();
+      let t = s.getContext("webgl", o) || s.getContext("experimental-webgl", o);
+      const i = !!((r = t == null ? void 0 : t.getContextAttributes()) != null && r.stencil);
+      if (t) {
+        const c = t.getExtension("WEBGL_lose_context");
+        c && c.loseContext();
+      }
+      return t = null, i;
+    } catch {
+      return !1;
+    }
+  }()), n;
 }
-
-vec2 filterTextureCoord( void )
-{
-    return aVertexPosition * (outputFrame.zw * inputSize.zw);
-}
-
-void main(void)
-{
-    gl_Position = filterVertexPosition();
-    vTextureCoord = filterTextureCoord();
-}
-`;
 export {
-  e as default
+  p as isWebGLSupported
 };
 //# sourceMappingURL=index204.js.map

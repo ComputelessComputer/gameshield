@@ -1,9 +1,9 @@
 import { ExtensionType as u, extensions as d } from "./index140.js";
-import { generateUniformsSync as f } from "./index222.js";
+import { generateUniformsSync as f } from "./index213.js";
 import "./index36.js";
-import { unsafeEvalSupported as c } from "./index223.js";
-import { generateProgram as l } from "./index224.js";
-import { generateUniformBufferSync as g } from "./index225.js";
+import { unsafeEvalSupported as c } from "./index214.js";
+import { generateProgram as l } from "./index215.js";
+import { generateUniformBufferSync as g } from "./index216.js";
 let y = 0;
 const a = { textureCount: 0, uboCount: 0 };
 class h {

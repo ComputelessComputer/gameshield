@@ -1,14 +1,11 @@
-function t(n) {
-  if (n.BYTES_PER_ELEMENT === 4)
-    return n instanceof Float32Array ? "Float32Array" : n instanceof Uint32Array ? "Uint32Array" : "Int32Array";
-  if (n.BYTES_PER_ELEMENT === 2) {
-    if (n instanceof Uint16Array)
-      return "Uint16Array";
-  } else if (n.BYTES_PER_ELEMENT === 1 && n instanceof Uint8Array)
-    return "Uint8Array";
-  return null;
-}
+var r = `varying vec2 vTextureCoord;
+
+uniform sampler2D uSampler;
+
+void main(void){
+   gl_FragColor *= texture2D(uSampler, vTextureCoord);
+}`;
 export {
-  t as getBufferType
+  r as default
 };
 //# sourceMappingURL=index209.js.map

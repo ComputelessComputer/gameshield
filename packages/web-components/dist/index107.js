@@ -62,7 +62,7 @@ import "./index102.js";
 import "./index103.js";
 import { DisplayObject as d } from "./index104.js";
 import { EventSystem as m } from "./index106.js";
-import { FederatedEvent as v } from "./index161.js";
+import { FederatedEvent as v } from "./index142.js";
 function u(t) {
   return t === "dynamic" || t === "static";
 }

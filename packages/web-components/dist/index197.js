@@ -1,19 +1,10 @@
-import { Geometry as t } from "./index181.js";
-class o extends t {
-  constructor() {
-    super(), this.addAttribute("aVertexPosition", new Float32Array([
-      0,
-      0,
-      1,
-      0,
-      1,
-      1,
-      0,
-      1
-    ])).addIndex([0, 1, 3, 2]);
+import { MSAA_QUALITY as i } from "./index146.js";
+class e {
+  constructor(t) {
+    this.framebuffer = t, this.stencil = null, this.dirtyId = -1, this.dirtyFormat = -1, this.dirtySize = -1, this.multisample = i.NONE, this.msaaBuffer = null, this.blitFramebuffer = null, this.mipLevel = 0;
   }
 }
 export {
-  o as Quad
+  e as GLFramebuffer
 };
 //# sourceMappingURL=index197.js.map

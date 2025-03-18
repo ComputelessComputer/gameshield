@@ -1,4 +1,4 @@
-import { SAMPLER_TYPES as o, TYPES as m, MIPMAP_MODES as h, WRAP_MODES as p, SCALE_MODES as n } from "./index164.js";
+import { SAMPLER_TYPES as o, TYPES as m, MIPMAP_MODES as h, WRAP_MODES as p, SCALE_MODES as n } from "./index146.js";
 import { ExtensionType as l, extensions as _ } from "./index140.js";
 import "./index40.js";
 import "./index36.js";
@@ -7,12 +7,12 @@ import "./index42.js";
 import "./index43.js";
 import "./index24.js";
 import "./index44.js";
-import { removeItems as u } from "./index160.js";
+import { removeItems as u } from "./index141.js";
 import "./index45.js";
 import { BaseTexture as I } from "./index54.js";
-import { GLTexture as a } from "./index238.js";
-import { mapInternalFormatToSamplerType as y } from "./index244.js";
-import { mapTypeAndFormatToInternalFormat as R } from "./index245.js";
+import { GLTexture as a } from "./index228.js";
+import { mapInternalFormatToSamplerType as y } from "./index234.js";
+import { mapTypeAndFormatToInternalFormat as R } from "./index235.js";
 class E {
   /**
    * @param renderer - The renderer this system works for.
