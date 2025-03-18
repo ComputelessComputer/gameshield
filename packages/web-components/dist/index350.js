@@ -1,8 +1,5 @@
-var r, n;
-function e() {
-  return n || (n = 1, r = Function.prototype.call), r;
-}
+var o = Function.prototype.call;
 export {
-  e as __require
+  o as f
 };
 //# sourceMappingURL=index350.js.map

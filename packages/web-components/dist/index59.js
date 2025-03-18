@@ -1,4 +1,4 @@
-import { MASK_TYPES as r } from "./index146.js";
+import { MASK_TYPES as r } from "./index164.js";
 import { ExtensionType as l, extensions as h } from "./index140.js";
 import { SpriteMaskFilter as k } from "./index189.js";
 import { MaskData as p } from "./index202.js";

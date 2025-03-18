@@ -13,7 +13,7 @@ import "./index34.js";
 import "./index35.js";
 import "./index36.js";
 import "./index37.js";
-import { UPDATE_PRIORITY as p } from "./index277.js";
+import { UPDATE_PRIORITY as p } from "./index276.js";
 import { Ticker as s } from "./index38.js";
 import "./index39.js";
 import "./index40.js";
@@ -65,7 +65,7 @@ import "./index104.js";
 import { Text as u } from "./index121.js";
 import { TextMetrics as f } from "./index122.js";
 import { TextStyle as h } from "./index123.js";
-import { CountLimiter as k } from "./index278.js";
+import { CountLimiter as k } from "./index277.js";
 function x(e, t) {
   var r;
   let i = !1;

@@ -1,4 +1,4 @@
-import { BLEND_MODES as l } from "./index146.js";
+import { BLEND_MODES as l } from "./index164.js";
 import { ExtensionType as d, extensions as a } from "./index140.js";
 import { State as n } from "./index72.js";
 import { mapWebGLBlendModesToPixi as o } from "./index225.js";

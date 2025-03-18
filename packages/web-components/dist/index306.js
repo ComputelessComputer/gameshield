@@ -1,38 +1,12 @@
-import { BoundingBox as a } from "./index45.js";
-function l(f, t, o) {
-  for (let r = 0, n = 4 * o * t; r < t; ++r, n += 4)
-    if (f[n + 3] !== 0)
-      return !1;
-  return !0;
-}
-function d(f, t, o, r, n) {
-  const u = 4 * t;
-  for (let e = r, i = r * u + 4 * o; e <= n; ++e, i += u)
-    if (f[i + 3] !== 0)
-      return !1;
-  return !0;
-}
-function x(f) {
-  const { width: t, height: o } = f, r = f.getContext("2d", {
-    willReadFrequently: !0
-  });
-  if (r === null)
-    throw new TypeError("Failed to get canvas 2D context");
-  const n = r.getImageData(0, 0, t, o).data;
-  let u = 0, e = 0, i = t - 1, c = o - 1;
-  for (; e < o && l(n, t, e); )
-    ++e;
-  if (e === o)
-    return a.EMPTY;
-  for (; l(n, t, c); )
-    --c;
-  for (; d(n, t, u, e, c); )
-    ++u;
-  for (; d(n, t, i, e, c); )
-    --i;
-  return ++i, ++c, new a(u, e, i, c);
+function t(l, n = null) {
+  const e = l * 6;
+  if (n = n || new Uint16Array(e), n.length !== e)
+    throw new Error(`Out buffer length is incorrect, got ${n.length} and expected ${e}`);
+  for (let c = 0, i = 0; c < e; c += 6, i += 4)
+    n[c + 0] = i + 0, n[c + 1] = i + 1, n[c + 2] = i + 2, n[c + 3] = i + 0, n[c + 4] = i + 2, n[c + 5] = i + 3;
+  return n;
 }
 export {
-  x as getCanvasBoundingBox
+  t as createIndicesForQuads
 };
 //# sourceMappingURL=index306.js.map

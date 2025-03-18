@@ -1,6 +1,6 @@
 import "./index23.js";
 import { Color as T } from "./index24.js";
-import { WRAP_MODES as f } from "./index146.js";
+import { WRAP_MODES as f } from "./index164.js";
 import { ExtensionType as y, extensions as A } from "./index140.js";
 import "./index25.js";
 import "./index26.js";

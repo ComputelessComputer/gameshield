@@ -1,25 +1,46 @@
-var r = `varying vec2 vFilterCoord;
-varying vec2 vTextureCoord;
+const l = `
+    attribute vec2 aVertexPosition;
 
-uniform vec2 scale;
-uniform mat2 rotation;
-uniform sampler2D uSampler;
-uniform sampler2D mapSampler;
+    uniform mat3 projectionMatrix;
 
-uniform highp vec4 inputSize;
-uniform vec4 inputClamp;
+    uniform float strength;
 
-void main(void)
-{
-  vec4 map =  texture2D(mapSampler, vFilterCoord);
+    varying vec2 vBlurTexCoords[%size%];
 
-  map -= 0.5;
-  map.xy = scale * inputSize.zw * (rotation * map.xy);
+    uniform vec4 inputSize;
+    uniform vec4 outputFrame;
 
-  gl_FragColor = texture2D(uSampler, clamp(vec2(vTextureCoord.x + map.x, vTextureCoord.y + map.y), inputClamp.xy, inputClamp.zw));
-}
+    vec4 filterVertexPosition( void )
+    {
+        vec2 position = aVertexPosition * max(outputFrame.zw, vec2(0.)) + outputFrame.xy;
+
+        return vec4((projectionMatrix * vec3(position, 1.0)).xy, 0.0, 1.0);
+    }
+
+    vec2 filterTextureCoord( void )
+    {
+        return aVertexPosition * (outputFrame.zw * inputSize.zw);
+    }
+
+    void main(void)
+    {
+        gl_Position = filterVertexPosition();
+
+        vec2 textureCoord = filterTextureCoord();
+        %blur%
+    }`;
+function c(r, u) {
+  const a = Math.ceil(r / 2);
+  let e = l, o = "", i;
+  u ? i = "vBlurTexCoords[%index%] =  textureCoord + vec2(%sampleIndex% * strength, 0.0);" : i = "vBlurTexCoords[%index%] =  textureCoord + vec2(0.0, %sampleIndex% * strength);";
+  for (let t = 0; t < r; t++) {
+    let n = i.replace("%index%", t.toString());
+    n = n.replace("%sampleIndex%", `${t - (a - 1)}.0`), o += n, o += `
 `;
+  }
+  return e = e.replace("%blur%", o), e = e.replace("%size%", r.toString()), e;
+}
 export {
-  r as default
+  c as generateBlurVertSource
 };
 //# sourceMappingURL=index248.js.map

@@ -1,4 +1,4 @@
-import { CLEAR_MODES as p, DRAW_MODES as T, MSAA_QUALITY as S } from "./index146.js";
+import { CLEAR_MODES as p, DRAW_MODES as T, MSAA_QUALITY as S } from "./index164.js";
 import { ExtensionType as P, extensions as R } from "./index140.js";
 import "./index25.js";
 import "./index26.js";

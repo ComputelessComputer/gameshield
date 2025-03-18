@@ -1,23 +1,158 @@
-var N = /* @__PURE__ */ ((I) => (I[I.WEBGL_LEGACY = 0] = "WEBGL_LEGACY", I[I.WEBGL = 1] = "WEBGL", I[I.WEBGL2 = 2] = "WEBGL2", I))(N || {}), U = /* @__PURE__ */ ((I) => (I[I.UNKNOWN = 0] = "UNKNOWN", I[I.WEBGL = 1] = "WEBGL", I[I.CANVAS = 2] = "CANVAS", I))(U || {}), _ = /* @__PURE__ */ ((I) => (I[I.COLOR = 16384] = "COLOR", I[I.DEPTH = 256] = "DEPTH", I[I.STENCIL = 1024] = "STENCIL", I))(_ || {}), R = /* @__PURE__ */ ((I) => (I[I.NORMAL = 0] = "NORMAL", I[I.ADD = 1] = "ADD", I[I.MULTIPLY = 2] = "MULTIPLY", I[I.SCREEN = 3] = "SCREEN", I[I.OVERLAY = 4] = "OVERLAY", I[I.DARKEN = 5] = "DARKEN", I[I.LIGHTEN = 6] = "LIGHTEN", I[I.COLOR_DODGE = 7] = "COLOR_DODGE", I[I.COLOR_BURN = 8] = "COLOR_BURN", I[I.HARD_LIGHT = 9] = "HARD_LIGHT", I[I.SOFT_LIGHT = 10] = "SOFT_LIGHT", I[I.DIFFERENCE = 11] = "DIFFERENCE", I[I.EXCLUSION = 12] = "EXCLUSION", I[I.HUE = 13] = "HUE", I[I.SATURATION = 14] = "SATURATION", I[I.COLOR = 15] = "COLOR", I[I.LUMINOSITY = 16] = "LUMINOSITY", I[I.NORMAL_NPM = 17] = "NORMAL_NPM", I[I.ADD_NPM = 18] = "ADD_NPM", I[I.SCREEN_NPM = 19] = "SCREEN_NPM", I[I.NONE = 20] = "NONE", I[I.SRC_OVER = 0] = "SRC_OVER", I[I.SRC_IN = 21] = "SRC_IN", I[I.SRC_OUT = 22] = "SRC_OUT", I[I.SRC_ATOP = 23] = "SRC_ATOP", I[I.DST_OVER = 24] = "DST_OVER", I[I.DST_IN = 25] = "DST_IN", I[I.DST_OUT = 26] = "DST_OUT", I[I.DST_ATOP = 27] = "DST_ATOP", I[I.ERASE = 26] = "ERASE", I[I.SUBTRACT = 28] = "SUBTRACT", I[I.XOR = 29] = "XOR", I))(R || {}), G = /* @__PURE__ */ ((I) => (I[I.POINTS = 0] = "POINTS", I[I.LINES = 1] = "LINES", I[I.LINE_LOOP = 2] = "LINE_LOOP", I[I.LINE_STRIP = 3] = "LINE_STRIP", I[I.TRIANGLES = 4] = "TRIANGLES", I[I.TRIANGLE_STRIP = 5] = "TRIANGLE_STRIP", I[I.TRIANGLE_FAN = 6] = "TRIANGLE_FAN", I))(G || {}), T = /* @__PURE__ */ ((I) => (I[I.RGBA = 6408] = "RGBA", I[I.RGB = 6407] = "RGB", I[I.RG = 33319] = "RG", I[I.RED = 6403] = "RED", I[I.RGBA_INTEGER = 36249] = "RGBA_INTEGER", I[I.RGB_INTEGER = 36248] = "RGB_INTEGER", I[I.RG_INTEGER = 33320] = "RG_INTEGER", I[I.RED_INTEGER = 36244] = "RED_INTEGER", I[I.ALPHA = 6406] = "ALPHA", I[I.LUMINANCE = 6409] = "LUMINANCE", I[I.LUMINANCE_ALPHA = 6410] = "LUMINANCE_ALPHA", I[I.DEPTH_COMPONENT = 6402] = "DEPTH_COMPONENT", I[I.DEPTH_STENCIL = 34041] = "DEPTH_STENCIL", I))(T || {}), C = /* @__PURE__ */ ((I) => (I[I.TEXTURE_2D = 3553] = "TEXTURE_2D", I[I.TEXTURE_CUBE_MAP = 34067] = "TEXTURE_CUBE_MAP", I[I.TEXTURE_2D_ARRAY = 35866] = "TEXTURE_2D_ARRAY", I[I.TEXTURE_CUBE_MAP_POSITIVE_X = 34069] = "TEXTURE_CUBE_MAP_POSITIVE_X", I[I.TEXTURE_CUBE_MAP_NEGATIVE_X = 34070] = "TEXTURE_CUBE_MAP_NEGATIVE_X", I[I.TEXTURE_CUBE_MAP_POSITIVE_Y = 34071] = "TEXTURE_CUBE_MAP_POSITIVE_Y", I[I.TEXTURE_CUBE_MAP_NEGATIVE_Y = 34072] = "TEXTURE_CUBE_MAP_NEGATIVE_Y", I[I.TEXTURE_CUBE_MAP_POSITIVE_Z = 34073] = "TEXTURE_CUBE_MAP_POSITIVE_Z", I[I.TEXTURE_CUBE_MAP_NEGATIVE_Z = 34074] = "TEXTURE_CUBE_MAP_NEGATIVE_Z", I))(C || {}), H = /* @__PURE__ */ ((I) => (I[I.UNSIGNED_BYTE = 5121] = "UNSIGNED_BYTE", I[I.UNSIGNED_SHORT = 5123] = "UNSIGNED_SHORT", I[I.UNSIGNED_SHORT_5_6_5 = 33635] = "UNSIGNED_SHORT_5_6_5", I[I.UNSIGNED_SHORT_4_4_4_4 = 32819] = "UNSIGNED_SHORT_4_4_4_4", I[I.UNSIGNED_SHORT_5_5_5_1 = 32820] = "UNSIGNED_SHORT_5_5_5_1", I[I.UNSIGNED_INT = 5125] = "UNSIGNED_INT", I[I.UNSIGNED_INT_10F_11F_11F_REV = 35899] = "UNSIGNED_INT_10F_11F_11F_REV", I[I.UNSIGNED_INT_2_10_10_10_REV = 33640] = "UNSIGNED_INT_2_10_10_10_REV", I[I.UNSIGNED_INT_24_8 = 34042] = "UNSIGNED_INT_24_8", I[I.UNSIGNED_INT_5_9_9_9_REV = 35902] = "UNSIGNED_INT_5_9_9_9_REV", I[I.BYTE = 5120] = "BYTE", I[I.SHORT = 5122] = "SHORT", I[I.INT = 5124] = "INT", I[I.FLOAT = 5126] = "FLOAT", I[I.FLOAT_32_UNSIGNED_INT_24_8_REV = 36269] = "FLOAT_32_UNSIGNED_INT_24_8_REV", I[I.HALF_FLOAT = 36193] = "HALF_FLOAT", I))(H || {}), X = /* @__PURE__ */ ((I) => (I[I.FLOAT = 0] = "FLOAT", I[I.INT = 1] = "INT", I[I.UINT = 2] = "UINT", I))(X || {}), V = /* @__PURE__ */ ((I) => (I[I.NEAREST = 0] = "NEAREST", I[I.LINEAR = 1] = "LINEAR", I))(V || {}), L = /* @__PURE__ */ ((I) => (I[I.CLAMP = 33071] = "CLAMP", I[I.REPEAT = 10497] = "REPEAT", I[I.MIRRORED_REPEAT = 33648] = "MIRRORED_REPEAT", I))(L || {}), p = /* @__PURE__ */ ((I) => (I[I.OFF = 0] = "OFF", I[I.POW2 = 1] = "POW2", I[I.ON = 2] = "ON", I[I.ON_MANUAL = 3] = "ON_MANUAL", I))(p || {}), Z = /* @__PURE__ */ ((I) => (I[I.NPM = 0] = "NPM", I[I.UNPACK = 1] = "UNPACK", I[I.PMA = 2] = "PMA", I[I.NO_PREMULTIPLIED_ALPHA = 0] = "NO_PREMULTIPLIED_ALPHA", I[I.PREMULTIPLY_ON_UPLOAD = 1] = "PREMULTIPLY_ON_UPLOAD", I[I.PREMULTIPLIED_ALPHA = 2] = "PREMULTIPLIED_ALPHA", I))(Z || {}), e = /* @__PURE__ */ ((I) => (I[I.NO = 0] = "NO", I[I.YES = 1] = "YES", I[I.AUTO = 2] = "AUTO", I[I.BLEND = 0] = "BLEND", I[I.CLEAR = 1] = "CLEAR", I[I.BLIT = 2] = "BLIT", I))(e || {}), h = /* @__PURE__ */ ((I) => (I[I.AUTO = 0] = "AUTO", I[I.MANUAL = 1] = "MANUAL", I))(h || {}), i = /* @__PURE__ */ ((I) => (I.LOW = "lowp", I.MEDIUM = "mediump", I.HIGH = "highp", I))(i || {}), m = /* @__PURE__ */ ((I) => (I[I.NONE = 0] = "NONE", I[I.SCISSOR = 1] = "SCISSOR", I[I.STENCIL = 2] = "STENCIL", I[I.SPRITE = 3] = "SPRITE", I[I.COLOR = 4] = "COLOR", I))(m || {}), o = /* @__PURE__ */ ((I) => (I[I.NONE = 0] = "NONE", I[I.LOW = 2] = "LOW", I[I.MEDIUM = 4] = "MEDIUM", I[I.HIGH = 8] = "HIGH", I))(o || {}), r = /* @__PURE__ */ ((I) => (I[I.ELEMENT_ARRAY_BUFFER = 34963] = "ELEMENT_ARRAY_BUFFER", I[I.ARRAY_BUFFER = 34962] = "ARRAY_BUFFER", I[I.UNIFORM_BUFFER = 35345] = "UNIFORM_BUFFER", I))(r || {});
+import "./index23.js";
+import "./index24.js";
+import "./index25.js";
+import "./index26.js";
+import "./index27.js";
+import "./index28.js";
+import "./index29.js";
+import "./index30.js";
+import "./index31.js";
+import "./index32.js";
+import "./index33.js";
+import "./index34.js";
+import "./index35.js";
+import "./index36.js";
+import "./index37.js";
+import "./index38.js";
+import "./index39.js";
+import "./index40.js";
+import "./index41.js";
+import "./index42.js";
+import "./index43.js";
+import { path as n } from "./index156.js";
+import "./index44.js";
+import "./index45.js";
+import "./index46.js";
+import "./index47.js";
+import "./index48.js";
+import "./index49.js";
+import "./index50.js";
+import "./index51.js";
+import "./index52.js";
+import "./index53.js";
+import "./index54.js";
+import "./index55.js";
+import "./index56.js";
+import "./index57.js";
+import "./index58.js";
+import "./index59.js";
+import "./index60.js";
+import "./index61.js";
+import "./index62.js";
+import "./index63.js";
+import "./index64.js";
+import "./index65.js";
+import "./index66.js";
+import "./index67.js";
+import "./index68.js";
+import "./index69.js";
+import "./index70.js";
+import "./index71.js";
+import "./index72.js";
+import "./index73.js";
+import "./index74.js";
+import "./index75.js";
+import "./index76.js";
+import "./index77.js";
+import "./index78.js";
+import "./index79.js";
+import "./index80.js";
+import "./index81.js";
+import { convertToList as h } from "./index148.js";
+import { isSingleItem as d } from "./index149.js";
+class $r {
+  constructor() {
+    this._parsers = [], this._parsersValidated = !1, this.parsers = new Proxy(this._parsers, {
+      set: (s, t, o) => (this._parsersValidated = !1, s[t] = o, !0)
+    }), this.promiseCache = {};
+  }
+  /** function used for testing */
+  reset() {
+    this._parsersValidated = !1, this.promiseCache = {};
+  }
+  /**
+   * Used internally to generate a promise for the asset to be loaded.
+   * @param url - The URL to be loaded
+   * @param data - any custom additional information relevant to the asset being loaded
+   * @returns - a promise that will resolve to an Asset for example a Texture of a JSON object
+   */
+  _getLoadPromiseAndParser(s, t) {
+    const o = {
+      promise: null,
+      parser: null
+    };
+    return o.promise = (async () => {
+      var a, m;
+      let i = null, e = null;
+      if (t.loadParser && (e = this._parserHash[t.loadParser], e || console.warn(`[Assets] specified load parser "${t.loadParser}" not found while loading ${s}`)), !e) {
+        for (let p = 0; p < this.parsers.length; p++) {
+          const r = this.parsers[p];
+          if (r.load && ((a = r.test) != null && a.call(r, s, t, this))) {
+            e = r;
+            break;
+          }
+        }
+        if (!e)
+          return console.warn(`[Assets] ${s} could not be loaded as we don't know how to parse it, ensure the correct parser has been added`), null;
+      }
+      i = await e.load(s, t, this), o.parser = e;
+      for (let p = 0; p < this.parsers.length; p++) {
+        const r = this.parsers[p];
+        r.parse && r.parse && await ((m = r.testParse) == null ? void 0 : m.call(r, i, t, this)) && (i = await r.parse(i, t, this) || i, o.parser = r);
+      }
+      return i;
+    })(), o;
+  }
+  async load(s, t) {
+    this._parsersValidated || this._validateParsers();
+    let o = 0;
+    const i = {}, e = d(s), a = h(s, (r) => ({
+      alias: [r],
+      src: r
+    })), m = a.length, p = a.map(async (r) => {
+      const l = n.toAbsolute(r.src);
+      if (!i[r.src])
+        try {
+          this.promiseCache[l] || (this.promiseCache[l] = this._getLoadPromiseAndParser(l, r)), i[r.src] = await this.promiseCache[l].promise, t && t(++o / m);
+        } catch (c) {
+          throw delete this.promiseCache[l], delete i[r.src], new Error(`[Loader.load] Failed to load ${l}.
+${c}`);
+        }
+    });
+    return await Promise.all(p), e ? i[a[0].src] : i;
+  }
+  /**
+   * Unloads one or more assets. Any unloaded assets will be destroyed, freeing up memory for your app.
+   * The parser that created the asset, will be the one that unloads it.
+   * @example
+   * // Single asset:
+   * const asset = await Loader.load('cool.png');
+   *
+   * await Loader.unload('cool.png');
+   *
+   * console.log(asset.destroyed); // true
+   * @param assetsToUnloadIn - urls that you want to unload, or a single one!
+   */
+  async unload(s) {
+    const t = h(s, (o) => ({
+      alias: [o],
+      src: o
+    })).map(async (o) => {
+      var a, m;
+      const i = n.toAbsolute(o.src), e = this.promiseCache[i];
+      if (e) {
+        const p = await e.promise;
+        delete this.promiseCache[i], (m = (a = e.parser) == null ? void 0 : a.unload) == null || m.call(a, p, o, this);
+      }
+    });
+    await Promise.all(t);
+  }
+  /** validates our parsers, right now it only checks for name conflicts but we can add more here as required! */
+  _validateParsers() {
+    this._parsersValidated = !0, this._parserHash = this._parsers.filter((s) => s.name).reduce((s, t) => (s[t.name] && console.warn(`[Assets] loadParser name conflict "${t.name}"`), { ...s, [t.name]: t }), {});
+  }
+}
 export {
-  Z as ALPHA_MODES,
-  R as BLEND_MODES,
-  _ as BUFFER_BITS,
-  r as BUFFER_TYPE,
-  e as CLEAR_MODES,
-  G as DRAW_MODES,
-  N as ENV,
-  T as FORMATS,
-  h as GC_MODES,
-  m as MASK_TYPES,
-  p as MIPMAP_MODES,
-  o as MSAA_QUALITY,
-  i as PRECISION,
-  U as RENDERER_TYPE,
-  X as SAMPLER_TYPES,
-  V as SCALE_MODES,
-  C as TARGETS,
-  H as TYPES,
-  L as WRAP_MODES
+  $r as Loader
 };
 //# sourceMappingURL=index146.js.map

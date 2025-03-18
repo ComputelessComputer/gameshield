@@ -58,7 +58,7 @@ import "./index78.js";
 import "./index79.js";
 import "./index80.js";
 import "./index81.js";
-import { testImageFormat as m } from "./index162.js";
+import { testImageFormat as m } from "./index150.js";
 const r = {
   extension: {
     type: o.DetectionParser,

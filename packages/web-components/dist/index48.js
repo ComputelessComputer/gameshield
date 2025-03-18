@@ -1,7 +1,7 @@
 import { Color as S } from "./index24.js";
-import { ENV as g } from "./index146.js";
+import { ENV as g } from "./index164.js";
 import { ExtensionType as y, extensions as I } from "./index140.js";
-import { settings as C } from "./index145.js";
+import { settings as C } from "./index153.js";
 import "./index36.js";
 import "./index40.js";
 import "./index41.js";
@@ -11,7 +11,7 @@ import { deprecation as w } from "./index133.js";
 import { premultiplyBlendMode as G } from "./index44.js";
 import { nextPow2 as B, log2 as b } from "./index173.js";
 import "./index45.js";
-import { ViewableBuffer as z } from "./index155.js";
+import { ViewableBuffer as z } from "./index168.js";
 import { checkMaxIfStatementsInShader as A } from "./index174.js";
 import { State as M } from "./index72.js";
 import { BaseTexture as T } from "./index54.js";

@@ -1,4 +1,4 @@
-import { ENV as R, BUFFER_BITS as T, MSAA_QUALITY as u } from "./index146.js";
+import { ENV as R, BUFFER_BITS as T, MSAA_QUALITY as u } from "./index164.js";
 import { ExtensionType as c, extensions as p } from "./index140.js";
 import "./index25.js";
 import "./index26.js";
@@ -10,7 +10,7 @@ import "./index31.js";
 import "./index32.js";
 import "./index33.js";
 import "./index34.js";
-import { settings as g } from "./index145.js";
+import { settings as g } from "./index153.js";
 import "./index36.js";
 import { Framebuffer as a } from "./index196.js";
 import { GLFramebuffer as m } from "./index197.js";

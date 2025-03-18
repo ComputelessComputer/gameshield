@@ -1,5 +1,5 @@
 import { ExtensionType as s, extensions as c } from "./index140.js";
-import { UPDATE_PRIORITY as h } from "./index277.js";
+import { UPDATE_PRIORITY as h } from "./index276.js";
 import { Ticker as e } from "./index38.js";
 class r {
   /**

@@ -1,4 +1,4 @@
-import { MSAA_QUALITY as u, SCALE_MODES as h, MIPMAP_MODES as o, FORMATS as n, TYPES as l } from "./index146.js";
+import { MSAA_QUALITY as u, SCALE_MODES as h, MIPMAP_MODES as o, FORMATS as n, TYPES as l } from "./index164.js";
 import { Runner as a } from "./index35.js";
 import { BaseTexture as d } from "./index54.js";
 class f {

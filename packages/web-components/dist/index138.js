@@ -57,8 +57,8 @@ import "./index78.js";
 import "./index79.js";
 import "./index80.js";
 import "./index81.js";
-import t from "./index251.js";
-import o from "./index252.js";
+import t from "./index252.js";
+import o from "./index253.js";
 class nr extends r {
   constructor() {
     super(o, t);

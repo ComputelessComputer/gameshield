@@ -1,4 +1,4 @@
-import { commonjsGlobal as S } from "./index302.js";
+import { commonjsGlobal as S } from "./index303.js";
 import { __module as A } from "./index314.js";
 /*! https://mths.be/punycode v1.4.1 by @mathias */
 A.exports;

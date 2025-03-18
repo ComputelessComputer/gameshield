@@ -1,7 +1,7 @@
 import { ArrayResource as r } from "./index229.js";
 import { INSTALLED as o } from "./index226.js";
 import { autoDetectResource as N } from "./index226.js";
-import { BufferResource as m } from "./index153.js";
+import { BufferResource as m } from "./index166.js";
 import { CanvasResource as e } from "./index230.js";
 import { CubeResource as t } from "./index79.js";
 import { ImageBitmapResource as p } from "./index231.js";

@@ -1,6 +1,6 @@
 import "./index23.js";
 import { Color as u } from "./index24.js";
-import { BLEND_MODES as S } from "./index146.js";
+import { BLEND_MODES as S } from "./index164.js";
 import { Circle as x } from "./index25.js";
 import { Ellipse as T } from "./index26.js";
 import { Polygon as y } from "./index27.js";

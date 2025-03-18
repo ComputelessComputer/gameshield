@@ -8,13 +8,12 @@ import "./index29.js";
 import "./index30.js";
 import "./index31.js";
 import "./index32.js";
-import "./index33.js";
+import { Point as t } from "./index33.js";
 import "./index34.js";
 import "./index35.js";
 import "./index36.js";
 import "./index37.js";
-import { UPDATE_PRIORITY as e } from "./index277.js";
-import { Ticker as i } from "./index38.js";
+import "./index38.js";
 import "./index39.js";
 import "./index40.js";
 import "./index41.js";
@@ -58,63 +57,117 @@ import "./index78.js";
 import "./index79.js";
 import "./index80.js";
 import "./index81.js";
-class r {
+import { FederatedEvent as o } from "./index142.js";
+class Xt extends o {
   constructor() {
-    this.interactionFrequency = 10, this._deltaTime = 0, this._didMove = !1, this.tickerAdded = !1, this._pauseUpdate = !0;
+    super(...arguments), this.client = new t(), this.movement = new t(), this.offset = new t(), this.global = new t(), this.screen = new t();
+  }
+  /** @readonly */
+  get clientX() {
+    return this.client.x;
+  }
+  /** @readonly */
+  get clientY() {
+    return this.client.y;
   }
   /**
-   * Initializes the event ticker.
-   * @param events - The event system.
+   * Alias for {@link PIXI.FederatedMouseEvent.clientX this.clientX}.
+   * @readonly
    */
-  init(t) {
-    this.removeTickerListener(), this.events = t, this.interactionFrequency = 10, this._deltaTime = 0, this._didMove = !1, this.tickerAdded = !1, this._pauseUpdate = !0;
-  }
-  /** Whether to pause the update checks or not. */
-  get pauseUpdate() {
-    return this._pauseUpdate;
-  }
-  set pauseUpdate(t) {
-    this._pauseUpdate = t;
-  }
-  /** Adds the ticker listener. */
-  addTickerListener() {
-    this.tickerAdded || !this.domElement || (i.system.add(this.tickerUpdate, this, e.INTERACTION), this.tickerAdded = !0);
-  }
-  /** Removes the ticker listener. */
-  removeTickerListener() {
-    this.tickerAdded && (i.system.remove(this.tickerUpdate, this), this.tickerAdded = !1);
-  }
-  /** Sets flag to not fire extra events when the user has already moved there mouse */
-  pointerMoved() {
-    this._didMove = !0;
-  }
-  /** Updates the state of interactive objects. */
-  update() {
-    if (!this.domElement || this._pauseUpdate)
-      return;
-    if (this._didMove) {
-      this._didMove = !1;
-      return;
-    }
-    const t = this.events.rootPointerEvent;
-    this.events.supportsTouchEvents && t.pointerType === "touch" || globalThis.document.dispatchEvent(new PointerEvent("pointermove", {
-      clientX: t.clientX,
-      clientY: t.clientY
-    }));
+  get x() {
+    return this.clientX;
   }
   /**
-   * Updates the state of interactive objects if at least {@link PIXI.EventsTicker#interactionFrequency}
-   * milliseconds have passed since the last invocation.
-   *
-   * Invoked by a throttled ticker update from {@link PIXI.Ticker.system}.
-   * @param deltaTime - time delta since the last call
+   * Alias for {@link PIXI.FederatedMouseEvent.clientY this.clientY}.
+   * @readonly
    */
-  tickerUpdate(t) {
-    this._deltaTime += t, !(this._deltaTime < this.interactionFrequency) && (this._deltaTime = 0, this.update());
+  get y() {
+    return this.clientY;
+  }
+  /** @readonly */
+  get movementX() {
+    return this.movement.x;
+  }
+  /** @readonly */
+  get movementY() {
+    return this.movement.y;
+  }
+  /** @readonly */
+  get offsetX() {
+    return this.offset.x;
+  }
+  /** @readonly */
+  get offsetY() {
+    return this.offset.y;
+  }
+  /** @readonly */
+  get globalX() {
+    return this.global.x;
+  }
+  /** @readonly */
+  get globalY() {
+    return this.global.y;
+  }
+  /**
+   * The pointer coordinates in the renderer's screen. Alias for {@code screen.x}.
+   * @readonly
+   */
+  get screenX() {
+    return this.screen.x;
+  }
+  /**
+   * The pointer coordinates in the renderer's screen. Alias for {@code screen.y}.
+   * @readonly
+   */
+  get screenY() {
+    return this.screen.y;
+  }
+  /**
+   * This will return the local coordinates of the specified displayObject for this InteractionData
+   * @param {PIXI.DisplayObject} displayObject - The DisplayObject that you would like the local
+   *  coords off
+   * @param {PIXI.IPointData} point - A Point object in which to store the value, optional (otherwise
+   *  will create a new point)
+   * @param {PIXI.IPointData} globalPos - A Point object containing your custom global coords, optional
+   *  (otherwise will use the current global coords)
+   * @returns - A point containing the coordinates of the InteractionData position relative
+   *  to the DisplayObject
+   */
+  getLocalPosition(r, e, i) {
+    return r.worldTransform.applyInverse(i || this.global, e);
+  }
+  /**
+   * Whether the modifier key was pressed when this event natively occurred.
+   * @param key - The modifier key.
+   */
+  getModifierState(r) {
+    return "getModifierState" in this.nativeEvent && this.nativeEvent.getModifierState(r);
+  }
+  /**
+   * Not supported.
+   * @param _typeArg
+   * @param _canBubbleArg
+   * @param _cancelableArg
+   * @param _viewArg
+   * @param _detailArg
+   * @param _screenXArg
+   * @param _screenYArg
+   * @param _clientXArg
+   * @param _clientYArg
+   * @param _ctrlKeyArg
+   * @param _altKeyArg
+   * @param _shiftKeyArg
+   * @param _metaKeyArg
+   * @param _buttonArg
+   * @param _relatedTargetArg
+   * @deprecated since 7.0.0
+   */
+  // eslint-disable-next-line max-params
+  initMouseEvent(r, e, i, p, n, s, g, l, a, c, h, u, f, A, _) {
+    throw new Error("Method not implemented.");
   }
 }
-const ct = new r();
 export {
-  ct as EventsTicker
+  Xt as FederatedMouseEvent
 };
 //# sourceMappingURL=index243.js.map

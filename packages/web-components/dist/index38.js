@@ -1,5 +1,5 @@
-import { UPDATE_PRIORITY as d } from "./index277.js";
-import { TickerListener as h } from "./index309.js";
+import { UPDATE_PRIORITY as d } from "./index276.js";
+import { TickerListener as h } from "./index302.js";
 const n = class i {
   constructor() {
     this.autoStart = !1, this.deltaTime = 1, this.lastTime = -1, this.speed = 1, this.started = !1, this._requestId = null, this._maxElapsedMS = 100, this._minElapsedMS = 0, this._protected = !1, this._lastFrame = -1, this._head = new h(null, null, 1 / 0), this.deltaMS = 1 / i.targetFPMS, this.elapsedMS = 1 / i.targetFPMS, this._tick = (t) => {

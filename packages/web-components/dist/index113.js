@@ -1,6 +1,6 @@
 import "./index23.js";
 import "./index24.js";
-import { DRAW_MODES as g } from "./index146.js";
+import { DRAW_MODES as g } from "./index164.js";
 import "./index25.js";
 import "./index26.js";
 import { Polygon as v } from "./index27.js";
@@ -12,7 +12,7 @@ import "./index32.js";
 import { Point as D } from "./index33.js";
 import "./index34.js";
 import "./index35.js";
-import { settings as f } from "./index145.js";
+import { settings as f } from "./index153.js";
 import "./index36.js";
 import "./index37.js";
 import "./index38.js";
@@ -62,7 +62,7 @@ import "./index81.js";
 import "./index102.js";
 import { Container as M } from "./index103.js";
 import "./index104.js";
-import { MeshBatchUvs as w } from "./index253.js";
+import { MeshBatchUvs as w } from "./index255.js";
 const p = new D(), x = new v(), y = class _ extends M {
   /**
    * @param geometry - The geometry the mesh will use.

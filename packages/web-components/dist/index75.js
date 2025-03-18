@@ -1,4 +1,4 @@
-import { SAMPLER_TYPES as o, TYPES as m, MIPMAP_MODES as h, WRAP_MODES as p, SCALE_MODES as n } from "./index146.js";
+import { SAMPLER_TYPES as o, TYPES as m, MIPMAP_MODES as h, WRAP_MODES as p, SCALE_MODES as n } from "./index164.js";
 import { ExtensionType as l, extensions as _ } from "./index140.js";
 import "./index40.js";
 import "./index36.js";

@@ -1,22 +1,27 @@
 import { css as c, LitElement as m, html as d } from "lit";
 import { customElement as g } from "./index4.js";
-import { property as a } from "./index5.js";
+import { property as n } from "./index5.js";
 import { state as h } from "./index6.js";
 import "./index7.js";
-import { GameFactory as y } from "./index8.js";
-import { BehaviorAnalyzer as u } from "./index9.js";
-import { SecurityUtils as f } from "./index3.js";
-var b = Object.defineProperty, v = Object.getOwnPropertyDescriptor, i = (t, s, n, o) => {
-  for (var r = o > 1 ? void 0 : o ? v(s, n) : s, p = t.length - 1, l; p >= 0; p--)
-    (l = t[p]) && (r = (o ? l(s, n, r) : l(r)) || r);
-  return o && r && b(s, n, r), r;
+import { GameFactory as u } from "./index8.js";
+import { BehaviorAnalyzer as b } from "./index9.js";
+import { SecurityUtils as y } from "./index3.js";
+var f = Object.defineProperty, x = Object.getOwnPropertyDescriptor, s = (e, t, a, o) => {
+  for (var r = o > 1 ? void 0 : o ? x(t, a) : t, l = e.length - 1, p; l >= 0; l--)
+    (p = e[l]) && (r = (o ? p(t, a, r) : p(r)) || r);
+  return o && r && f(t, a, r), r;
 };
-let e = class extends m {
+let i = class extends m {
   constructor() {
-    super(...arguments), this.apiKey = "", this.gameType = "random", this.difficulty = "medium", this.apiEndpoint = "", this.width = "400px", this.height = "400px", this.isVerified = !1, this.token = null, this.gameInstance = null, this.isLoading = !0, this.error = null, this.behaviorAnalyzer = new u(), this.securityUtils = new f(), this.sessionId = this.securityUtils.generateSessionId();
+    super(...arguments), this.apiKey = "", this.gameType = "random", this.difficulty = "medium", this.apiEndpoint = "", this.size = "400px", this.isVerified = !1, this.token = null, this.gameInstance = null, this.isLoading = !0, this.error = null, this.behaviorAnalyzer = new b(), this.securityUtils = new y(), this.sessionId = this.securityUtils.generateSessionId();
   }
   connectedCallback() {
-    super.connectedCallback(), this.behaviorAnalyzer.startTracking(), this.gameType = "random", this.style.setProperty("--game-shield-width", this.width), this.style.setProperty("--game-shield-height", this.height);
+    if (super.connectedCallback(), this.behaviorAnalyzer.startTracking(), this.gameType = "random", this.style.setProperty("--game-shield-size", this.size), this.size === "100%")
+      this.style.width = "100%", this.style.height = "100%", this.style.maxWidth = "500px", this.style.maxHeight = "500px";
+    else {
+      const t = parseInt(this.size) > 500 ? "500px" : this.size;
+      this.style.width = t, this.style.height = t;
+    }
   }
   firstUpdated() {
     this.gameContainer = this.renderRoot.querySelector(".game-container"), this.initializeGame();
@@ -28,29 +33,39 @@ let e = class extends m {
     try {
       if (this.isLoading = !0, !this.gameContainer)
         throw new Error("Game container not found");
-      this.gameInstance = y.createGame("random", {
+      this.gameInstance = u.createGame("random", {
         difficulty: "medium",
         width: this.gameContainer.clientWidth,
         height: this.gameContainer.clientHeight,
         onComplete: this.handleGameComplete.bind(this)
-      }), await this.gameInstance.mount(this.gameContainer), this.isLoading = !1;
-    } catch (t) {
-      this.error = t instanceof Error ? t.message : "Failed to initialize game", this.isLoading = !1, console.error("GameShield initialization error:", t);
+      }), await this.gameInstance.mount(this.gameContainer), this.isLoading = !1, setTimeout(() => {
+        !this.isVerified && !this.error && this.dispatchEvent(new CustomEvent("timeout", {
+          detail: { message: "Game timeout" },
+          bubbles: !0,
+          composed: !0
+        }));
+      }, 12e4);
+    } catch (e) {
+      this.error = e instanceof Error ? e.message : "Failed to initialize game", this.isLoading = !1, this.dispatchEvent(new CustomEvent("failure", {
+        detail: { reason: this.error },
+        bubbles: !0,
+        composed: !0
+      })), console.error("GameShield initialization error:", e);
     }
   }
-  handleGameComplete(t) {
-    if (this.isVerified = t.success, t.success) {
-      const s = this.behaviorAnalyzer.analyze(), n = {
+  handleGameComplete(e) {
+    if (this.isVerified = e.success, e.success) {
+      const t = this.behaviorAnalyzer.analyze(), a = {
         sessionId: this.sessionId,
         timestamp: Date.now(),
         gameType: this.gameType,
-        behaviorMetrics: s,
+        behaviorMetrics: t,
         gameResult: {
-          success: t.success,
-          score: t.score
+          success: e.success,
+          score: e.score
         }
       };
-      this.token = this.securityUtils.generateToken(n), this.dispatchEvent(new CustomEvent("success", {
+      this.token = this.securityUtils.generateToken(a), this.dispatchEvent(new CustomEvent("success", {
         detail: { token: this.token },
         bubbles: !0,
         composed: !0
@@ -59,22 +74,23 @@ let e = class extends m {
       });
     } else
       this.dispatchEvent(new CustomEvent("failure", {
+        detail: { reason: "Game failed" },
         bubbles: !0,
         composed: !0
       }));
   }
-  async verifyWithServer(t) {
-    const s = await fetch(this.apiEndpoint, {
+  async verifyWithServer(e) {
+    const t = await fetch(this.apiEndpoint, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "X-API-Key": this.apiKey
       },
-      body: JSON.stringify({ token: t })
+      body: JSON.stringify({ token: e })
     });
-    if (!s.ok)
-      throw new Error(`Server verification failed: ${s.statusText}`);
-    return await s.json();
+    if (!t.ok)
+      throw new Error(`Server verification failed: ${t.statusText}`);
+    return await t.json();
   }
   /**
    * Reset the CAPTCHA to its initial state
@@ -97,24 +113,43 @@ let e = class extends m {
     `;
   }
 };
-e.styles = c`
+i.styles = c`
     :host {
       display: block;
-      width: var(--game-shield-width, 400px);
-      height: var(--game-shield-height, 400px);
+      width: var(--game-shield-size, 400px);
+      height: var(--game-shield-size, 400px);
       max-width: 500px;
       max-height: 500px;
+      min-width: 200px;
+      min-height: 200px;
       aspect-ratio: 1 / 1;
       border: 1px solid #ccc;
       border-radius: 8px;
       position: relative;
+      overflow: hidden;
+      box-sizing: border-box;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      /* Force hardware acceleration and cross-browser compatibility */
+      transform: translateZ(0);
+      -webkit-transform: translateZ(0);
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
     }
     
     .game-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
       width: 100%;
       height: 100%;
-      background-color: #f5f5f5;
+      background-color: #000000;
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      box-sizing: border-box;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
     }
     
     .loading {
@@ -171,43 +206,40 @@ e.styles = c`
       to { transform: rotate(360deg); }
     }
   `;
-i([
-  a({ type: String })
-], e.prototype, "apiKey", 2);
-i([
-  a({ type: String, attribute: "game-type" })
-], e.prototype, "gameType", 2);
-i([
-  a({ type: String })
-], e.prototype, "difficulty", 2);
-i([
-  a({ type: String })
-], e.prototype, "apiEndpoint", 2);
-i([
-  a({ type: String })
-], e.prototype, "width", 2);
-i([
-  a({ type: String })
-], e.prototype, "height", 2);
-i([
+s([
+  n({ type: String })
+], i.prototype, "apiKey", 2);
+s([
+  n({ type: String, attribute: "game-type" })
+], i.prototype, "gameType", 2);
+s([
+  n({ type: String })
+], i.prototype, "difficulty", 2);
+s([
+  n({ type: String })
+], i.prototype, "apiEndpoint", 2);
+s([
+  n({ type: String })
+], i.prototype, "size", 2);
+s([
   h()
-], e.prototype, "isVerified", 2);
-i([
+], i.prototype, "isVerified", 2);
+s([
   h()
-], e.prototype, "token", 2);
-i([
+], i.prototype, "token", 2);
+s([
   h()
-], e.prototype, "gameInstance", 2);
-i([
+], i.prototype, "gameInstance", 2);
+s([
   h()
-], e.prototype, "isLoading", 2);
-i([
+], i.prototype, "isLoading", 2);
+s([
   h()
-], e.prototype, "error", 2);
-e = i([
+], i.prototype, "error", 2);
+i = s([
   g("game-shield")
-], e);
+], i);
 export {
-  e as GameShield
+  i as GameShield
 };
 //# sourceMappingURL=index2.js.map

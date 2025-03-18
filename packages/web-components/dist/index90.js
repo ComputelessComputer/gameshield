@@ -12,7 +12,7 @@ import "./index32.js";
 import "./index33.js";
 import "./index34.js";
 import "./index35.js";
-import { settings as i } from "./index145.js";
+import { settings as i } from "./index153.js";
 import "./index36.js";
 import "./index37.js";
 import "./index38.js";
@@ -59,9 +59,9 @@ import "./index78.js";
 import "./index79.js";
 import "./index80.js";
 import "./index81.js";
-import { checkDataUrl as m } from "./index164.js";
-import { checkExtension as p } from "./index148.js";
-import { LoaderParserPriority as e } from "./index149.js";
+import { checkDataUrl as m } from "./index154.js";
+import { checkExtension as p } from "./index155.js";
+import { LoaderParserPriority as e } from "./index152.js";
 const a = ".txt", n = "text/plain", s = {
   name: "loadTxt",
   extension: {

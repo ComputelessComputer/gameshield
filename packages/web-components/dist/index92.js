@@ -12,7 +12,7 @@ import "./index32.js";
 import "./index33.js";
 import "./index34.js";
 import "./index35.js";
-import { settings as c } from "./index145.js";
+import { settings as c } from "./index153.js";
 import "./index36.js";
 import "./index37.js";
 import "./index38.js";
@@ -23,7 +23,7 @@ import "./index42.js";
 import "./index43.js";
 import "./index44.js";
 import "./index45.js";
-import { getResolutionOfUrl as l } from "./index147.js";
+import { getResolutionOfUrl as l } from "./index157.js";
 import "./index46.js";
 import "./index47.js";
 import "./index48.js";
@@ -60,11 +60,11 @@ import "./index78.js";
 import "./index79.js";
 import { SVGResource as p } from "./index80.js";
 import "./index81.js";
-import { checkDataUrl as f } from "./index164.js";
-import { checkExtension as a } from "./index148.js";
-import { LoaderParserPriority as x } from "./index149.js";
+import { checkDataUrl as f } from "./index154.js";
+import { checkExtension as a } from "./index155.js";
+import { LoaderParserPriority as x } from "./index152.js";
 import { loadTextures as y } from "./index93.js";
-import { createTexture as g } from "./index150.js";
+import { createTexture as g } from "./index158.js";
 const E = ".svg", G = "image/svg+xml", P = {
   extension: {
     type: s.LoadParser,

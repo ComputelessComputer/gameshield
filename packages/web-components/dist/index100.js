@@ -1,4 +1,4 @@
-import { INTERNAL_FORMATS as r, INTERNAL_FORMAT_TO_BYTES_PER_PIXEL as c } from "./index144.js";
+import { INTERNAL_FORMATS as r, INTERNAL_FORMAT_TO_BYTES_PER_PIXEL as c } from "./index163.js";
 import "./index23.js";
 import "./index24.js";
 import "./index25.js";
@@ -58,7 +58,7 @@ import "./index78.js";
 import "./index79.js";
 import "./index80.js";
 import "./index81.js";
-import { CompressedTextureResource as G } from "./index152.js";
+import { CompressedTextureResource as G } from "./index165.js";
 const P = 4, D = 124, h = 32, U = 20, x = 542327876, p = {
   SIZE: 1,
   FLAGS: 2,

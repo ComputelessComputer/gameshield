@@ -1,6 +1,6 @@
 import "./index23.js";
 import { Color as D } from "./index24.js";
-import { WRAP_MODES as S, DRAW_MODES as f } from "./index146.js";
+import { WRAP_MODES as S, DRAW_MODES as f } from "./index164.js";
 import "./index25.js";
 import "./index26.js";
 import "./index27.js";

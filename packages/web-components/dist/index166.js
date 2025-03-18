@@ -1,32 +1,66 @@
-import { ALPHA_MODES as t } from "./index146.js";
-let o;
-async function l() {
-  return o ?? (o = (async () => {
-    var g;
-    const A = document.createElement("canvas").getContext("webgl");
-    if (!A)
-      return t.UNPACK;
-    const n = await new Promise((u) => {
-      const e = document.createElement("video");
-      e.onloadeddata = () => u(e), e.onerror = () => u(null), e.autoplay = !1, e.crossOrigin = "anonymous", e.preload = "auto", e.src = "data:video/webm;base64,GkXfo59ChoEBQveBAULygQRC84EIQoKEd2VibUKHgQJChYECGFOAZwEAAAAAAAHTEU2bdLpNu4tTq4QVSalmU6yBoU27i1OrhBZUrmtTrIHGTbuMU6uEElTDZ1OsggEXTbuMU6uEHFO7a1OsggG97AEAAAAAAABZAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVSalmoCrXsYMPQkBNgIRMYXZmV0GETGF2ZkSJiEBEAAAAAAAAFlSua8yuAQAAAAAAAEPXgQFzxYgAAAAAAAAAAZyBACK1nIN1bmSIgQCGhVZfVlA5g4EBI+ODhAJiWgDglLCBArqBApqBAlPAgQFVsIRVuYEBElTDZ9Vzc9JjwItjxYgAAAAAAAAAAWfInEWjh0VOQ09ERVJEh49MYXZjIGxpYnZweC12cDlnyKJFo4hEVVJBVElPTkSHlDAwOjAwOjAwLjA0MDAwMDAwMAAAH0O2dcfngQCgwqGggQAAAIJJg0IAABAAFgA4JBwYSgAAICAAEb///4r+AAB1oZ2mm+6BAaWWgkmDQgAAEAAWADgkHBhKAAAgIABIQBxTu2uRu4+zgQC3iveBAfGCAXHwgQM=", e.load();
-    });
-    if (!n)
-      return t.UNPACK;
-    const E = A.createTexture();
-    A.bindTexture(A.TEXTURE_2D, E);
-    const a = A.createFramebuffer();
-    A.bindFramebuffer(A.FRAMEBUFFER, a), A.framebufferTexture2D(
-      A.FRAMEBUFFER,
-      A.COLOR_ATTACHMENT0,
-      A.TEXTURE_2D,
-      E,
-      0
-    ), A.pixelStorei(A.UNPACK_PREMULTIPLY_ALPHA_WEBGL, !1), A.pixelStorei(A.UNPACK_COLORSPACE_CONVERSION_WEBGL, A.NONE), A.texImage2D(A.TEXTURE_2D, 0, A.RGBA, A.RGBA, A.UNSIGNED_BYTE, n);
-    const r = new Uint8Array(4);
-    return A.readPixels(0, 0, 1, 1, A.RGBA, A.UNSIGNED_BYTE, r), A.deleteFramebuffer(a), A.deleteTexture(E), (g = A.getExtension("WEBGL_lose_context")) == null || g.loseContext(), r[0] <= r[3] ? t.PMA : t.UNPACK;
-  })()), o;
+import { ALPHA_MODES as o } from "./index164.js";
+import { Resource as A } from "./index227.js";
+class p extends A {
+  /**
+   * @param source - Source buffer
+   * @param options - Options
+   * @param {number} options.width - Width of the texture
+   * @param {number} options.height - Height of the texture
+   * @param {1|2|4|8} [options.unpackAlignment=4] - The alignment of the pixel rows.
+   */
+  constructor(t, i) {
+    const { width: n, height: a } = i || {};
+    if (!n || !a)
+      throw new Error("BufferResource width or height invalid");
+    super(n, a), this.data = t, this.unpackAlignment = i.unpackAlignment ?? 4;
+  }
+  /**
+   * Upload the texture to the GPU.
+   * @param renderer - Upload to the renderer
+   * @param baseTexture - Reference to parent texture
+   * @param glTexture - glTexture
+   * @returns - true is success
+   */
+  upload(t, i, n) {
+    const a = t.gl;
+    a.pixelStorei(a.UNPACK_ALIGNMENT, this.unpackAlignment), a.pixelStorei(a.UNPACK_PREMULTIPLY_ALPHA_WEBGL, i.alphaMode === o.UNPACK);
+    const r = i.realWidth, h = i.realHeight;
+    return n.width === r && n.height === h ? a.texSubImage2D(
+      i.target,
+      0,
+      0,
+      0,
+      r,
+      h,
+      i.format,
+      n.type,
+      this.data
+    ) : (n.width = r, n.height = h, a.texImage2D(
+      i.target,
+      0,
+      n.internalFormat,
+      r,
+      h,
+      0,
+      i.format,
+      n.type,
+      this.data
+    )), !0;
+  }
+  /** Destroy and don't use after this. */
+  dispose() {
+    this.data = null;
+  }
+  /**
+   * Used to auto-detect the type of resource.
+   * @param {*} source - The source object
+   * @returns {boolean} `true` if buffer source
+   */
+  static test(t) {
+    return t === null || t instanceof Int8Array || t instanceof Uint8Array || t instanceof Uint8ClampedArray || t instanceof Int16Array || t instanceof Uint16Array || t instanceof Int32Array || t instanceof Uint32Array || t instanceof Float32Array;
+  }
 }
 export {
-  l as detectVideoAlphaMode
+  p as BufferResource
 };
 //# sourceMappingURL=index166.js.map

@@ -1,31 +1,34 @@
-import { c as _ } from "./index353.js";
-import { g as s } from "./index343.js";
-var o, f;
-function g() {
-  if (f)
-    return o;
-  f = 1;
-  var i = _, c = s, p;
-  try {
-    p = /** @type {{ __proto__?: typeof Array.prototype }} */
-    [].__proto__ === Array.prototype;
-  } catch (t) {
-    if (!t || typeof t != "object" || !("code" in t) || t.code !== "ERR_PROTO_ACCESS")
-      throw t;
-  }
-  var r = !!p && c && c(
-    Object.prototype,
-    /** @type {keyof typeof Object.prototype} */
-    "__proto__"
-  ), a = Object, n = a.getPrototypeOf;
-  return o = r && typeof r.get == "function" ? i([r.get]) : typeof n == "function" ? (
-    /** @type {import('./get')} */
-    function(e) {
-      return n(e == null ? e : a(e));
+var r, a;
+function u() {
+  return a || (a = 1, r = function() {
+    if (typeof Symbol != "function" || typeof Object.getOwnPropertySymbols != "function")
+      return !1;
+    if (typeof Symbol.iterator == "symbol")
+      return !0;
+    var e = {}, t = Symbol("test"), s = Object(t);
+    if (typeof t == "string" || Object.prototype.toString.call(t) !== "[object Symbol]" || Object.prototype.toString.call(s) !== "[object Symbol]")
+      return !1;
+    var o = 42;
+    e[t] = o;
+    for (var y in e)
+      return !1;
+    if (typeof Object.keys == "function" && Object.keys(e).length !== 0 || typeof Object.getOwnPropertyNames == "function" && Object.getOwnPropertyNames(e).length !== 0)
+      return !1;
+    var n = Object.getOwnPropertySymbols(e);
+    if (n.length !== 1 || n[0] !== t || !Object.prototype.propertyIsEnumerable.call(e, t))
+      return !1;
+    if (typeof Object.getOwnPropertyDescriptor == "function") {
+      var f = (
+        /** @type {PropertyDescriptor} */
+        Object.getOwnPropertyDescriptor(e, t)
+      );
+      if (f.value !== o || f.enumerable !== !0)
+        return !1;
     }
-  ) : !1, o;
+    return !0;
+  }), r;
 }
 export {
-  g as __require
+  u as __require
 };
 //# sourceMappingURL=index357.js.map

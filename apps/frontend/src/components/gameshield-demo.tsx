@@ -13,19 +13,47 @@ export default function GameshieldDemo() {
     import("@gameshield/web-components");
   }, []);
 
-  const handleSuccess = () => {
-    setIsVerified(true);
-    console.log("Verification successful!");
-  };
+  useEffect(() => {
+    const currentRef = gameShieldRef.current;
+    
+    // Define event handlers with proper type casting
+    const handleSuccess = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      setIsVerified(true);
+      console.log('Verification success:', customEvent.detail);
+    };
 
-  const handleFailure = () => {
-    setIsVerified(false);
-    console.log("Verification failed!");
-  };
+    const handleFailure = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      setIsVerified(false);
+      console.log('Verification failed:', customEvent.detail);
+    };
 
-  const handleTimeout = () => {
-    setIsVerified(false);
-    console.log("Verification timed out!");
+    const handleTimeout = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      setIsVerified(false);
+      console.log('Verification timed out:', customEvent.detail);
+    };
+
+    // Add event listeners with type casting
+    currentRef?.addEventListener('success', handleSuccess as EventListener);
+    currentRef?.addEventListener('failure', handleFailure as EventListener);
+    currentRef?.addEventListener('timeout', handleTimeout as EventListener);
+
+    return () => {
+      // Remove event listeners with type casting
+      currentRef?.removeEventListener('success', handleSuccess as EventListener);
+      currentRef?.removeEventListener('failure', handleFailure as EventListener);
+      currentRef?.removeEventListener('timeout', handleTimeout as EventListener);
+    };
+  }, []);
+
+  const handleRefresh = () => {
+    if (gameShieldRef.current && "reset" in gameShieldRef.current) {
+      // @ts-expect-error - Custom element method
+      gameShieldRef.current.reset();
+      setIsVerified(false);
+    }
   };
 
   return (
@@ -35,13 +63,7 @@ export default function GameshieldDemo() {
           Gameshield CAPTCHA Demo
         </h2>
         <button
-          onClick={() => {
-            if (gameShieldRef.current && "reset" in gameShieldRef.current) {
-              // @ts-expect-error - Custom element method
-              gameShieldRef.current.reset();
-              setIsVerified(false);
-            }
-          }}
+          onClick={handleRefresh}
           className="inline-flex cursor-pointer items-center gap-2 bg-blue-500 px-4 py-2 text-white transition-all hover:scale-95 hover:bg-blue-600"
         >
           <RefreshCcwIcon className="h-4 w-4" /> Refresh
@@ -49,22 +71,15 @@ export default function GameshieldDemo() {
       </div>
 
       <div className="my-4 flex w-full justify-center">
-        {/* @ts-expect-error - Custom element */}
-        <game-shield
-          ref={gameShieldRef}
-          game-type="random"
-          difficulty="medium"
-          width="400px"
-          height="400px"
-          onSuccess={handleSuccess}
-          onFailure={handleFailure}
-          onTimeout={handleTimeout}
-          style={{ 
-            width: '100%',
-            maxWidth: '500px',
-            aspectRatio: '1 / 1'
-          }}
-        />
+        <div className="w-full max-w-[500px] overflow-hidden rounded-lg">
+          {/* @ts-expect-error - Custom element */}
+          <game-shield
+            ref={gameShieldRef}
+            game-type="random"
+            difficulty="medium"
+            size="100%"
+          />
+        </div>
       </div>
 
       <div className="w-full">

@@ -1,5 +1,7 @@
-var r = Object.getOwnPropertyDescriptor;
+var a = Number.isNaN || function(N) {
+  return N !== N;
+};
 export {
-  r as g
+  a as _
 };
 //# sourceMappingURL=index355.js.map

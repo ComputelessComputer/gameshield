@@ -1,5 +1,5 @@
 import { Color as a } from "./index24.js";
-import { MSAA_QUALITY as l, MIPMAP_MODES as m } from "./index146.js";
+import { MSAA_QUALITY as l, MIPMAP_MODES as m } from "./index164.js";
 import { Framebuffer as u } from "./index196.js";
 import { BaseTexture as f } from "./index54.js";
 class b extends f {

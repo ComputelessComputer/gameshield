@@ -14,11 +14,11 @@ import { SecurityUtils } from './security/security-utils';
  * 
  * @prop {string} apiKey - API key for server verification
  * @prop {string} apiEndpoint - Endpoint for server verification
- * @prop {string} width - Width of the component
- * @prop {string} height - Height of the component
+ * @prop {string} size - Size of the component (1:1 aspect ratio)
  * 
  * @fires success - When CAPTCHA is successfully completed
  * @fires failure - When CAPTCHA fails
+ * @fires timeout - When CAPTCHA times out
  */
 @customElement('game-shield')
 export class GameShield extends LitElement {
@@ -27,8 +27,7 @@ export class GameShield extends LitElement {
   @property({ type: String, attribute: 'game-type' }) gameType: GameType = 'random';
   @property({ type: String }) difficulty: Difficulty = 'medium';
   @property({ type: String }) apiEndpoint = '';
-  @property({ type: String }) width = '400px';
-  @property({ type: String }) height = '400px';
+  @property({ type: String }) size = '400px';
   
   // Internal state
   @state() private isVerified = false;
@@ -46,21 +45,40 @@ export class GameShield extends LitElement {
   static styles = css`
     :host {
       display: block;
-      width: var(--game-shield-width, 400px);
-      height: var(--game-shield-height, 400px);
+      width: var(--game-shield-size, 400px);
+      height: var(--game-shield-size, 400px);
       max-width: 500px;
       max-height: 500px;
+      min-width: 200px;
+      min-height: 200px;
       aspect-ratio: 1 / 1;
       border: 1px solid #ccc;
       border-radius: 8px;
       position: relative;
+      overflow: hidden;
+      box-sizing: border-box;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      /* Force hardware acceleration and cross-browser compatibility */
+      transform: translateZ(0);
+      -webkit-transform: translateZ(0);
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
     }
     
     .game-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
       width: 100%;
       height: 100%;
-      background-color: #f5f5f5;
+      background-color: #000000;
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      box-sizing: border-box;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
     }
     
     .loading {
@@ -126,9 +144,23 @@ export class GameShield extends LitElement {
     // Always force random game type for security
     this.gameType = 'random';
     
-    // Set CSS variables for width and height
-    this.style.setProperty('--game-shield-width', this.width);
-    this.style.setProperty('--game-shield-height', this.height);
+    // Set CSS variable for size (1:1 aspect ratio)
+    this.style.setProperty('--game-shield-size', this.size);
+    
+    // Ensure proper sizing and cross-browser compatibility
+    if (this.size === '100%') {
+      // If size is 100%, make sure it respects max dimensions
+      this.style.width = '100%';
+      this.style.height = '100%'; 
+      this.style.maxWidth = '500px';
+      this.style.maxHeight = '500px';
+    } else {
+      // For specific size values
+      const parsedSize = parseInt(this.size);
+      const finalSize = parsedSize > 500 ? '500px' : this.size;
+      this.style.width = finalSize;
+      this.style.height = finalSize;
+    }
   }
   
   firstUpdated() {
@@ -162,9 +194,25 @@ export class GameShield extends LitElement {
       await this.gameInstance.mount(this.gameContainer);
       
       this.isLoading = false;
+      
+      // Add timeout handling
+      setTimeout(() => {
+        if (!this.isVerified && !this.error) {
+          this.dispatchEvent(new CustomEvent('timeout', {
+            detail: { message: 'Game timeout' },
+            bubbles: true,
+            composed: true
+          }));
+        }
+      }, 120000); // 2 minute timeout
     } catch (error) {
       this.error = error instanceof Error ? error.message : 'Failed to initialize game';
       this.isLoading = false;
+      this.dispatchEvent(new CustomEvent('failure', {
+        detail: { reason: this.error },
+        bubbles: true,
+        composed: true
+      }));
       console.error('GameShield initialization error:', error);
     }
   }
@@ -204,8 +252,8 @@ export class GameShield extends LitElement {
         });
       }
     } else {
-      // Dispatch failure event
-      this.dispatchEvent(new CustomEvent('failure', { 
+      this.dispatchEvent(new CustomEvent('failure', {
+        detail: { reason: 'Game failed' },
         bubbles: true,
         composed: true
       }));

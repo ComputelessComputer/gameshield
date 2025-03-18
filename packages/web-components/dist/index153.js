@@ -1,66 +1,48 @@
-import { ALPHA_MODES as o } from "./index146.js";
-import { Resource as A } from "./index227.js";
-class p extends A {
+import { BrowserAdapter as r } from "./index308.js";
+const A = {
   /**
-   * @param source - Source buffer
-   * @param options - Options
-   * @param {number} options.width - Width of the texture
-   * @param {number} options.height - Height of the texture
-   * @param {1|2|4|8} [options.unpackAlignment=4] - The alignment of the pixel rows.
+   * This adapter is used to call methods that are platform dependent.
+   * For example `document.createElement` only runs on the web but fails in node environments.
+   * This allows us to support more platforms by abstracting away specific implementations per platform.
+   *
+   * By default the adapter is set to work in the browser. However you can create your own
+   * by implementing the `IAdapter` interface. See `IAdapter` for more information.
+   * @name ADAPTER
+   * @memberof PIXI.settings
+   * @type {PIXI.IAdapter}
+   * @default PIXI.BrowserAdapter
    */
-  constructor(t, i) {
-    const { width: n, height: a } = i || {};
-    if (!n || !a)
-      throw new Error("BufferResource width or height invalid");
-    super(n, a), this.data = t, this.unpackAlignment = i.unpackAlignment ?? 4;
-  }
+  ADAPTER: r,
   /**
-   * Upload the texture to the GPU.
-   * @param renderer - Upload to the renderer
-   * @param baseTexture - Reference to parent texture
-   * @param glTexture - glTexture
-   * @returns - true is success
+   * Default resolution / device pixel ratio of the renderer.
+   * @static
+   * @name RESOLUTION
+   * @memberof PIXI.settings
+   * @type {number}
+   * @default 1
    */
-  upload(t, i, n) {
-    const a = t.gl;
-    a.pixelStorei(a.UNPACK_ALIGNMENT, this.unpackAlignment), a.pixelStorei(a.UNPACK_PREMULTIPLY_ALPHA_WEBGL, i.alphaMode === o.UNPACK);
-    const r = i.realWidth, h = i.realHeight;
-    return n.width === r && n.height === h ? a.texSubImage2D(
-      i.target,
-      0,
-      0,
-      0,
-      r,
-      h,
-      i.format,
-      n.type,
-      this.data
-    ) : (n.width = r, n.height = h, a.texImage2D(
-      i.target,
-      0,
-      n.internalFormat,
-      r,
-      h,
-      0,
-      i.format,
-      n.type,
-      this.data
-    )), !0;
-  }
-  /** Destroy and don't use after this. */
-  dispose() {
-    this.data = null;
-  }
+  RESOLUTION: 1,
   /**
-   * Used to auto-detect the type of resource.
-   * @param {*} source - The source object
-   * @returns {boolean} `true` if buffer source
+   * Enables bitmap creation before image load. This feature is experimental.
+   * @static
+   * @name CREATE_IMAGE_BITMAP
+   * @memberof PIXI.settings
+   * @type {boolean}
+   * @default false
    */
-  static test(t) {
-    return t === null || t instanceof Int8Array || t instanceof Uint8Array || t instanceof Uint8ClampedArray || t instanceof Int16Array || t instanceof Uint16Array || t instanceof Int32Array || t instanceof Uint32Array || t instanceof Float32Array;
-  }
-}
+  CREATE_IMAGE_BITMAP: !1,
+  /**
+   * If true PixiJS will Math.floor() x/y values when rendering, stopping pixel interpolation.
+   * Advantages can include sharper image quality (like text) and faster rendering on canvas.
+   * The main disadvantage is movement of objects may appear less smooth.
+   * @static
+   * @memberof PIXI.settings
+   * @type {boolean}
+   * @default false
+   */
+  ROUND_PIXELS: !1
+};
 export {
-  p as BufferResource
+  A as settings
 };
 //# sourceMappingURL=index153.js.map

@@ -12,7 +12,7 @@ import "./index32.js";
 import "./index33.js";
 import "./index34.js";
 import "./index35.js";
-import { settings as u } from "./index145.js";
+import { settings as u } from "./index153.js";
 import "./index36.js";
 import "./index37.js";
 import "./index38.js";
@@ -21,10 +21,10 @@ import "./index40.js";
 import "./index41.js";
 import "./index42.js";
 import "./index43.js";
-import { detectVideoAlphaMode as l } from "./index166.js";
+import { detectVideoAlphaMode as l } from "./index160.js";
 import "./index44.js";
 import "./index45.js";
-import { getResolutionOfUrl as s } from "./index147.js";
+import { getResolutionOfUrl as s } from "./index157.js";
 import "./index46.js";
 import "./index47.js";
 import "./index48.js";
@@ -61,10 +61,10 @@ import "./index78.js";
 import "./index79.js";
 import "./index80.js";
 import { VideoResource as b } from "./index81.js";
-import { checkDataUrl as h } from "./index164.js";
-import { checkExtension as g } from "./index148.js";
-import { LoaderParserPriority as L } from "./index149.js";
-import { createTexture as P } from "./index150.js";
+import { checkDataUrl as h } from "./index154.js";
+import { checkExtension as g } from "./index155.js";
+import { LoaderParserPriority as L } from "./index152.js";
+import { createTexture as P } from "./index158.js";
 const U = [".mp4", ".m4v", ".webm", ".ogv"], x = [
   "video/mp4",
   "video/webm",

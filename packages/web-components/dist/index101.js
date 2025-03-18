@@ -1,6 +1,6 @@
 import "./index23.js";
 import "./index24.js";
-import { TYPES as E, FORMATS as o } from "./index146.js";
+import { TYPES as E, FORMATS as o } from "./index164.js";
 import "./index25.js";
 import "./index26.js";
 import "./index27.js";
@@ -55,12 +55,12 @@ import "./index75.js";
 import "./index76.js";
 import "./index77.js";
 import "./index78.js";
-import { BufferResource as k } from "./index153.js";
+import { BufferResource as k } from "./index166.js";
 import "./index79.js";
 import "./index80.js";
 import "./index81.js";
-import { INTERNAL_FORMAT_TO_BYTES_PER_PIXEL as x } from "./index144.js";
-import { CompressedTextureResource as X } from "./index152.js";
+import { INTERNAL_FORMAT_TO_BYTES_PER_PIXEL as x } from "./index163.js";
+import { CompressedTextureResource as X } from "./index165.js";
 const H = [171, 75, 84, 88, 32, 49, 49, 187, 13, 10, 26, 10], W = 67305985, p = {
   FILE_IDENTIFIER: 0,
   ENDIANNESS: 12,

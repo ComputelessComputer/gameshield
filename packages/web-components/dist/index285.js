@@ -1,4 +1,4 @@
-import { getCanvasBoundingBox as r } from "./index306.js";
+import { getCanvasBoundingBox as r } from "./index307.js";
 function l(n) {
   const t = r(n), { width: o, height: e } = t;
   let i = null;

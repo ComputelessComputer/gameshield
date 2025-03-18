@@ -1,4 +1,4 @@
-import { SAMPLER_TYPES as A } from "./index146.js";
+import { SAMPLER_TYPES as A } from "./index164.js";
 function L(T) {
   let R;
   return "WebGL2RenderingContext" in globalThis && T instanceof globalThis.WebGL2RenderingContext ? R = {

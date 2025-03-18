@@ -1,25 +1,23 @@
-async function r(e) {
-  if ("Image" in globalThis)
-    return new Promise((t) => {
-      const a = new Image();
-      a.onload = () => {
-        t(!0);
-      }, a.onerror = () => {
-        t(!1);
-      }, a.src = e;
-    });
-  if ("createImageBitmap" in globalThis && "fetch" in globalThis) {
-    try {
-      const t = await (await fetch(e)).blob();
-      await createImageBitmap(t);
-    } catch {
-      return !1;
-    }
-    return !0;
+function i(t, e, n, c, o) {
+  const s = e[n];
+  for (let l = 0; l < s.length; l++) {
+    const r = s[l];
+    n < e.length - 1 ? i(t.replace(c[n], r), e, n + 1, c, o) : o.push(t.replace(c[n], r));
   }
-  return !1;
+}
+function u(t) {
+  const e = /\{(.*?)\}/g, n = t.match(e), c = [];
+  if (n) {
+    const o = [];
+    n.forEach((s) => {
+      const l = s.substring(1, s.length - 1).split(",");
+      o.push(l);
+    }), i(t, o, 0, n, c);
+  } else
+    c.push(t);
+  return c;
 }
 export {
-  r as testImageFormat
+  u as createStringVariations
 };
 //# sourceMappingURL=index162.js.map

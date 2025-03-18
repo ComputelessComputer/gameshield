@@ -1,5 +1,5 @@
-import { SCALE_MODES as y, ALPHA_MODES as M, MIPMAP_MODES as w, WRAP_MODES as S, TARGETS as g, FORMATS as d, TYPES as n } from "./index146.js";
-import { settings as p } from "./index145.js";
+import { SCALE_MODES as y, ALPHA_MODES as M, MIPMAP_MODES as w, WRAP_MODES as S, TARGETS as g, FORMATS as d, TYPES as n } from "./index164.js";
+import { settings as p } from "./index153.js";
 import "./index36.js";
 import "./index40.js";
 import O from "./index41.js";
@@ -12,7 +12,7 @@ import { uid as I } from "./index129.js";
 import "./index45.js";
 import { BaseTextureCache as a, TextureCache as C } from "./index208.js";
 import { autoDetectResource as B } from "./index226.js";
-import { BufferResource as x } from "./index153.js";
+import { BufferResource as x } from "./index166.js";
 import { Resource as N } from "./index227.js";
 const G = {
   scaleMode: y.NEAREST,

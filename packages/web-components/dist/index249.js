@@ -1,34 +1,25 @@
-var e = `attribute vec2 aVertexPosition;
-
-uniform mat3 projectionMatrix;
-uniform mat3 filterMatrix;
-
+var r = `varying vec2 vFilterCoord;
 varying vec2 vTextureCoord;
-varying vec2 vFilterCoord;
 
-uniform vec4 inputSize;
-uniform vec4 outputFrame;
+uniform vec2 scale;
+uniform mat2 rotation;
+uniform sampler2D uSampler;
+uniform sampler2D mapSampler;
 
-vec4 filterVertexPosition( void )
-{
-    vec2 position = aVertexPosition * max(outputFrame.zw, vec2(0.)) + outputFrame.xy;
-
-    return vec4((projectionMatrix * vec3(position, 1.0)).xy, 0.0, 1.0);
-}
-
-vec2 filterTextureCoord( void )
-{
-    return aVertexPosition * (outputFrame.zw * inputSize.zw);
-}
+uniform highp vec4 inputSize;
+uniform vec4 inputClamp;
 
 void main(void)
 {
-	gl_Position = filterVertexPosition();
-	vTextureCoord = filterTextureCoord();
-	vFilterCoord = ( filterMatrix * vec3( vTextureCoord, 1.0)  ).xy;
+  vec4 map =  texture2D(mapSampler, vFilterCoord);
+
+  map -= 0.5;
+  map.xy = scale * inputSize.zw * (rotation * map.xy);
+
+  gl_FragColor = texture2D(uSampler, clamp(vec2(vTextureCoord.x + map.x, vTextureCoord.y + map.y), inputClamp.xy, inputClamp.zw));
 }
 `;
 export {
-  e as default
+  r as default
 };
 //# sourceMappingURL=index249.js.map
