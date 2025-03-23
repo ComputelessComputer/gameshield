@@ -1,15 +1,21 @@
-let a;
-function r() {
-  if (typeof a == "boolean")
-    return a;
-  try {
-    a = new Function("param1", "param2", "param3", "return param1[param2] === param3;")({ a: "b" }, "a", "b") === !0;
-  } catch {
-    a = !1;
-  }
-  return a;
+var e = `attribute vec2 aVertexPosition;
+attribute vec2 aTextureCoord;
+
+uniform mat3 projectionMatrix;
+uniform mat3 otherMatrix;
+
+varying vec2 vMaskCoord;
+varying vec2 vTextureCoord;
+
+void main(void)
+{
+    gl_Position = vec4((projectionMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);
+
+    vTextureCoord = aTextureCoord;
+    vMaskCoord = ( otherMatrix * vec3( aTextureCoord, 1.0)  ).xy;
 }
+`;
 export {
-  r as unsafeEvalSupported
+  e as default
 };
 //# sourceMappingURL=index214.js.map

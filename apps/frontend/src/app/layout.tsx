@@ -37,7 +37,7 @@ export default function RootLayout({
                 href="/signin"
                 className="bg-blue-600 px-4 py-2 text-white transition-all hover:scale-95 hover:bg-blue-700"
               >
-                Sign In
+                Get Started
               </Link>
             </div>
           </header>

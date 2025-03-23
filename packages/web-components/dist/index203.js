@@ -1,36 +1,26 @@
-class a {
-  /**
-   * @param renderer - The renderer this System works for.
-   */
-  constructor(t) {
-    this.renderer = t, this.maskStack = [], this.glConst = 0;
-  }
-  /** Gets count of masks of certain type. */
-  getStackLength() {
-    return this.maskStack.length;
-  }
-  /**
-   * Changes the mask stack that is used by this System.
-   * @param {PIXI.MaskData[]} maskStack - The mask stack
-   */
-  setMaskStack(t) {
-    const { gl: s } = this.renderer, n = this.getStackLength();
-    this.maskStack = t;
-    const e = this.getStackLength();
-    e !== n && (e === 0 ? s.disable(this.glConst) : (s.enable(this.glConst), this._useCurrent()));
-  }
-  /**
-   * Setup renderer to use the current mask data.
-   * @private
-   */
-  _useCurrent() {
-  }
-  /** Destroys the mask stack. */
-  destroy() {
-    this.renderer = null, this.maskStack = null;
-  }
+var t = `precision highp float;
+attribute vec2 aVertexPosition;
+attribute vec2 aTextureCoord;
+attribute vec4 aColor;
+attribute float aTextureId;
+
+uniform mat3 projectionMatrix;
+uniform mat3 translationMatrix;
+uniform vec4 tint;
+
+varying vec2 vTextureCoord;
+varying vec4 vColor;
+varying float vTextureId;
+
+void main(void){
+    gl_Position = vec4((projectionMatrix * translationMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);
+
+    vTextureCoord = aTextureCoord;
+    vTextureId = aTextureId;
+    vColor = aColor * tint;
 }
+`;
 export {
-  a as AbstractMaskSystem
+  t as default
 };
 //# sourceMappingURL=index203.js.map

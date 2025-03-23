@@ -1,25 +1,23 @@
-async function r(e) {
-  if ("Image" in globalThis)
-    return new Promise((t) => {
-      const a = new Image();
-      a.onload = () => {
-        t(!0);
-      }, a.onerror = () => {
-        t(!1);
-      }, a.src = e;
+import { TextureSource as o } from "./index474.js";
+import { Texture as i } from "./index360.js";
+class r extends i {
+  static create(e) {
+    return new r({
+      source: new o(e)
     });
-  if ("createImageBitmap" in globalThis && "fetch" in globalThis) {
-    try {
-      const t = await (await fetch(e)).blob();
-      await createImageBitmap(t);
-    } catch {
-      return !1;
-    }
-    return !0;
   }
-  return !1;
+  /**
+   * Resizes the render texture.
+   * @param width - The new width of the render texture.
+   * @param height - The new height of the render texture.
+   * @param resolution - The new resolution of the render texture.
+   * @returns This texture.
+   */
+  resize(e, t, s) {
+    return this.source.resize(e, t, s), this;
+  }
 }
 export {
-  r as testImageFormat
+  r as RenderTexture
 };
 //# sourceMappingURL=index150.js.map

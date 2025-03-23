@@ -1,31 +1,48 @@
-import "./index40.js";
-import { settings as e } from "./index153.js";
-import "./index36.js";
-let n;
-function p() {
-  return typeof n > "u" && (n = function() {
-    var r;
-    const o = {
-      stencil: !0,
-      failIfMajorPerformanceCaveat: e.FAIL_IF_MAJOR_PERFORMANCE_CAVEAT
-    };
-    try {
-      if (!e.ADAPTER.getWebGLRenderingContext())
-        return !1;
-      const s = e.ADAPTER.createCanvas();
-      let t = s.getContext("webgl", o) || s.getContext("experimental-webgl", o);
-      const i = !!((r = t == null ? void 0 : t.getContextAttributes()) != null && r.stencil);
-      if (t) {
-        const c = t.getExtension("WEBGL_lose_context");
-        c && c.loseContext();
-      }
-      return t = null, i;
-    } catch {
-      return !1;
+import { Runner as u } from "./index32.js";
+import { Program as e } from "./index46.js";
+import { UniformGroup as s } from "./index205.js";
+class t {
+  /**
+   * @param program - The program the shader will use.
+   * @param uniforms - Custom uniforms to use to augment the built-in ones.
+   */
+  constructor(o, r) {
+    this.uniformBindCount = 0, this.program = o, r ? r instanceof s ? this.uniformGroup = r : this.uniformGroup = new s(r) : this.uniformGroup = new s({}), this.disposeRunner = new u("disposeShader");
+  }
+  // TODO move to shader system..
+  checkUniformExists(o, r) {
+    if (r.uniforms[o])
+      return !0;
+    for (const n in r.uniforms) {
+      const i = r.uniforms[n];
+      if (i.group === !0 && this.checkUniformExists(o, i))
+        return !0;
     }
-  }()), n;
+    return !1;
+  }
+  destroy() {
+    this.uniformGroup = null, this.disposeRunner.emit(this), this.disposeRunner.destroy();
+  }
+  /**
+   * Shader uniform values, shortcut for `uniformGroup.uniforms`.
+   * @readonly
+   */
+  get uniforms() {
+    return this.uniformGroup.uniforms;
+  }
+  /**
+   * A short hand function to create a shader based of a vertex and fragment shader.
+   * @param vertexSrc - The source of the vertex shader.
+   * @param fragmentSrc - The source of the fragment shader.
+   * @param uniforms - Custom uniforms to use to augment the built-in ones.
+   * @returns A shiny new PixiJS shader!
+   */
+  static from(o, r, n) {
+    const i = e.from(o, r);
+    return new t(i, n);
+  }
 }
 export {
-  p as isWebGLSupported
+  t as Shader
 };
 //# sourceMappingURL=index204.js.map

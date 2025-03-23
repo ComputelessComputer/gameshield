@@ -1,6 +1,8 @@
+import "./index20.js";
+import { Color as d } from "./index21.js";
+import "./index22.js";
 import "./index23.js";
 import "./index24.js";
-import { ExtensionType as p, extensions as u } from "./index140.js";
 import "./index25.js";
 import "./index26.js";
 import "./index27.js";
@@ -25,8 +27,9 @@ import "./index45.js";
 import "./index46.js";
 import "./index47.js";
 import "./index48.js";
-import "./index49.js";
+import { Filter as a } from "./index49.js";
 import "./index50.js";
+import { defaultFilterVertex as y } from "./index215.js";
 import "./index51.js";
 import "./index52.js";
 import "./index53.js";
@@ -55,284 +58,722 @@ import "./index75.js";
 import "./index76.js";
 import "./index77.js";
 import "./index78.js";
-import "./index79.js";
-import "./index80.js";
-import "./index81.js";
-import { EventBoundary as d } from "./index241.js";
-import { EventsTicker as s } from "./index242.js";
-import { FederatedPointerEvent as a } from "./index244.js";
-import { FederatedWheelEvent as c } from "./index105.js";
-const y = 1, E = {
-  touchstart: "pointerdown",
-  touchend: "pointerup",
-  touchendoutside: "pointerupoutside",
-  touchmove: "pointermove",
-  touchcancel: "pointercancel"
-}, h = class l {
+import w from "./index267.js";
+class _ extends a {
+  constructor() {
+    const i = {
+      m: new Float32Array([
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0
+      ]),
+      uAlpha: 1
+    };
+    super(y, w, i), this.alpha = 1;
+  }
   /**
-   * @param {PIXI.Renderer} renderer
+   * Transforms current matrix and set the new one
+   * @param {number[]} matrix - 5x4 matrix
+   * @param multiply - if true, current matrix and matrix are multiplied. If false,
+   *  just set the current matrix with @param matrix
    */
-  constructor(t) {
-    this.supportsTouchEvents = "ontouchstart" in globalThis, this.supportsPointerEvents = !!globalThis.PointerEvent, this.domElement = null, this.resolution = 1, this.renderer = t, this.rootBoundary = new d(null), s.init(this), this.autoPreventDefault = !0, this.eventsAdded = !1, this.rootPointerEvent = new a(null), this.rootWheelEvent = new c(null), this.cursorStyles = {
-      default: "inherit",
-      pointer: "pointer"
-    }, this.features = new Proxy({ ...l.defaultEventFeatures }, {
-      set: (e, o, i) => (o === "globalMove" && (this.rootBoundary.enableGlobalMoveEvents = i), e[o] = i, !0)
-    }), this.onPointerDown = this.onPointerDown.bind(this), this.onPointerMove = this.onPointerMove.bind(this), this.onPointerUp = this.onPointerUp.bind(this), this.onPointerOverOut = this.onPointerOverOut.bind(this), this.onWheel = this.onWheel.bind(this);
+  _loadMatrix(i, r = !1) {
+    let t = i;
+    r && (this._multiply(t, this.uniforms.m, i), t = this._colorMatrix(t)), this.uniforms.m = t;
   }
   /**
-   * The default interaction mode for all display objects.
-   * @see PIXI.DisplayObject.eventMode
-   * @type {PIXI.EventMode}
-   * @readonly
-   * @since 7.2.0
+   * Multiplies two mat5's
+   * @private
+   * @param out - 5x4 matrix the receiving matrix
+   * @param a - 5x4 matrix the first operand
+   * @param b - 5x4 matrix the second operand
+   * @returns {number[]} 5x4 matrix
    */
-  static get defaultEventMode() {
-    return this._defaultEventMode;
+  _multiply(i, r, t) {
+    return i[0] = r[0] * t[0] + r[1] * t[5] + r[2] * t[10] + r[3] * t[15], i[1] = r[0] * t[1] + r[1] * t[6] + r[2] * t[11] + r[3] * t[16], i[2] = r[0] * t[2] + r[1] * t[7] + r[2] * t[12] + r[3] * t[17], i[3] = r[0] * t[3] + r[1] * t[8] + r[2] * t[13] + r[3] * t[18], i[4] = r[0] * t[4] + r[1] * t[9] + r[2] * t[14] + r[3] * t[19] + r[4], i[5] = r[5] * t[0] + r[6] * t[5] + r[7] * t[10] + r[8] * t[15], i[6] = r[5] * t[1] + r[6] * t[6] + r[7] * t[11] + r[8] * t[16], i[7] = r[5] * t[2] + r[6] * t[7] + r[7] * t[12] + r[8] * t[17], i[8] = r[5] * t[3] + r[6] * t[8] + r[7] * t[13] + r[8] * t[18], i[9] = r[5] * t[4] + r[6] * t[9] + r[7] * t[14] + r[8] * t[19] + r[9], i[10] = r[10] * t[0] + r[11] * t[5] + r[12] * t[10] + r[13] * t[15], i[11] = r[10] * t[1] + r[11] * t[6] + r[12] * t[11] + r[13] * t[16], i[12] = r[10] * t[2] + r[11] * t[7] + r[12] * t[12] + r[13] * t[17], i[13] = r[10] * t[3] + r[11] * t[8] + r[12] * t[13] + r[13] * t[18], i[14] = r[10] * t[4] + r[11] * t[9] + r[12] * t[14] + r[13] * t[19] + r[14], i[15] = r[15] * t[0] + r[16] * t[5] + r[17] * t[10] + r[18] * t[15], i[16] = r[15] * t[1] + r[16] * t[6] + r[17] * t[11] + r[18] * t[16], i[17] = r[15] * t[2] + r[16] * t[7] + r[17] * t[12] + r[18] * t[17], i[18] = r[15] * t[3] + r[16] * t[8] + r[17] * t[13] + r[18] * t[18], i[19] = r[15] * t[4] + r[16] * t[9] + r[17] * t[14] + r[18] * t[19] + r[19], i;
   }
   /**
-   * Runner init called, view is available at this point.
-   * @ignore
+   * Create a Float32 Array and normalize the offset component to 0-1
+   * @param {number[]} matrix - 5x4 matrix
+   * @returns {number[]} 5x4 matrix with all values between 0-1
    */
-  init(t) {
-    const { view: e, resolution: o } = this.renderer;
-    this.setTargetElement(e), this.resolution = o, l._defaultEventMode = t.eventMode ?? "auto", Object.assign(this.features, t.eventFeatures ?? {}), this.rootBoundary.enableGlobalMoveEvents = this.features.globalMove;
+  _colorMatrix(i) {
+    const r = new Float32Array(i);
+    return r[4] /= 255, r[9] /= 255, r[14] /= 255, r[19] /= 255, r;
   }
   /**
-   * Handle changing resolution.
-   * @ignore
+   * Adjusts brightness
+   * @param b - value of the brigthness (0-1, where 0 is black)
+   * @param multiply - if true, current matrix and matrix are multiplied. If false,
+   *  just set the current matrix with @param matrix
    */
-  resolutionChange(t) {
-    this.resolution = t;
-  }
-  /** Destroys all event listeners and detaches the renderer. */
-  destroy() {
-    this.setTargetElement(null), this.renderer = null;
+  brightness(i, r) {
+    const t = [
+      i,
+      0,
+      0,
+      0,
+      0,
+      0,
+      i,
+      0,
+      0,
+      0,
+      0,
+      0,
+      i,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ];
+    this._loadMatrix(t, r);
   }
   /**
-   * Sets the current cursor mode, handling any callbacks or CSS style changes.
-   * @param mode - cursor mode, a key from the cursorStyles dictionary
+   * Sets each channel on the diagonal of the color matrix.
+   * This can be used to achieve a tinting effect on Containers similar to the tint field of some
+   * display objects like Sprite, Text, Graphics, and Mesh.
+   * @param color - Color of the tint. This is a hex value.
+   * @param multiply - if true, current matrix and matrix are multiplied. If false,
+   *  just set the current matrix with @param matrix
    */
-  setCursor(t) {
-    t = t || "default";
-    let e = !0;
-    if (globalThis.OffscreenCanvas && this.domElement instanceof OffscreenCanvas && (e = !1), this.currentCursor === t)
-      return;
-    this.currentCursor = t;
-    const o = this.cursorStyles[t];
-    if (o)
-      switch (typeof o) {
-        case "string":
-          e && (this.domElement.style.cursor = o);
-          break;
-        case "function":
-          o(t);
-          break;
-        case "object":
-          e && Object.assign(this.domElement.style, o);
-          break;
-      }
-    else
-      e && typeof t == "string" && !Object.prototype.hasOwnProperty.call(this.cursorStyles, t) && (this.domElement.style.cursor = t);
+  tint(i, r) {
+    const [t, o, p] = d.shared.setValue(i).toArray(), m = [
+      t,
+      0,
+      0,
+      0,
+      0,
+      0,
+      o,
+      0,
+      0,
+      0,
+      0,
+      0,
+      p,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ];
+    this._loadMatrix(m, r);
   }
   /**
-   * The global pointer event.
-   * Useful for getting the pointer position without listening to events.
-   * @since 7.2.0
+   * Set the matrices in grey scales
+   * @param scale - value of the grey (0-1, where 0 is black)
+   * @param multiply - if true, current matrix and matrix are multiplied. If false,
+   *  just set the current matrix with @param matrix
    */
-  get pointer() {
-    return this.rootPointerEvent;
+  greyscale(i, r) {
+    const t = [
+      i,
+      i,
+      i,
+      0,
+      0,
+      i,
+      i,
+      i,
+      0,
+      0,
+      i,
+      i,
+      i,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ];
+    this._loadMatrix(t, r);
   }
   /**
-   * Event handler for pointer down events on {@link PIXI.EventSystem#domElement this.domElement}.
-   * @param nativeEvent - The native mouse/pointer/touch event.
+   * Set the black and white matrice.
+   * @param multiply - if true, current matrix and matrix are multiplied. If false,
+   *  just set the current matrix with @param matrix
    */
-  onPointerDown(t) {
-    if (!this.features.click)
-      return;
-    this.rootBoundary.rootTarget = this.renderer.lastObjectRendered;
-    const e = this.normalizeToPointerData(t);
-    this.autoPreventDefault && e[0].isNormalized && (t.cancelable || !("cancelable" in t)) && t.preventDefault();
-    for (let o = 0, i = e.length; o < i; o++) {
-      const r = e[o], n = this.bootstrapEvent(this.rootPointerEvent, r);
-      this.rootBoundary.mapEvent(n);
-    }
-    this.setCursor(this.rootBoundary.cursor);
+  blackAndWhite(i) {
+    const r = [
+      0.3,
+      0.6,
+      0.1,
+      0,
+      0,
+      0.3,
+      0.6,
+      0.1,
+      0,
+      0,
+      0.3,
+      0.6,
+      0.1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ];
+    this._loadMatrix(r, i);
   }
   /**
-   * Event handler for pointer move events on on {@link PIXI.EventSystem#domElement this.domElement}.
-   * @param nativeEvent - The native mouse/pointer/touch events.
+   * Set the hue property of the color
+   * @param rotation - in degrees
+   * @param multiply - if true, current matrix and matrix are multiplied. If false,
+   *  just set the current matrix with @param matrix
    */
-  onPointerMove(t) {
-    if (!this.features.move)
-      return;
-    this.rootBoundary.rootTarget = this.renderer.lastObjectRendered, s.pointerMoved();
-    const e = this.normalizeToPointerData(t);
-    for (let o = 0, i = e.length; o < i; o++) {
-      const r = this.bootstrapEvent(this.rootPointerEvent, e[o]);
-      this.rootBoundary.mapEvent(r);
-    }
-    this.setCursor(this.rootBoundary.cursor);
+  hue(i, r) {
+    i = (i || 0) / 180 * Math.PI;
+    const t = Math.cos(i), o = Math.sin(i), p = Math.sqrt, m = 1 / 3, s = p(m), x = t + (1 - t) * m, h = m * (1 - t) - s * o, l = m * (1 - t) + s * o, e = m * (1 - t) + s * o, c = t + m * (1 - t), M = m * (1 - t) - s * o, n = m * (1 - t) - s * o, f = m * (1 - t) + s * o, g = t + m * (1 - t), A = [
+      x,
+      h,
+      l,
+      0,
+      0,
+      e,
+      c,
+      M,
+      0,
+      0,
+      n,
+      f,
+      g,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ];
+    this._loadMatrix(A, r);
   }
   /**
-   * Event handler for pointer up events on {@link PIXI.EventSystem#domElement this.domElement}.
-   * @param nativeEvent - The native mouse/pointer/touch event.
+   * Set the contrast matrix, increase the separation between dark and bright
+   * Increase contrast : shadows darker and highlights brighter
+   * Decrease contrast : bring the shadows up and the highlights down
+   * @param amount - value of the contrast (0-1)
+   * @param multiply - if true, current matrix and matrix are multiplied. If false,
+   *  just set the current matrix with @param matrix
    */
-  onPointerUp(t) {
-    if (!this.features.click)
-      return;
-    this.rootBoundary.rootTarget = this.renderer.lastObjectRendered;
-    let e = t.target;
-    t.composedPath && t.composedPath().length > 0 && (e = t.composedPath()[0]);
-    const o = e !== this.domElement ? "outside" : "", i = this.normalizeToPointerData(t);
-    for (let r = 0, n = i.length; r < n; r++) {
-      const m = this.bootstrapEvent(this.rootPointerEvent, i[r]);
-      m.type += o, this.rootBoundary.mapEvent(m);
-    }
-    this.setCursor(this.rootBoundary.cursor);
+  contrast(i, r) {
+    const t = (i || 0) + 1, o = -0.5 * (t - 1), p = [
+      t,
+      0,
+      0,
+      0,
+      o,
+      0,
+      t,
+      0,
+      0,
+      o,
+      0,
+      0,
+      t,
+      0,
+      o,
+      0,
+      0,
+      0,
+      1,
+      0
+    ];
+    this._loadMatrix(p, r);
   }
   /**
-   * Event handler for pointer over & out events on {@link PIXI.EventSystem#domElement this.domElement}.
-   * @param nativeEvent - The native mouse/pointer/touch event.
+   * Set the saturation matrix, increase the separation between colors
+   * Increase saturation : increase contrast, brightness, and sharpness
+   * @param amount - The saturation amount (0-1)
+   * @param multiply - if true, current matrix and matrix are multiplied. If false,
+   *  just set the current matrix with @param matrix
    */
-  onPointerOverOut(t) {
-    if (!this.features.click)
-      return;
-    this.rootBoundary.rootTarget = this.renderer.lastObjectRendered;
-    const e = this.normalizeToPointerData(t);
-    for (let o = 0, i = e.length; o < i; o++) {
-      const r = this.bootstrapEvent(this.rootPointerEvent, e[o]);
-      this.rootBoundary.mapEvent(r);
-    }
-    this.setCursor(this.rootBoundary.cursor);
+  saturate(i = 0, r) {
+    const t = i * 2 / 3 + 1, o = (t - 1) * -0.5, p = [
+      t,
+      o,
+      o,
+      0,
+      0,
+      o,
+      t,
+      o,
+      0,
+      0,
+      o,
+      o,
+      t,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ];
+    this._loadMatrix(p, r);
+  }
+  /** Desaturate image (remove color) Call the saturate function */
+  desaturate() {
+    this.saturate(-1);
   }
   /**
-   * Passive handler for `wheel` events on {@link PIXI.EventSystem.domElement this.domElement}.
-   * @param nativeEvent - The native wheel event.
+   * Negative image (inverse of classic rgb matrix)
+   * @param multiply - if true, current matrix and matrix are multiplied. If false,
+   *  just set the current matrix with @param matrix
    */
-  onWheel(t) {
-    if (!this.features.wheel)
-      return;
-    const e = this.normalizeWheelEvent(t);
-    this.rootBoundary.rootTarget = this.renderer.lastObjectRendered, this.rootBoundary.mapEvent(e);
+  negative(i) {
+    const r = [
+      -1,
+      0,
+      0,
+      1,
+      0,
+      0,
+      -1,
+      0,
+      1,
+      0,
+      0,
+      0,
+      -1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ];
+    this._loadMatrix(r, i);
   }
   /**
-   * Sets the {@link PIXI.EventSystem#domElement domElement} and binds event listeners.
+   * Sepia image
+   * @param multiply - if true, current matrix and matrix are multiplied. If false,
+   *  just set the current matrix with @param matrix
+   */
+  sepia(i) {
+    const r = [
+      0.393,
+      0.7689999,
+      0.18899999,
+      0,
+      0,
+      0.349,
+      0.6859999,
+      0.16799999,
+      0,
+      0,
+      0.272,
+      0.5339999,
+      0.13099999,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ];
+    this._loadMatrix(r, i);
+  }
+  /**
+   * Color motion picture process invented in 1916 (thanks Dominic Szablewski)
+   * @param multiply - if true, current matrix and matrix are multiplied. If false,
+   *  just set the current matrix with @param matrix
+   */
+  technicolor(i) {
+    const r = [
+      1.9125277891456083,
+      -0.8545344976951645,
+      -0.09155508482755585,
+      0,
+      11.793603434377337,
+      -0.3087833385928097,
+      1.7658908555458428,
+      -0.10601743074722245,
+      0,
+      -70.35205161461398,
+      -0.231103377548616,
+      -0.7501899197440212,
+      1.847597816108189,
+      0,
+      30.950940869491138,
+      0,
+      0,
+      0,
+      1,
+      0
+    ];
+    this._loadMatrix(r, i);
+  }
+  /**
+   * Polaroid filter
+   * @param multiply - if true, current matrix and matrix are multiplied. If false,
+   *  just set the current matrix with @param matrix
+   */
+  polaroid(i) {
+    const r = [
+      1.438,
+      -0.062,
+      -0.062,
+      0,
+      0,
+      -0.122,
+      1.378,
+      -0.122,
+      0,
+      0,
+      -0.016,
+      -0.016,
+      1.483,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ];
+    this._loadMatrix(r, i);
+  }
+  /**
+   * Filter who transforms : Red -> Blue and Blue -> Red
+   * @param multiply - if true, current matrix and matrix are multiplied. If false,
+   *  just set the current matrix with @param matrix
+   */
+  toBGR(i) {
+    const r = [
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ];
+    this._loadMatrix(r, i);
+  }
+  /**
+   * Color reversal film introduced by Eastman Kodak in 1935. (thanks Dominic Szablewski)
+   * @param multiply - if true, current matrix and matrix are multiplied. If false,
+   *  just set the current matrix with @param matrix
+   */
+  kodachrome(i) {
+    const r = [
+      1.1285582396593525,
+      -0.3967382283601348,
+      -0.03992559172921793,
+      0,
+      63.72958762196502,
+      -0.16404339962244616,
+      1.0835251566291304,
+      -0.05498805115633132,
+      0,
+      24.732407896706203,
+      -0.16786010706155763,
+      -0.5603416277695248,
+      1.6014850761964943,
+      0,
+      35.62982807460946,
+      0,
+      0,
+      0,
+      1,
+      0
+    ];
+    this._loadMatrix(r, i);
+  }
+  /**
+   * Brown delicious browni filter (thanks Dominic Szablewski)
+   * @param multiply - if true, current matrix and matrix are multiplied. If false,
+   *  just set the current matrix with @param matrix
+   */
+  browni(i) {
+    const r = [
+      0.5997023498159715,
+      0.34553243048391263,
+      -0.2708298674538042,
+      0,
+      47.43192855600873,
+      -0.037703249837783157,
+      0.8609577587992641,
+      0.15059552388459913,
+      0,
+      -36.96841498319127,
+      0.24113635128153335,
+      -0.07441037908422492,
+      0.44972182064877153,
+      0,
+      -7.562075277591283,
+      0,
+      0,
+      0,
+      1,
+      0
+    ];
+    this._loadMatrix(r, i);
+  }
+  /**
+   * Vintage filter (thanks Dominic Szablewski)
+   * @param multiply - if true, current matrix and matrix are multiplied. If false,
+   *  just set the current matrix with @param matrix
+   */
+  vintage(i) {
+    const r = [
+      0.6279345635605994,
+      0.3202183420819367,
+      -0.03965408211312453,
+      0,
+      9.651285835294123,
+      0.02578397704808868,
+      0.6441188644374771,
+      0.03259127616149294,
+      0,
+      7.462829176470591,
+      0.0466055556782719,
+      -0.0851232987247891,
+      0.5241648018700465,
+      0,
+      5.159190588235296,
+      0,
+      0,
+      0,
+      1,
+      0
+    ];
+    this._loadMatrix(r, i);
+  }
+  /**
+   * We don't know exactly what it does, kind of gradient map, but funny to play with!
+   * @param desaturation - Tone values.
+   * @param toned - Tone values.
+   * @param lightColor - Tone values, example: `0xFFE580`
+   * @param darkColor - Tone values, example: `0xFFE580`
+   * @param multiply - if true, current matrix and matrix are multiplied. If false,
+   *  just set the current matrix with @param matrix
+   */
+  colorTone(i, r, t, o, p) {
+    i = i || 0.2, r = r || 0.15, t = t || 16770432, o = o || 3375104;
+    const m = d.shared, [s, x, h] = m.setValue(t).toArray(), [l, e, c] = m.setValue(o).toArray(), M = [
+      0.3,
+      0.59,
+      0.11,
+      0,
+      0,
+      s,
+      x,
+      h,
+      i,
+      0,
+      l,
+      e,
+      c,
+      r,
+      0,
+      s - l,
+      x - e,
+      h - c,
+      0,
+      0
+    ];
+    this._loadMatrix(M, p);
+  }
+  /**
+   * Night effect
+   * @param intensity - The intensity of the night effect.
+   * @param multiply - if true, current matrix and matrix are multiplied. If false,
+   *  just set the current matrix with @param matrix
+   */
+  night(i, r) {
+    i = i || 0.1;
+    const t = [
+      i * -2,
+      -i,
+      0,
+      0,
+      0,
+      -i,
+      0,
+      i,
+      0,
+      0,
+      0,
+      i,
+      i * 2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ];
+    this._loadMatrix(t, r);
+  }
+  /**
+   * Predator effect
    *
-   * To deregister the current DOM element without setting a new one, pass {@code null}.
-   * @param element - The new DOM element.
+   * Erase the current matrix by setting a new indepent one
+   * @param amount - how much the predator feels his future victim
+   * @param multiply - if true, current matrix and matrix are multiplied. If false,
+   *  just set the current matrix with @param matrix
    */
-  setTargetElement(t) {
-    this.removeEvents(), this.domElement = t, s.domElement = t, this.addEvents();
-  }
-  /** Register event listeners on {@link PIXI.Renderer#domElement this.domElement}. */
-  addEvents() {
-    if (this.eventsAdded || !this.domElement)
-      return;
-    s.addTickerListener();
-    const t = this.domElement.style;
-    t && (globalThis.navigator.msPointerEnabled ? (t.msContentZooming = "none", t.msTouchAction = "none") : this.supportsPointerEvents && (t.touchAction = "none")), this.supportsPointerEvents ? (globalThis.document.addEventListener("pointermove", this.onPointerMove, !0), this.domElement.addEventListener("pointerdown", this.onPointerDown, !0), this.domElement.addEventListener("pointerleave", this.onPointerOverOut, !0), this.domElement.addEventListener("pointerover", this.onPointerOverOut, !0), globalThis.addEventListener("pointerup", this.onPointerUp, !0)) : (globalThis.document.addEventListener("mousemove", this.onPointerMove, !0), this.domElement.addEventListener("mousedown", this.onPointerDown, !0), this.domElement.addEventListener("mouseout", this.onPointerOverOut, !0), this.domElement.addEventListener("mouseover", this.onPointerOverOut, !0), globalThis.addEventListener("mouseup", this.onPointerUp, !0), this.supportsTouchEvents && (this.domElement.addEventListener("touchstart", this.onPointerDown, !0), this.domElement.addEventListener("touchend", this.onPointerUp, !0), this.domElement.addEventListener("touchmove", this.onPointerMove, !0))), this.domElement.addEventListener("wheel", this.onWheel, {
-      passive: !0,
-      capture: !0
-    }), this.eventsAdded = !0;
-  }
-  /** Unregister event listeners on {@link PIXI.EventSystem#domElement this.domElement}. */
-  removeEvents() {
-    if (!this.eventsAdded || !this.domElement)
-      return;
-    s.removeTickerListener();
-    const t = this.domElement.style;
-    globalThis.navigator.msPointerEnabled ? (t.msContentZooming = "", t.msTouchAction = "") : this.supportsPointerEvents && (t.touchAction = ""), this.supportsPointerEvents ? (globalThis.document.removeEventListener("pointermove", this.onPointerMove, !0), this.domElement.removeEventListener("pointerdown", this.onPointerDown, !0), this.domElement.removeEventListener("pointerleave", this.onPointerOverOut, !0), this.domElement.removeEventListener("pointerover", this.onPointerOverOut, !0), globalThis.removeEventListener("pointerup", this.onPointerUp, !0)) : (globalThis.document.removeEventListener("mousemove", this.onPointerMove, !0), this.domElement.removeEventListener("mousedown", this.onPointerDown, !0), this.domElement.removeEventListener("mouseout", this.onPointerOverOut, !0), this.domElement.removeEventListener("mouseover", this.onPointerOverOut, !0), globalThis.removeEventListener("mouseup", this.onPointerUp, !0), this.supportsTouchEvents && (this.domElement.removeEventListener("touchstart", this.onPointerDown, !0), this.domElement.removeEventListener("touchend", this.onPointerUp, !0), this.domElement.removeEventListener("touchmove", this.onPointerMove, !0))), this.domElement.removeEventListener("wheel", this.onWheel, !0), this.domElement = null, this.eventsAdded = !1;
+  predator(i, r) {
+    const t = [
+      // row 1
+      11.224130630493164 * i,
+      -4.794486999511719 * i,
+      -2.8746118545532227 * i,
+      0 * i,
+      0.40342438220977783 * i,
+      // row 2
+      -3.6330697536468506 * i,
+      9.193157196044922 * i,
+      -2.951810836791992 * i,
+      0 * i,
+      -1.316135048866272 * i,
+      // row 3
+      -3.2184197902679443 * i,
+      -4.2375030517578125 * i,
+      7.476448059082031 * i,
+      0 * i,
+      0.8044459223747253 * i,
+      // row 4
+      0,
+      0,
+      0,
+      1,
+      0
+    ];
+    this._loadMatrix(t, r);
   }
   /**
-   * Maps x and y coords from a DOM object and maps them correctly to the PixiJS view. The
-   * resulting value is stored in the point. This takes into account the fact that the DOM
-   * element could be scaled and positioned anywhere on the screen.
-   * @param  {PIXI.IPointData} point - the point that the result will be stored in
-   * @param  {number} x - the x coord of the position to map
-   * @param  {number} y - the y coord of the position to map
-   */
-  mapPositionToPoint(t, e, o) {
-    const i = this.domElement.isConnected ? this.domElement.getBoundingClientRect() : {
-      x: 0,
-      y: 0,
-      width: this.domElement.width,
-      height: this.domElement.height,
-      left: 0,
-      top: 0
-    }, r = 1 / this.resolution;
-    t.x = (e - i.left) * (this.domElement.width / i.width) * r, t.y = (o - i.top) * (this.domElement.height / i.height) * r;
-  }
-  /**
-   * Ensures that the original event object contains all data that a regular pointer event would have
-   * @param event - The original event data from a touch or mouse event
-   * @returns An array containing a single normalized pointer event, in the case of a pointer
-   *  or mouse event, or a multiple normalized pointer events if there are multiple changed touches
-   */
-  normalizeToPointerData(t) {
-    const e = [];
-    if (this.supportsTouchEvents && t instanceof TouchEvent)
-      for (let o = 0, i = t.changedTouches.length; o < i; o++) {
-        const r = t.changedTouches[o];
-        typeof r.button > "u" && (r.button = 0), typeof r.buttons > "u" && (r.buttons = 1), typeof r.isPrimary > "u" && (r.isPrimary = t.touches.length === 1 && t.type === "touchstart"), typeof r.width > "u" && (r.width = r.radiusX || 1), typeof r.height > "u" && (r.height = r.radiusY || 1), typeof r.tiltX > "u" && (r.tiltX = 0), typeof r.tiltY > "u" && (r.tiltY = 0), typeof r.pointerType > "u" && (r.pointerType = "touch"), typeof r.pointerId > "u" && (r.pointerId = r.identifier || 0), typeof r.pressure > "u" && (r.pressure = r.force || 0.5), typeof r.twist > "u" && (r.twist = 0), typeof r.tangentialPressure > "u" && (r.tangentialPressure = 0), typeof r.layerX > "u" && (r.layerX = r.offsetX = r.clientX), typeof r.layerY > "u" && (r.layerY = r.offsetY = r.clientY), r.isNormalized = !0, r.type = t.type, e.push(r);
-      }
-    else if (!globalThis.MouseEvent || t instanceof MouseEvent && (!this.supportsPointerEvents || !(t instanceof globalThis.PointerEvent))) {
-      const o = t;
-      typeof o.isPrimary > "u" && (o.isPrimary = !0), typeof o.width > "u" && (o.width = 1), typeof o.height > "u" && (o.height = 1), typeof o.tiltX > "u" && (o.tiltX = 0), typeof o.tiltY > "u" && (o.tiltY = 0), typeof o.pointerType > "u" && (o.pointerType = "mouse"), typeof o.pointerId > "u" && (o.pointerId = y), typeof o.pressure > "u" && (o.pressure = 0.5), typeof o.twist > "u" && (o.twist = 0), typeof o.tangentialPressure > "u" && (o.tangentialPressure = 0), o.isNormalized = !0, e.push(o);
-    } else
-      e.push(t);
-    return e;
-  }
-  /**
-   * Normalizes the native {@link https://w3c.github.io/uievents/#interface-wheelevent WheelEvent}.
+   * LSD effect
    *
-   * The returned {@link PIXI.FederatedWheelEvent} is a shared instance. It will not persist across
-   * multiple native wheel events.
-   * @param nativeEvent - The native wheel event that occurred on the canvas.
-   * @returns A federated wheel event.
+   * Multiply the current matrix
+   * @param multiply - if true, current matrix and matrix are multiplied. If false,
+   *  just set the current matrix with @param matrix
    */
-  normalizeWheelEvent(t) {
-    const e = this.rootWheelEvent;
-    return this.transferMouseData(e, t), e.deltaX = t.deltaX, e.deltaY = t.deltaY, e.deltaZ = t.deltaZ, e.deltaMode = t.deltaMode, this.mapPositionToPoint(e.screen, t.clientX, t.clientY), e.global.copyFrom(e.screen), e.offset.copyFrom(e.screen), e.nativeEvent = t, e.type = t.type, e;
+  lsd(i) {
+    const r = [
+      2,
+      -0.4,
+      0.5,
+      0,
+      0,
+      -0.5,
+      2,
+      -0.4,
+      0,
+      0,
+      -0.4,
+      -0.5,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ];
+    this._loadMatrix(r, i);
+  }
+  /** Erase the current matrix by setting the default one. */
+  reset() {
+    const i = [
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ];
+    this._loadMatrix(i, !1);
   }
   /**
-   * Normalizes the `nativeEvent` into a federateed {@link PIXI.FederatedPointerEvent}.
-   * @param event
-   * @param nativeEvent
+   * The matrix of the color matrix filter
+   * @member {number[]}
+   * @default [1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0]
    */
-  bootstrapEvent(t, e) {
-    return t.originalEvent = null, t.nativeEvent = e, t.pointerId = e.pointerId, t.width = e.width, t.height = e.height, t.isPrimary = e.isPrimary, t.pointerType = e.pointerType, t.pressure = e.pressure, t.tangentialPressure = e.tangentialPressure, t.tiltX = e.tiltX, t.tiltY = e.tiltY, t.twist = e.twist, this.transferMouseData(t, e), this.mapPositionToPoint(t.screen, e.clientX, e.clientY), t.global.copyFrom(t.screen), t.offset.copyFrom(t.screen), t.isTrusted = e.isTrusted, t.type === "pointerleave" && (t.type = "pointerout"), t.type.startsWith("mouse") && (t.type = t.type.replace("mouse", "pointer")), t.type.startsWith("touch") && (t.type = E[t.type] || t.type), t;
+  get matrix() {
+    return this.uniforms.m;
+  }
+  set matrix(i) {
+    this.uniforms.m = i;
   }
   /**
-   * Transfers base & mouse event data from the {@code nativeEvent} to the federated event.
-   * @param event
-   * @param nativeEvent
+   * The opacity value to use when mixing the original and resultant colors.
+   *
+   * When the value is 0, the original color is used without modification.
+   * When the value is 1, the result color is used.
+   * When in the range (0, 1) the color is interpolated between the original and result by this amount.
+   * @default 1
    */
-  transferMouseData(t, e) {
-    t.isTrusted = e.isTrusted, t.srcElement = e.srcElement, t.timeStamp = performance.now(), t.type = e.type, t.altKey = e.altKey, t.button = e.button, t.buttons = e.buttons, t.client.x = e.clientX, t.client.y = e.clientY, t.ctrlKey = e.ctrlKey, t.metaKey = e.metaKey, t.movement.x = e.movementX, t.movement.y = e.movementY, t.page.x = e.pageX, t.page.y = e.pageY, t.relatedTarget = null, t.shiftKey = e.shiftKey;
+  get alpha() {
+    return this.uniforms.uAlpha;
   }
-};
-h.extension = {
-  name: "events",
-  type: [
-    p.RendererSystem,
-    p.CanvasRendererSystem
-  ]
-}, /**
-* The event features that are enabled by the EventSystem
-* This option only is available when using **@pixi/events** package
-* (included in the **pixi.js** and **pixi.js-legacy** bundle), otherwise it will be ignored.
-* @since 7.2.0
-*/
-h.defaultEventFeatures = {
-  move: !0,
-  globalMove: !0,
-  click: !0,
-  wheel: !0
-};
-let f = h;
-u.add(f);
+  set alpha(i) {
+    this.uniforms.uAlpha = i;
+  }
+}
+_.prototype.grayscale = _.prototype.greyscale;
 export {
-  f as EventSystem
+  _ as ColorMatrixFilter
 };
 //# sourceMappingURL=index106.js.map

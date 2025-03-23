@@ -1,22 +1,10 @@
-import { mapSize as c } from "./index223.js";
-import { mapType as s } from "./index310.js";
-function p(a, t) {
-  const n = {}, r = t.getProgramParameter(a, t.ACTIVE_ATTRIBUTES);
-  for (let i = 0; i < r; i++) {
-    const e = t.getActiveAttrib(a, i);
-    if (e.name.startsWith("gl_"))
-      continue;
-    const o = s(t, e.type), m = {
-      type: o,
-      name: e.name,
-      size: c(o),
-      location: t.getAttribLocation(a, e.name)
-    };
-    n[e.name] = m;
+import { MSAA_QUALITY as i } from "./index164.js";
+class e {
+  constructor(t) {
+    this.framebuffer = t, this.stencil = null, this.dirtyId = -1, this.dirtyFormat = -1, this.dirtySize = -1, this.multisample = i.NONE, this.msaaBuffer = null, this.blitFramebuffer = null, this.mipLevel = 0;
   }
-  return n;
 }
 export {
-  p as getAttributeData
+  e as GLFramebuffer
 };
 //# sourceMappingURL=index219.js.map

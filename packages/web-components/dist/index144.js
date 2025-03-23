@@ -1,46 +1,119 @@
-class h {
+import "./index8.js";
+import { difficultyToValue as h } from "./index127.js";
+import { Container as l } from "./index148.js";
+class f {
   /**
-   * @param loader
-   * @param verbose - should the loader log to the console
-   */
-  constructor(s, t = !1) {
-    this._loader = s, this._assetList = [], this._isLoading = !1, this._maxConcurrent = 1, this.verbose = t;
-  }
-  /**
-   * Adds an array of assets to load.
-   * @param assetUrls - assets to load
-   */
-  add(s) {
-    s.forEach((t) => {
-      this._assetList.push(t);
-    }), this.verbose && console.log("[BackgroundLoader] assets: ", this._assetList), this._isActive && !this._isLoading && this._next();
-  }
-  /**
-   * Loads the next set of assets. Will try to load as many assets as it can at the same time.
+   * Create a new BaseGame instance
    *
-   * The max assets it will try to load at one time will be 4.
+   * @param app - PIXI Application instance
+   * @param config - Game configuration
    */
-  async _next() {
-    if (this._assetList.length && this._isActive) {
-      this._isLoading = !0;
-      const s = [], t = Math.min(this._assetList.length, this._maxConcurrent);
-      for (let i = 0; i < t; i++)
-        s.push(this._assetList.pop());
-      await this._loader.load(s), this._isLoading = !1, this._next();
-    }
+  constructor(t, i = {}) {
+    var e, s, n, o, a, r;
+    this.isRunning = !1, this.isInitialized = !1, this.startTime = 0, this.onCompleteCallback = null, this.metrics = {
+      mouseMovements: 0,
+      keyPresses: 0,
+      interactionDuration: 0
+    }, this.app = t, this.container = new l(), this.config = {
+      width: (e = i.width) !== null && e !== void 0 ? e : 400,
+      height: (s = i.height) !== null && s !== void 0 ? s : 300,
+      backgroundColor: (n = i.backgroundColor) !== null && n !== void 0 ? n : 1087931,
+      difficulty: (o = i.difficulty) !== null && o !== void 0 ? o : "medium",
+      assetsPath: (a = i.assetsPath) !== null && a !== void 0 ? a : "",
+      onLoad: (r = i.onLoad) !== null && r !== void 0 ? r : () => {
+      }
+    }, this.difficultyValue = h(this.config.difficulty), this.app.stage.addChild(this.container);
   }
   /**
-   * Activate/Deactivate the loading. If set to true then it will immediately continue to load the next asset.
-   * @returns whether the class is active
+   * Initialize resources and setup
    */
-  get active() {
-    return this._isActive;
+  init() {
+    this.isInitialized || (this.setupInteractionTracking(), this.initialize(), this.isInitialized = !0, this.config.onLoad && this.config.onLoad());
   }
-  set active(s) {
-    this._isActive !== s && (this._isActive = s, s && !this._isLoading && this._next());
+  /**
+   * Set up interaction tracking
+   *
+   * @protected
+   */
+  setupInteractionTracking() {
+    this.app.view.addEventListener("mousemove", () => {
+      this.isRunning && this.metrics.mouseMovements++;
+    }), window.addEventListener("keydown", (t) => {
+      this.isRunning && this.metrics.keyPresses++;
+    });
+  }
+  /**
+   * Start the game
+   */
+  start() {
+    this.isInitialized || this.init(), !this.isRunning && (this.startTime = Date.now(), this.isRunning = !0, this.metrics.mouseMovements = 0, this.metrics.keyPresses = 0, this.metrics.interactionDuration = 0);
+  }
+  /**
+   * Pause the game
+   */
+  pause() {
+    this.isRunning = !1;
+  }
+  /**
+   * Resume the game
+   */
+  resume() {
+    this.isRunning || (this.isRunning = !0);
+  }
+  /**
+   * Reset the game state
+   */
+  reset() {
+    this.isRunning = !1, this.startTime = 0, this.metrics.mouseMovements = 0, this.metrics.keyPresses = 0, this.metrics.interactionDuration = 0;
+  }
+  /**
+   * Mount the game to a DOM container
+   *
+   * @param container - HTML element to mount to
+   */
+  mount(t) {
+  }
+  /**
+   * Set completion callback
+   *
+   * @param callback - Function to call when game completes
+   */
+  setCompletionCallback(t) {
+    this.onCompleteCallback = t;
+  }
+  /**
+   * Complete the game and notify with result
+   *
+   * @param success - Whether the game was completed successfully
+   * @param score - Score achieved (0-100)
+   * @param gameData - Optional game-specific data
+   * @protected
+   */
+  complete(t, i, e) {
+    if (!this.isRunning)
+      return;
+    this.isRunning = !1;
+    const s = Date.now() - this.startTime;
+    this.metrics.interactionDuration = s;
+    const n = {
+      success: t,
+      score: i,
+      time: s,
+      metrics: { ...this.metrics },
+      gameData: e
+    };
+    this.onCompleteCallback && this.onCompleteCallback(n);
+  }
+  /**
+   * Clean up and destroy game
+   */
+  destroy() {
+    this.app.view.removeEventListener("mousemove", () => {
+    }), window.removeEventListener("keydown", () => {
+    }), this.app.stage.removeChild(this.container), this.container.destroy({ children: !0 }), this.isInitialized = !1, this.isRunning = !1, this.onCompleteCallback = null;
   }
 }
 export {
-  h as BackgroundLoader
+  f as BaseGame
 };
 //# sourceMappingURL=index144.js.map

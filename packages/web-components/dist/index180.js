@@ -1,15 +1,25 @@
-var o = `varying vec2 vTextureCoord;
-varying vec4 vColor;
-varying float vTextureId;
-uniform sampler2D uSamplers[%count%];
-
-void main(void){
-    vec4 color;
-    %forloop%
-    gl_FragColor = color * vColor;
+async function r(e) {
+  if ("Image" in globalThis)
+    return new Promise((t) => {
+      const a = new Image();
+      a.onload = () => {
+        t(!0);
+      }, a.onerror = () => {
+        t(!1);
+      }, a.src = e;
+    });
+  if ("createImageBitmap" in globalThis && "fetch" in globalThis) {
+    try {
+      const t = await (await fetch(e)).blob();
+      await createImageBitmap(t);
+    } catch {
+      return !1;
+    }
+    return !0;
+  }
+  return !1;
 }
-`;
 export {
-  o as default
+  r as testImageFormat
 };
 //# sourceMappingURL=index180.js.map

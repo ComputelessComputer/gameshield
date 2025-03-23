@@ -1,24 +1,23 @@
-import { MSAA_QUALITY as i } from "./index164.js";
-import "./index25.js";
-import "./index26.js";
-import "./index27.js";
-import { Rectangle as t } from "./index28.js";
-import "./index29.js";
-import "./index30.js";
-import "./index31.js";
-import "./index32.js";
-import "./index33.js";
-import "./index34.js";
-class g {
-  constructor() {
-    this.renderTexture = null, this.target = null, this.legacy = !1, this.resolution = 1, this.multisample = i.NONE, this.sourceFrame = new t(), this.destinationFrame = new t(), this.bindingSourceFrame = new t(), this.bindingDestinationFrame = new t(), this.filters = [], this.transform = null;
-  }
-  /** Clears the state */
-  clear() {
-    this.target = null, this.filters = null, this.renderTexture = null;
+function i(t, e, n, c, o) {
+  const s = e[n];
+  for (let l = 0; l < s.length; l++) {
+    const r = s[l];
+    n < e.length - 1 ? i(t.replace(c[n], r), e, n + 1, c, o) : o.push(t.replace(c[n], r));
   }
 }
+function u(t) {
+  const e = /\{(.*?)\}/g, n = t.match(e), c = [];
+  if (n) {
+    const o = [];
+    n.forEach((s) => {
+      const l = s.substring(1, s.length - 1).split(",");
+      o.push(l);
+    }), i(t, o, 0, n, c);
+  } else
+    c.push(t);
+  return c;
+}
 export {
-  g as FilterState
+  u as createStringVariations
 };
 //# sourceMappingURL=index186.js.map

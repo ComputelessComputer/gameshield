@@ -1,83 +1,65 @@
-import "./index23.js";
-import "./index24.js";
-import "./index25.js";
-import "./index26.js";
-import "./index27.js";
-import "./index28.js";
-import "./index29.js";
-import "./index30.js";
-import "./index31.js";
-import "./index32.js";
-import "./index33.js";
-import "./index34.js";
-import "./index35.js";
-import "./index36.js";
-import "./index37.js";
-import "./index38.js";
-import "./index39.js";
-import "./index40.js";
-import "./index41.js";
-import "./index42.js";
-import "./index43.js";
-import "./index44.js";
-import "./index45.js";
-import "./index46.js";
-import "./index47.js";
-import "./index48.js";
-import "./index49.js";
-import "./index50.js";
-import "./index51.js";
-import { Filter as t } from "./index52.js";
-import "./index53.js";
-import { defaultVertex as p } from "./index193.js";
-import "./index54.js";
-import "./index55.js";
-import "./index56.js";
-import "./index57.js";
-import "./index58.js";
-import "./index59.js";
-import "./index60.js";
-import "./index61.js";
-import "./index62.js";
-import "./index63.js";
-import "./index64.js";
-import "./index65.js";
-import "./index66.js";
-import "./index67.js";
-import "./index68.js";
-import "./index69.js";
-import "./index70.js";
-import "./index71.js";
-import "./index72.js";
-import "./index73.js";
-import "./index74.js";
-import "./index75.js";
-import "./index76.js";
-import "./index77.js";
-import "./index78.js";
-import "./index79.js";
-import "./index80.js";
-import "./index81.js";
-import o from "./index254.js";
-class fr extends t {
+import { Texture as a } from "./index135.js";
+import { BaseRenderTexture as o } from "./index228.js";
+class h extends a {
   /**
-   * @param alpha - Amount of alpha from 0 to 1, where 0 is transparent
+   * @param baseRenderTexture - The base texture object that this texture uses.
+   * @param frame - The rectangle frame of the texture to show.
    */
-  constructor(r = 1) {
-    super(p, o, { uAlpha: 1 }), this.alpha = r;
+  constructor(e, t) {
+    super(e, t), this.valid = !0, this.filterFrame = null, this.filterPoolKey = null, this.updateUvs();
   }
   /**
-   * Coefficient for alpha multiplication
-   * @default 1
+   * Shortcut to `this.baseTexture.framebuffer`, saves baseTexture cast.
+   * @readonly
    */
-  get alpha() {
-    return this.uniforms.uAlpha;
+  get framebuffer() {
+    return this.baseTexture.framebuffer;
   }
-  set alpha(r) {
-    this.uniforms.uAlpha = r;
+  /**
+   * Shortcut to `this.framebuffer.multisample`.
+   * @default PIXI.MSAA_QUALITY.NONE
+   */
+  get multisample() {
+    return this.framebuffer.multisample;
+  }
+  set multisample(e) {
+    this.framebuffer.multisample = e;
+  }
+  /**
+   * Resizes the RenderTexture.
+   * @param desiredWidth - The desired width to resize to.
+   * @param desiredHeight - The desired height to resize to.
+   * @param resizeBaseTexture - Should the baseTexture.width and height values be resized as well?
+   */
+  resize(e, t, u = !0) {
+    const s = this.baseTexture.resolution, i = Math.round(e * s) / s, r = Math.round(t * s) / s;
+    this.valid = i > 0 && r > 0, this._frame.width = this.orig.width = i, this._frame.height = this.orig.height = r, u && this.baseTexture.resize(i, r), this.updateUvs();
+  }
+  /**
+   * Changes the resolution of baseTexture, but does not change framebuffer size.
+   * @param resolution - The new resolution to apply to RenderTexture
+   */
+  setResolution(e) {
+    const { baseTexture: t } = this;
+    t.resolution !== e && (t.setResolution(e), this.resize(t.width, t.height, !1));
+  }
+  /**
+   * A short hand way of creating a render texture.
+   * @param options - Options
+   * @param {number} [options.width=100] - The width of the render texture
+   * @param {number} [options.height=100] - The height of the render texture
+   * @param {PIXI.SCALE_MODES} [options.scaleMode=PIXI.BaseTexture.defaultOptions.scaleMode] - See {@link PIXI.SCALE_MODES}
+   *    for possible values
+   * @param {number} [options.resolution=PIXI.settings.RESOLUTION] - The resolution / device pixel ratio of the texture
+   *    being generated
+   * @param {PIXI.MSAA_QUALITY} [options.multisample=PIXI.MSAA_QUALITY.NONE] - The number of samples of the frame buffer
+   * @returns The new render texture
+   */
+  static create(e) {
+    return new h(new o(e));
   }
 }
 export {
-  fr as AlphaFilter
+  h as RenderTexture
 };
 //# sourceMappingURL=index134.js.map

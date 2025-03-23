@@ -1,11 +1,19 @@
-var r = `varying vec2 vTextureCoord;
-
-uniform sampler2D uSampler;
-
-void main(void){
-   gl_FragColor *= texture2D(uSampler, vTextureCoord);
-}`;
+import { Geometry as t } from "./index194.js";
+class o extends t {
+  constructor() {
+    super(), this.addAttribute("aVertexPosition", new Float32Array([
+      0,
+      0,
+      1,
+      0,
+      1,
+      1,
+      0,
+      1
+    ])).addIndex([0, 1, 3, 2]);
+  }
+}
 export {
-  r as default
+  o as Quad
 };
 //# sourceMappingURL=index209.js.map

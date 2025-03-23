@@ -1,14 +1,21 @@
-function t(n) {
-  if (n.BYTES_PER_ELEMENT === 4)
-    return n instanceof Float32Array ? "Float32Array" : n instanceof Uint32Array ? "Uint32Array" : "Int32Array";
-  if (n.BYTES_PER_ELEMENT === 2) {
-    if (n instanceof Uint16Array)
-      return "Uint16Array";
-  } else if (n.BYTES_PER_ELEMENT === 1 && n instanceof Uint8Array)
-    return "Uint8Array";
-  return null;
+import { settings as r } from "./index163.js";
+import { isMobile as e } from "./index33.js";
+function c(n) {
+  let o = !0;
+  const a = r.ADAPTER.getNavigator();
+  if (e.tablet || e.phone) {
+    if (e.apple.device) {
+      const t = a.userAgent.match(/OS (\d+)_(\d+)?/);
+      t && parseInt(t[1], 10) < 11 && (o = !1);
+    }
+    if (e.android.device) {
+      const t = a.userAgent.match(/Android\s([0-9.]*)/);
+      t && parseInt(t[1], 10) < 7 && (o = !1);
+    }
+  }
+  return o ? n : 4;
 }
 export {
-  t as getBufferType
+  c as maxRecommendedTextures
 };
 //# sourceMappingURL=index200.js.map

@@ -35,7 +35,7 @@ export default function GameshieldDemo() {
 
       <button
         onClick={handleRefresh}
-        className="mt-4 inline-flex cursor-pointer items-center gap-2 bg-blue-500 px-4 py-2 text-white transition-all hover:scale-95 hover:bg-blue-600"
+        className="mt-4 inline-flex cursor-pointer items-center gap-2 border border-black bg-transparent px-4 py-2 text-black transition-all hover:scale-95 hover:bg-gray-50"
       >
         <RefreshCcwIcon className="h-4 w-4" /> Refresh
       </button>

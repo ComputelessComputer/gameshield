@@ -1,67 +1,29 @@
-import { settings as s } from "./index153.js";
-import "./index36.js";
-class c {
-  /**
-   * @param width - the width for the newly created canvas
-   * @param height - the height for the newly created canvas
-   * @param {number} [resolution=PIXI.settings.RESOLUTION] - The resolution / device pixel ratio of the canvas
-   */
-  constructor(t, e, h) {
-    this._canvas = s.ADAPTER.createCanvas(), this._context = this._canvas.getContext("2d"), this.resolution = h || s.RESOLUTION, this.resize(t, e);
-  }
-  /**
-   * Clears the canvas that was created by the CanvasRenderTarget class.
-   * @private
-   */
-  clear() {
-    this._checkDestroyed(), this._context.setTransform(1, 0, 0, 1, 0, 0), this._context.clearRect(0, 0, this._canvas.width, this._canvas.height);
-  }
-  /**
-   * Resizes the canvas to the specified width and height.
-   * @param desiredWidth - the desired width of the canvas
-   * @param desiredHeight - the desired height of the canvas
-   */
-  resize(t, e) {
-    this._checkDestroyed(), this._canvas.width = Math.round(t * this.resolution), this._canvas.height = Math.round(e * this.resolution);
-  }
-  /** Destroys this canvas. */
-  destroy() {
-    this._context = null, this._canvas = null;
-  }
-  /**
-   * The width of the canvas buffer in pixels.
-   * @member {number}
-   */
-  get width() {
-    return this._checkDestroyed(), this._canvas.width;
-  }
-  set width(t) {
-    this._checkDestroyed(), this._canvas.width = Math.round(t);
-  }
-  /**
-   * The height of the canvas buffer in pixels.
-   * @member {number}
-   */
-  get height() {
-    return this._checkDestroyed(), this._canvas.height;
-  }
-  set height(t) {
-    this._checkDestroyed(), this._canvas.height = Math.round(t);
-  }
-  /** The Canvas object that belongs to this CanvasRenderTarget. */
-  get canvas() {
-    return this._checkDestroyed(), this._canvas;
-  }
-  /** A CanvasRenderingContext2D object representing a two-dimensional rendering context. */
-  get context() {
-    return this._checkDestroyed(), this._context;
-  }
-  _checkDestroyed() {
-    if (this._canvas === null)
-      throw new TypeError("The CanvasRenderTarget has already been destroyed");
-  }
+const c = {
+  float: 1,
+  vec2: 2,
+  vec3: 3,
+  vec4: 4,
+  int: 1,
+  ivec2: 2,
+  ivec3: 3,
+  ivec4: 4,
+  uint: 1,
+  uvec2: 2,
+  uvec3: 3,
+  uvec4: 4,
+  bool: 1,
+  bvec2: 2,
+  bvec3: 3,
+  bvec4: 4,
+  mat2: 4,
+  mat3: 9,
+  mat4: 16,
+  sampler2D: 1
+};
+function v(e) {
+  return c[e];
 }
 export {
-  c as CanvasRenderTarget
+  v as mapSize
 };
 //# sourceMappingURL=index245.js.map

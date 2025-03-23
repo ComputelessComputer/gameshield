@@ -31,11 +31,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@gameshield/game-core": "workspace:*",
+    "@gameshield/security-utils": "workspace:*",
     "esbuild": "^0.25.0",
-    "game-core": "workspace:*",
     "pixi.js": "^8.8.1",
     "rollup": "^4.35.0",
-    "security-utils": "workspace:*",
     "typescript": "^5",
     "browser-fingerprint": "^0.1.0",
     "crypto-js": "^4.1.1"

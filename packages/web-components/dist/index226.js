@@ -1,21 +1,31 @@
-const r = [];
-function s(t, i) {
-  if (!t)
-    return null;
-  let o = "";
-  if (typeof t == "string") {
-    const e = /\.(\w{3,4})(?:$|\?|#)/i.exec(t);
-    e && (o = e[1].toLowerCase());
-  }
-  for (let e = r.length - 1; e >= 0; --e) {
-    const n = r[e];
-    if (n.test && n.test(t, o))
-      return new n(t, i);
-  }
-  throw new Error("Unrecognized source type to auto-detect Resource");
+import "./index37.js";
+import { settings as e } from "./index163.js";
+import "./index33.js";
+let n;
+function p() {
+  return typeof n > "u" && (n = function() {
+    var r;
+    const o = {
+      stencil: !0,
+      failIfMajorPerformanceCaveat: e.FAIL_IF_MAJOR_PERFORMANCE_CAVEAT
+    };
+    try {
+      if (!e.ADAPTER.getWebGLRenderingContext())
+        return !1;
+      const s = e.ADAPTER.createCanvas();
+      let t = s.getContext("webgl", o) || s.getContext("experimental-webgl", o);
+      const i = !!((r = t == null ? void 0 : t.getContextAttributes()) != null && r.stencil);
+      if (t) {
+        const c = t.getExtension("WEBGL_lose_context");
+        c && c.loseContext();
+      }
+      return t = null, i;
+    } catch {
+      return !1;
+    }
+  }()), n;
 }
 export {
-  r as INSTALLED,
-  s as autoDetectResource
+  p as isWebGLSupported
 };
 //# sourceMappingURL=index226.js.map

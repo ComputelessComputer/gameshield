@@ -1,13 +1,16 @@
+import "./index20.js";
+import "./index21.js";
+import { ExtensionType as p, extensions as u } from "./index158.js";
+import "./index22.js";
 import "./index23.js";
 import "./index24.js";
-import { MASK_TYPES as u } from "./index164.js";
 import "./index25.js";
 import "./index26.js";
 import "./index27.js";
 import "./index28.js";
 import "./index29.js";
 import "./index30.js";
-import { Matrix as f } from "./index31.js";
+import "./index31.js";
 import "./index32.js";
 import "./index33.js";
 import "./index34.js";
@@ -21,7 +24,6 @@ import "./index41.js";
 import "./index42.js";
 import "./index43.js";
 import "./index44.js";
-import { removeItems as a } from "./index141.js";
 import "./index45.js";
 import "./index46.js";
 import "./index47.js";
@@ -56,331 +58,281 @@ import "./index75.js";
 import "./index76.js";
 import "./index77.js";
 import "./index78.js";
-import "./index79.js";
-import "./index80.js";
-import "./index81.js";
-import { DisplayObject as g } from "./index104.js";
-const _ = new f();
-function b(d, t) {
-  return d.zIndex === t.zIndex ? d._lastSortedIndex - t._lastSortedIndex : d.zIndex - t.zIndex;
-}
-const c = class m extends g {
-  constructor() {
-    super(), this.children = [], this.sortableChildren = m.defaultSortableChildren, this.sortDirty = !1;
+import { EventBoundary as d } from "./index187.js";
+import { EventsTicker as s } from "./index188.js";
+import { FederatedPointerEvent as a } from "./index190.js";
+import { FederatedWheelEvent as c } from "./index102.js";
+const y = 1, E = {
+  touchstart: "pointerdown",
+  touchend: "pointerup",
+  touchendoutside: "pointerupoutside",
+  touchmove: "pointermove",
+  touchcancel: "pointercancel"
+}, h = class l {
+  /**
+   * @param {PIXI.Renderer} renderer
+   */
+  constructor(t) {
+    this.supportsTouchEvents = "ontouchstart" in globalThis, this.supportsPointerEvents = !!globalThis.PointerEvent, this.domElement = null, this.resolution = 1, this.renderer = t, this.rootBoundary = new d(null), s.init(this), this.autoPreventDefault = !0, this.eventsAdded = !1, this.rootPointerEvent = new a(null), this.rootWheelEvent = new c(null), this.cursorStyles = {
+      default: "inherit",
+      pointer: "pointer"
+    }, this.features = new Proxy({ ...l.defaultEventFeatures }, {
+      set: (e, o, i) => (o === "globalMove" && (this.rootBoundary.enableGlobalMoveEvents = i), e[o] = i, !0)
+    }), this.onPointerDown = this.onPointerDown.bind(this), this.onPointerMove = this.onPointerMove.bind(this), this.onPointerUp = this.onPointerUp.bind(this), this.onPointerOverOut = this.onPointerOverOut.bind(this), this.onWheel = this.onWheel.bind(this);
   }
   /**
-   * Overridable method that can be used by Container subclasses whenever the children array is modified.
-   * @param _length
+   * The default interaction mode for all display objects.
+   * @see PIXI.DisplayObject.eventMode
+   * @type {PIXI.EventMode}
+   * @readonly
+   * @since 7.2.0
    */
-  onChildrenChange(t) {
+  static get defaultEventMode() {
+    return this._defaultEventMode;
   }
   /**
-   * Adds one or more children to the container.
-   *
-   * Multiple items can be added like so: `myContainer.addChild(thingOne, thingTwo, thingThree)`
-   * @param {...PIXI.DisplayObject} children - The DisplayObject(s) to add to the container
-   * @returns {PIXI.DisplayObject} - The first child that was added.
+   * Runner init called, view is available at this point.
+   * @ignore
    */
-  addChild(...t) {
-    if (t.length > 1)
-      for (let e = 0; e < t.length; e++)
-        this.addChild(t[e]);
-    else {
-      const e = t[0];
-      e.parent && e.parent.removeChild(e), e.parent = this, this.sortDirty = !0, e.transform._parentID = -1, this.children.push(e), this._boundsID++, this.onChildrenChange(this.children.length - 1), this.emit("childAdded", e, this, this.children.length - 1), e.emit("added", this);
-    }
-    return t[0];
+  init(t) {
+    const { view: e, resolution: o } = this.renderer;
+    this.setTargetElement(e), this.resolution = o, l._defaultEventMode = t.eventMode ?? "auto", Object.assign(this.features, t.eventFeatures ?? {}), this.rootBoundary.enableGlobalMoveEvents = this.features.globalMove;
   }
   /**
-   * Adds a child to the container at a specified index. If the index is out of bounds an error will be thrown.
-   * If the child is already in this container, it will be moved to the specified index.
-   * @param {PIXI.DisplayObject} child - The child to add.
-   * @param {number} index - The absolute index where the child will be positioned at the end of the operation.
-   * @returns {PIXI.DisplayObject} The child that was added.
+   * Handle changing resolution.
+   * @ignore
    */
-  addChildAt(t, e) {
-    if (e < 0 || e > this.children.length)
-      throw new Error(`${t}addChildAt: The index ${e} supplied is out of bounds ${this.children.length}`);
-    return t.parent && t.parent.removeChild(t), t.parent = this, this.sortDirty = !0, t.transform._parentID = -1, this.children.splice(e, 0, t), this._boundsID++, this.onChildrenChange(e), t.emit("added", this), this.emit("childAdded", t, this, e), t;
+  resolutionChange(t) {
+    this.resolution = t;
+  }
+  /** Destroys all event listeners and detaches the renderer. */
+  destroy() {
+    this.setTargetElement(null), this.renderer = null;
   }
   /**
-   * Swaps the position of 2 Display Objects within this container.
-   * @param child - First display object to swap
-   * @param child2 - Second display object to swap
+   * Sets the current cursor mode, handling any callbacks or CSS style changes.
+   * @param mode - cursor mode, a key from the cursorStyles dictionary
    */
-  swapChildren(t, e) {
-    if (t === e)
+  setCursor(t) {
+    t = t || "default";
+    let e = !0;
+    if (globalThis.OffscreenCanvas && this.domElement instanceof OffscreenCanvas && (e = !1), this.currentCursor === t)
       return;
-    const i = this.getChildIndex(t), r = this.getChildIndex(e);
-    this.children[i] = e, this.children[r] = t, this.onChildrenChange(i < r ? i : r);
+    this.currentCursor = t;
+    const o = this.cursorStyles[t];
+    if (o)
+      switch (typeof o) {
+        case "string":
+          e && (this.domElement.style.cursor = o);
+          break;
+        case "function":
+          o(t);
+          break;
+        case "object":
+          e && Object.assign(this.domElement.style, o);
+          break;
+      }
+    else
+      e && typeof t == "string" && !Object.prototype.hasOwnProperty.call(this.cursorStyles, t) && (this.domElement.style.cursor = t);
   }
   /**
-   * Returns the index position of a child DisplayObject instance
-   * @param child - The DisplayObject instance to identify
-   * @returns - The index position of the child display object to identify
+   * The global pointer event.
+   * Useful for getting the pointer position without listening to events.
+   * @since 7.2.0
    */
-  getChildIndex(t) {
-    const e = this.children.indexOf(t);
-    if (e === -1)
-      throw new Error("The supplied DisplayObject must be a child of the caller");
+  get pointer() {
+    return this.rootPointerEvent;
+  }
+  /**
+   * Event handler for pointer down events on {@link PIXI.EventSystem#domElement this.domElement}.
+   * @param nativeEvent - The native mouse/pointer/touch event.
+   */
+  onPointerDown(t) {
+    if (!this.features.click)
+      return;
+    this.rootBoundary.rootTarget = this.renderer.lastObjectRendered;
+    const e = this.normalizeToPointerData(t);
+    this.autoPreventDefault && e[0].isNormalized && (t.cancelable || !("cancelable" in t)) && t.preventDefault();
+    for (let o = 0, i = e.length; o < i; o++) {
+      const r = e[o], n = this.bootstrapEvent(this.rootPointerEvent, r);
+      this.rootBoundary.mapEvent(n);
+    }
+    this.setCursor(this.rootBoundary.cursor);
+  }
+  /**
+   * Event handler for pointer move events on on {@link PIXI.EventSystem#domElement this.domElement}.
+   * @param nativeEvent - The native mouse/pointer/touch events.
+   */
+  onPointerMove(t) {
+    if (!this.features.move)
+      return;
+    this.rootBoundary.rootTarget = this.renderer.lastObjectRendered, s.pointerMoved();
+    const e = this.normalizeToPointerData(t);
+    for (let o = 0, i = e.length; o < i; o++) {
+      const r = this.bootstrapEvent(this.rootPointerEvent, e[o]);
+      this.rootBoundary.mapEvent(r);
+    }
+    this.setCursor(this.rootBoundary.cursor);
+  }
+  /**
+   * Event handler for pointer up events on {@link PIXI.EventSystem#domElement this.domElement}.
+   * @param nativeEvent - The native mouse/pointer/touch event.
+   */
+  onPointerUp(t) {
+    if (!this.features.click)
+      return;
+    this.rootBoundary.rootTarget = this.renderer.lastObjectRendered;
+    let e = t.target;
+    t.composedPath && t.composedPath().length > 0 && (e = t.composedPath()[0]);
+    const o = e !== this.domElement ? "outside" : "", i = this.normalizeToPointerData(t);
+    for (let r = 0, n = i.length; r < n; r++) {
+      const m = this.bootstrapEvent(this.rootPointerEvent, i[r]);
+      m.type += o, this.rootBoundary.mapEvent(m);
+    }
+    this.setCursor(this.rootBoundary.cursor);
+  }
+  /**
+   * Event handler for pointer over & out events on {@link PIXI.EventSystem#domElement this.domElement}.
+   * @param nativeEvent - The native mouse/pointer/touch event.
+   */
+  onPointerOverOut(t) {
+    if (!this.features.click)
+      return;
+    this.rootBoundary.rootTarget = this.renderer.lastObjectRendered;
+    const e = this.normalizeToPointerData(t);
+    for (let o = 0, i = e.length; o < i; o++) {
+      const r = this.bootstrapEvent(this.rootPointerEvent, e[o]);
+      this.rootBoundary.mapEvent(r);
+    }
+    this.setCursor(this.rootBoundary.cursor);
+  }
+  /**
+   * Passive handler for `wheel` events on {@link PIXI.EventSystem.domElement this.domElement}.
+   * @param nativeEvent - The native wheel event.
+   */
+  onWheel(t) {
+    if (!this.features.wheel)
+      return;
+    const e = this.normalizeWheelEvent(t);
+    this.rootBoundary.rootTarget = this.renderer.lastObjectRendered, this.rootBoundary.mapEvent(e);
+  }
+  /**
+   * Sets the {@link PIXI.EventSystem#domElement domElement} and binds event listeners.
+   *
+   * To deregister the current DOM element without setting a new one, pass {@code null}.
+   * @param element - The new DOM element.
+   */
+  setTargetElement(t) {
+    this.removeEvents(), this.domElement = t, s.domElement = t, this.addEvents();
+  }
+  /** Register event listeners on {@link PIXI.Renderer#domElement this.domElement}. */
+  addEvents() {
+    if (this.eventsAdded || !this.domElement)
+      return;
+    s.addTickerListener();
+    const t = this.domElement.style;
+    t && (globalThis.navigator.msPointerEnabled ? (t.msContentZooming = "none", t.msTouchAction = "none") : this.supportsPointerEvents && (t.touchAction = "none")), this.supportsPointerEvents ? (globalThis.document.addEventListener("pointermove", this.onPointerMove, !0), this.domElement.addEventListener("pointerdown", this.onPointerDown, !0), this.domElement.addEventListener("pointerleave", this.onPointerOverOut, !0), this.domElement.addEventListener("pointerover", this.onPointerOverOut, !0), globalThis.addEventListener("pointerup", this.onPointerUp, !0)) : (globalThis.document.addEventListener("mousemove", this.onPointerMove, !0), this.domElement.addEventListener("mousedown", this.onPointerDown, !0), this.domElement.addEventListener("mouseout", this.onPointerOverOut, !0), this.domElement.addEventListener("mouseover", this.onPointerOverOut, !0), globalThis.addEventListener("mouseup", this.onPointerUp, !0), this.supportsTouchEvents && (this.domElement.addEventListener("touchstart", this.onPointerDown, !0), this.domElement.addEventListener("touchend", this.onPointerUp, !0), this.domElement.addEventListener("touchmove", this.onPointerMove, !0))), this.domElement.addEventListener("wheel", this.onWheel, {
+      passive: !0,
+      capture: !0
+    }), this.eventsAdded = !0;
+  }
+  /** Unregister event listeners on {@link PIXI.EventSystem#domElement this.domElement}. */
+  removeEvents() {
+    if (!this.eventsAdded || !this.domElement)
+      return;
+    s.removeTickerListener();
+    const t = this.domElement.style;
+    globalThis.navigator.msPointerEnabled ? (t.msContentZooming = "", t.msTouchAction = "") : this.supportsPointerEvents && (t.touchAction = ""), this.supportsPointerEvents ? (globalThis.document.removeEventListener("pointermove", this.onPointerMove, !0), this.domElement.removeEventListener("pointerdown", this.onPointerDown, !0), this.domElement.removeEventListener("pointerleave", this.onPointerOverOut, !0), this.domElement.removeEventListener("pointerover", this.onPointerOverOut, !0), globalThis.removeEventListener("pointerup", this.onPointerUp, !0)) : (globalThis.document.removeEventListener("mousemove", this.onPointerMove, !0), this.domElement.removeEventListener("mousedown", this.onPointerDown, !0), this.domElement.removeEventListener("mouseout", this.onPointerOverOut, !0), this.domElement.removeEventListener("mouseover", this.onPointerOverOut, !0), globalThis.removeEventListener("mouseup", this.onPointerUp, !0), this.supportsTouchEvents && (this.domElement.removeEventListener("touchstart", this.onPointerDown, !0), this.domElement.removeEventListener("touchend", this.onPointerUp, !0), this.domElement.removeEventListener("touchmove", this.onPointerMove, !0))), this.domElement.removeEventListener("wheel", this.onWheel, !0), this.domElement = null, this.eventsAdded = !1;
+  }
+  /**
+   * Maps x and y coords from a DOM object and maps them correctly to the PixiJS view. The
+   * resulting value is stored in the point. This takes into account the fact that the DOM
+   * element could be scaled and positioned anywhere on the screen.
+   * @param  {PIXI.IPointData} point - the point that the result will be stored in
+   * @param  {number} x - the x coord of the position to map
+   * @param  {number} y - the y coord of the position to map
+   */
+  mapPositionToPoint(t, e, o) {
+    const i = this.domElement.isConnected ? this.domElement.getBoundingClientRect() : {
+      x: 0,
+      y: 0,
+      width: this.domElement.width,
+      height: this.domElement.height,
+      left: 0,
+      top: 0
+    }, r = 1 / this.resolution;
+    t.x = (e - i.left) * (this.domElement.width / i.width) * r, t.y = (o - i.top) * (this.domElement.height / i.height) * r;
+  }
+  /**
+   * Ensures that the original event object contains all data that a regular pointer event would have
+   * @param event - The original event data from a touch or mouse event
+   * @returns An array containing a single normalized pointer event, in the case of a pointer
+   *  or mouse event, or a multiple normalized pointer events if there are multiple changed touches
+   */
+  normalizeToPointerData(t) {
+    const e = [];
+    if (this.supportsTouchEvents && t instanceof TouchEvent)
+      for (let o = 0, i = t.changedTouches.length; o < i; o++) {
+        const r = t.changedTouches[o];
+        typeof r.button > "u" && (r.button = 0), typeof r.buttons > "u" && (r.buttons = 1), typeof r.isPrimary > "u" && (r.isPrimary = t.touches.length === 1 && t.type === "touchstart"), typeof r.width > "u" && (r.width = r.radiusX || 1), typeof r.height > "u" && (r.height = r.radiusY || 1), typeof r.tiltX > "u" && (r.tiltX = 0), typeof r.tiltY > "u" && (r.tiltY = 0), typeof r.pointerType > "u" && (r.pointerType = "touch"), typeof r.pointerId > "u" && (r.pointerId = r.identifier || 0), typeof r.pressure > "u" && (r.pressure = r.force || 0.5), typeof r.twist > "u" && (r.twist = 0), typeof r.tangentialPressure > "u" && (r.tangentialPressure = 0), typeof r.layerX > "u" && (r.layerX = r.offsetX = r.clientX), typeof r.layerY > "u" && (r.layerY = r.offsetY = r.clientY), r.isNormalized = !0, r.type = t.type, e.push(r);
+      }
+    else if (!globalThis.MouseEvent || t instanceof MouseEvent && (!this.supportsPointerEvents || !(t instanceof globalThis.PointerEvent))) {
+      const o = t;
+      typeof o.isPrimary > "u" && (o.isPrimary = !0), typeof o.width > "u" && (o.width = 1), typeof o.height > "u" && (o.height = 1), typeof o.tiltX > "u" && (o.tiltX = 0), typeof o.tiltY > "u" && (o.tiltY = 0), typeof o.pointerType > "u" && (o.pointerType = "mouse"), typeof o.pointerId > "u" && (o.pointerId = y), typeof o.pressure > "u" && (o.pressure = 0.5), typeof o.twist > "u" && (o.twist = 0), typeof o.tangentialPressure > "u" && (o.tangentialPressure = 0), o.isNormalized = !0, e.push(o);
+    } else
+      e.push(t);
     return e;
   }
   /**
-   * Changes the position of an existing child in the display object container
-   * @param child - The child DisplayObject instance for which you want to change the index number
-   * @param index - The resulting index number for the child display object
-   */
-  setChildIndex(t, e) {
-    if (e < 0 || e >= this.children.length)
-      throw new Error(`The index ${e} supplied is out of bounds ${this.children.length}`);
-    const i = this.getChildIndex(t);
-    a(this.children, i, 1), this.children.splice(e, 0, t), this.onChildrenChange(e);
-  }
-  /**
-   * Returns the child at the specified index
-   * @param index - The index to get the child at
-   * @returns - The child at the given index, if any.
-   */
-  getChildAt(t) {
-    if (t < 0 || t >= this.children.length)
-      throw new Error(`getChildAt: Index (${t}) does not exist.`);
-    return this.children[t];
-  }
-  /**
-   * Removes one or more children from the container.
-   * @param {...PIXI.DisplayObject} children - The DisplayObject(s) to remove
-   * @returns {PIXI.DisplayObject} The first child that was removed.
-   */
-  removeChild(...t) {
-    if (t.length > 1)
-      for (let e = 0; e < t.length; e++)
-        this.removeChild(t[e]);
-    else {
-      const e = t[0], i = this.children.indexOf(e);
-      if (i === -1)
-        return null;
-      e.parent = null, e.transform._parentID = -1, a(this.children, i, 1), this._boundsID++, this.onChildrenChange(i), e.emit("removed", this), this.emit("childRemoved", e, this, i);
-    }
-    return t[0];
-  }
-  /**
-   * Removes a child from the specified index position.
-   * @param index - The index to get the child from
-   * @returns The child that was removed.
-   */
-  removeChildAt(t) {
-    const e = this.getChildAt(t);
-    return e.parent = null, e.transform._parentID = -1, a(this.children, t, 1), this._boundsID++, this.onChildrenChange(t), e.emit("removed", this), this.emit("childRemoved", e, this, t), e;
-  }
-  /**
-   * Removes all children from this container that are within the begin and end indexes.
-   * @param beginIndex - The beginning position.
-   * @param endIndex - The ending position. Default value is size of the container.
-   * @returns - List of removed children
-   */
-  removeChildren(t = 0, e = this.children.length) {
-    const i = t, r = e, n = r - i;
-    let s;
-    if (n > 0 && n <= r) {
-      s = this.children.splice(i, n);
-      for (let h = 0; h < s.length; ++h)
-        s[h].parent = null, s[h].transform && (s[h].transform._parentID = -1);
-      this._boundsID++, this.onChildrenChange(t);
-      for (let h = 0; h < s.length; ++h)
-        s[h].emit("removed", this), this.emit("childRemoved", s[h], this, h);
-      return s;
-    } else if (n === 0 && this.children.length === 0)
-      return [];
-    throw new RangeError("removeChildren: numeric values are outside the acceptable range.");
-  }
-  /** Sorts children by zIndex. Previous order is maintained for 2 children with the same zIndex. */
-  sortChildren() {
-    let t = !1;
-    for (let e = 0, i = this.children.length; e < i; ++e) {
-      const r = this.children[e];
-      r._lastSortedIndex = e, !t && r.zIndex !== 0 && (t = !0);
-    }
-    t && this.children.length > 1 && this.children.sort(b), this.sortDirty = !1;
-  }
-  /** Updates the transform on all children of this container for rendering. */
-  updateTransform() {
-    this.sortableChildren && this.sortDirty && this.sortChildren(), this._boundsID++, this.transform.updateTransform(this.parent.transform), this.worldAlpha = this.alpha * this.parent.worldAlpha;
-    for (let t = 0, e = this.children.length; t < e; ++t) {
-      const i = this.children[t];
-      i.visible && i.updateTransform();
-    }
-  }
-  /**
-   * Recalculates the bounds of the container.
+   * Normalizes the native {@link https://w3c.github.io/uievents/#interface-wheelevent WheelEvent}.
    *
-   * This implementation will automatically fit the children's bounds into the calculation. Each child's bounds
-   * is limited to its mask's bounds or filterArea, if any is applied.
+   * The returned {@link PIXI.FederatedWheelEvent} is a shared instance. It will not persist across
+   * multiple native wheel events.
+   * @param nativeEvent - The native wheel event that occurred on the canvas.
+   * @returns A federated wheel event.
    */
-  calculateBounds() {
-    this._bounds.clear(), this._calculateBounds();
-    for (let t = 0; t < this.children.length; t++) {
-      const e = this.children[t];
-      if (!(!e.visible || !e.renderable))
-        if (e.calculateBounds(), e._mask) {
-          const i = e._mask.isMaskData ? e._mask.maskObject : e._mask;
-          i ? (i.calculateBounds(), this._bounds.addBoundsMask(e._bounds, i._bounds)) : this._bounds.addBounds(e._bounds);
-        } else
-          e.filterArea ? this._bounds.addBoundsArea(e._bounds, e.filterArea) : this._bounds.addBounds(e._bounds);
-    }
-    this._bounds.updateID = this._boundsID;
+  normalizeWheelEvent(t) {
+    const e = this.rootWheelEvent;
+    return this.transferMouseData(e, t), e.deltaX = t.deltaX, e.deltaY = t.deltaY, e.deltaZ = t.deltaZ, e.deltaMode = t.deltaMode, this.mapPositionToPoint(e.screen, t.clientX, t.clientY), e.global.copyFrom(e.screen), e.offset.copyFrom(e.screen), e.nativeEvent = t, e.type = t.type, e;
   }
   /**
-   * Retrieves the local bounds of the displayObject as a rectangle object.
-   *
-   * Calling `getLocalBounds` may invalidate the `_bounds` of the whole subtree below. If using it inside a render()
-   * call, it is advised to call `getBounds()` immediately after to recalculate the world bounds of the subtree.
-   * @param rect - Optional rectangle to store the result of the bounds calculation.
-   * @param skipChildrenUpdate - Setting to `true` will stop re-calculation of children transforms,
-   *  it was default behaviour of pixi 4.0-5.2 and caused many problems to users.
-   * @returns - The rectangular bounding area.
+   * Normalizes the `nativeEvent` into a federateed {@link PIXI.FederatedPointerEvent}.
+   * @param event
+   * @param nativeEvent
    */
-  getLocalBounds(t, e = !1) {
-    const i = super.getLocalBounds(t);
-    if (!e)
-      for (let r = 0, n = this.children.length; r < n; ++r) {
-        const s = this.children[r];
-        s.visible && s.updateTransform();
-      }
-    return i;
+  bootstrapEvent(t, e) {
+    return t.originalEvent = null, t.nativeEvent = e, t.pointerId = e.pointerId, t.width = e.width, t.height = e.height, t.isPrimary = e.isPrimary, t.pointerType = e.pointerType, t.pressure = e.pressure, t.tangentialPressure = e.tangentialPressure, t.tiltX = e.tiltX, t.tiltY = e.tiltY, t.twist = e.twist, this.transferMouseData(t, e), this.mapPositionToPoint(t.screen, e.clientX, e.clientY), t.global.copyFrom(t.screen), t.offset.copyFrom(t.screen), t.isTrusted = e.isTrusted, t.type === "pointerleave" && (t.type = "pointerout"), t.type.startsWith("mouse") && (t.type = t.type.replace("mouse", "pointer")), t.type.startsWith("touch") && (t.type = E[t.type] || t.type), t;
   }
   /**
-   * Recalculates the content bounds of this object. This should be overriden to
-   * calculate the bounds of this specific object (not including children).
-   * @protected
+   * Transfers base & mouse event data from the {@code nativeEvent} to the federated event.
+   * @param event
+   * @param nativeEvent
    */
-  _calculateBounds() {
-  }
-  /**
-   * Renders this object and its children with culling.
-   * @protected
-   * @param {PIXI.Renderer} renderer - The renderer
-   */
-  _renderWithCulling(t) {
-    const e = t.renderTexture.sourceFrame;
-    if (!(e.width > 0 && e.height > 0))
-      return;
-    let i, r;
-    this.cullArea ? (i = this.cullArea, r = this.worldTransform) : this._render !== m.prototype._render && (i = this.getBounds(!0));
-    const n = t.projection.transform;
-    if (n && (r ? (r = _.copyFrom(r), r.prepend(n)) : r = n), i && e.intersects(i, r))
-      this._render(t);
-    else if (this.cullArea)
-      return;
-    for (let s = 0, h = this.children.length; s < h; ++s) {
-      const l = this.children[s], o = l.cullable;
-      l.cullable = o || !this.cullArea, l.render(t), l.cullable = o;
-    }
-  }
-  /**
-   * Renders the object using the WebGL renderer.
-   *
-   * The [_render]{@link PIXI.Container#_render} method is be overriden for rendering the contents of the
-   * container itself. This `render` method will invoke it, and also invoke the `render` methods of all
-   * children afterward.
-   *
-   * If `renderable` or `visible` is false or if `worldAlpha` is not positive or if `cullable` is true and
-   * the bounds of this object are out of frame, this implementation will entirely skip rendering.
-   * See {@link PIXI.DisplayObject} for choosing between `renderable` or `visible`. Generally,
-   * setting alpha to zero is not recommended for purely skipping rendering.
-   *
-   * When your scene becomes large (especially when it is larger than can be viewed in a single screen), it is
-   * advised to employ **culling** to automatically skip rendering objects outside of the current screen.
-   * See [cullable]{@link PIXI.DisplayObject#cullable} and [cullArea]{@link PIXI.DisplayObject#cullArea}.
-   * Other culling methods might be better suited for a large number static objects; see
-   * [@pixi-essentials/cull]{@link https://www.npmjs.com/package/@pixi-essentials/cull} and
-   * [pixi-cull]{@link https://www.npmjs.com/package/pixi-cull}.
-   *
-   * The [renderAdvanced]{@link PIXI.Container#renderAdvanced} method is internally used when when masking or
-   * filtering is applied on a container. This does, however, break batching and can affect performance when
-   * masking and filtering is applied extensively throughout the scene graph.
-   * @param renderer - The renderer
-   */
-  render(t) {
-    var e;
-    if (!(!this.visible || this.worldAlpha <= 0 || !this.renderable))
-      if (this._mask || (e = this.filters) != null && e.length)
-        this.renderAdvanced(t);
-      else if (this.cullable)
-        this._renderWithCulling(t);
-      else {
-        this._render(t);
-        for (let i = 0, r = this.children.length; i < r; ++i)
-          this.children[i].render(t);
-      }
-  }
-  /**
-   * Render the object using the WebGL renderer and advanced features.
-   * @param renderer - The renderer
-   */
-  renderAdvanced(t) {
-    var n, s, h;
-    const e = this.filters, i = this._mask;
-    if (e) {
-      this._enabledFilters || (this._enabledFilters = []), this._enabledFilters.length = 0;
-      for (let l = 0; l < e.length; l++)
-        e[l].enabled && this._enabledFilters.push(e[l]);
-    }
-    const r = e && ((n = this._enabledFilters) == null ? void 0 : n.length) || i && (!i.isMaskData || i.enabled && (i.autoDetect || i.type !== u.NONE));
-    if (r && t.batch.flush(), e && ((s = this._enabledFilters) != null && s.length) && t.filter.push(this, this._enabledFilters), i && t.mask.push(this, this._mask), this.cullable)
-      this._renderWithCulling(t);
-    else {
-      this._render(t);
-      for (let l = 0, o = this.children.length; l < o; ++l)
-        this.children[l].render(t);
-    }
-    r && t.batch.flush(), i && t.mask.pop(this), e && ((h = this._enabledFilters) != null && h.length) && t.filter.pop();
-  }
-  /**
-   * To be overridden by the subclasses.
-   * @param _renderer - The renderer
-   */
-  _render(t) {
-  }
-  /**
-   * Removes all internal references and listeners as well as removes children from the display list.
-   * Do not use a Container after calling `destroy`.
-   * @param options - Options parameter. A boolean will act as if all options
-   *  have been set to that value
-   * @param {boolean} [options.children=false] - if set to true, all the children will have their destroy
-   *  method called as well. 'options' will be passed on to those calls.
-   * @param {boolean} [options.texture=false] - Only used for child Sprites if options.children is set to true
-   *  Should it destroy the texture of the child sprite
-   * @param {boolean} [options.baseTexture=false] - Only used for child Sprites if options.children is set to true
-   *  Should it destroy the base texture of the child sprite
-   */
-  destroy(t) {
-    super.destroy(), this.sortDirty = !1;
-    const e = typeof t == "boolean" ? t : t == null ? void 0 : t.children, i = this.removeChildren(0, this.children.length);
-    if (e)
-      for (let r = 0; r < i.length; ++r)
-        i[r].destroy(t);
-  }
-  /** The width of the Container, setting this will actually modify the scale to achieve the value set. */
-  get width() {
-    return this.scale.x * this.getLocalBounds().width;
-  }
-  set width(t) {
-    const e = this.getLocalBounds().width;
-    e !== 0 ? this.scale.x = t / e : this.scale.x = 1, this._width = t;
-  }
-  /** The height of the Container, setting this will actually modify the scale to achieve the value set. */
-  get height() {
-    return this.scale.y * this.getLocalBounds().height;
-  }
-  set height(t) {
-    const e = this.getLocalBounds().height;
-    e !== 0 ? this.scale.y = t / e : this.scale.y = 1, this._height = t;
+  transferMouseData(t, e) {
+    t.isTrusted = e.isTrusted, t.srcElement = e.srcElement, t.timeStamp = performance.now(), t.type = e.type, t.altKey = e.altKey, t.button = e.button, t.buttons = e.buttons, t.client.x = e.clientX, t.client.y = e.clientY, t.ctrlKey = e.ctrlKey, t.metaKey = e.metaKey, t.movement.x = e.movementX, t.movement.y = e.movementY, t.page.x = e.pageX, t.page.y = e.pageY, t.relatedTarget = null, t.shiftKey = e.shiftKey;
   }
 };
-c.defaultSortableChildren = !1;
-let p = c;
-p.prototype.containerUpdateTransform = p.prototype.updateTransform;
+h.extension = {
+  name: "events",
+  type: [
+    p.RendererSystem,
+    p.CanvasRendererSystem
+  ]
+}, /**
+* The event features that are enabled by the EventSystem
+* This option only is available when using **@pixi/events** package
+* (included in the **pixi.js** and **pixi.js-legacy** bundle), otherwise it will be ignored.
+* @since 7.2.0
+*/
+h.defaultEventFeatures = {
+  move: !0,
+  globalMove: !0,
+  click: !0,
+  wheel: !0
+};
+let f = h;
+u.add(f);
 export {
-  p as Container
+  f as EventSystem
 };
 //# sourceMappingURL=index103.js.map

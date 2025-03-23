@@ -1,33 +1,8 @@
-const c = {
-  5: [0.153388, 0.221461, 0.250301],
-  7: [0.071303, 0.131514, 0.189879, 0.214607],
-  9: [0.028532, 0.067234, 0.124009, 0.179044, 0.20236],
-  11: [93e-4, 0.028002, 0.065984, 0.121703, 0.175713, 0.198596],
-  13: [2406e-6, 9255e-6, 0.027867, 0.065666, 0.121117, 0.174868, 0.197641],
-  15: [489e-6, 2403e-6, 9246e-6, 0.02784, 0.065602, 0.120999, 0.174697, 0.197448]
-}, i = [
-  "varying vec2 vBlurTexCoords[%size%];",
-  "uniform sampler2D uSampler;",
-  "void main(void)",
-  "{",
-  "    gl_FragColor = vec4(0.0);",
-  "    %blur%",
-  "}"
-].join(`
-`);
-function p(l) {
-  const u = c[l], n = u.length;
-  let r = i, o = "";
-  const g = "gl_FragColor += texture2D(uSampler, vBlurTexCoords[%index%]) * %value%;";
-  let t;
-  for (let e = 0; e < l; e++) {
-    let a = g.replace("%index%", e.toString());
-    t = e, e >= n && (t = l - e - 1), a = a.replace("%value%", u[t].toString()), o += a, o += `
-`;
-  }
-  return r = r.replace("%blur%", o), r = r.replace("%size%", l.toString()), r;
+import { BLEND_MODES as O } from "./index164.js";
+function A(_, N = []) {
+  return N[O.NORMAL] = [_.ONE, _.ONE_MINUS_SRC_ALPHA], N[O.ADD] = [_.ONE, _.ONE], N[O.MULTIPLY] = [_.DST_COLOR, _.ONE_MINUS_SRC_ALPHA, _.ONE, _.ONE_MINUS_SRC_ALPHA], N[O.SCREEN] = [_.ONE, _.ONE_MINUS_SRC_COLOR, _.ONE, _.ONE_MINUS_SRC_ALPHA], N[O.OVERLAY] = [_.ONE, _.ONE_MINUS_SRC_ALPHA], N[O.DARKEN] = [_.ONE, _.ONE_MINUS_SRC_ALPHA], N[O.LIGHTEN] = [_.ONE, _.ONE_MINUS_SRC_ALPHA], N[O.COLOR_DODGE] = [_.ONE, _.ONE_MINUS_SRC_ALPHA], N[O.COLOR_BURN] = [_.ONE, _.ONE_MINUS_SRC_ALPHA], N[O.HARD_LIGHT] = [_.ONE, _.ONE_MINUS_SRC_ALPHA], N[O.SOFT_LIGHT] = [_.ONE, _.ONE_MINUS_SRC_ALPHA], N[O.DIFFERENCE] = [_.ONE, _.ONE_MINUS_SRC_ALPHA], N[O.EXCLUSION] = [_.ONE, _.ONE_MINUS_SRC_ALPHA], N[O.HUE] = [_.ONE, _.ONE_MINUS_SRC_ALPHA], N[O.SATURATION] = [_.ONE, _.ONE_MINUS_SRC_ALPHA], N[O.COLOR] = [_.ONE, _.ONE_MINUS_SRC_ALPHA], N[O.LUMINOSITY] = [_.ONE, _.ONE_MINUS_SRC_ALPHA], N[O.NONE] = [0, 0], N[O.NORMAL_NPM] = [_.SRC_ALPHA, _.ONE_MINUS_SRC_ALPHA, _.ONE, _.ONE_MINUS_SRC_ALPHA], N[O.ADD_NPM] = [_.SRC_ALPHA, _.ONE, _.ONE, _.ONE], N[O.SCREEN_NPM] = [_.SRC_ALPHA, _.ONE_MINUS_SRC_COLOR, _.ONE, _.ONE_MINUS_SRC_ALPHA], N[O.SRC_IN] = [_.DST_ALPHA, _.ZERO], N[O.SRC_OUT] = [_.ONE_MINUS_DST_ALPHA, _.ZERO], N[O.SRC_ATOP] = [_.DST_ALPHA, _.ONE_MINUS_SRC_ALPHA], N[O.DST_OVER] = [_.ONE_MINUS_DST_ALPHA, _.ONE], N[O.DST_IN] = [_.ZERO, _.SRC_ALPHA], N[O.DST_OUT] = [_.ZERO, _.ONE_MINUS_SRC_ALPHA], N[O.DST_ATOP] = [_.ONE_MINUS_DST_ALPHA, _.SRC_ALPHA], N[O.XOR] = [_.ONE_MINUS_DST_ALPHA, _.ONE_MINUS_SRC_ALPHA], N[O.SUBTRACT] = [_.ONE, _.ONE, _.ONE, _.ONE, _.FUNC_REVERSE_SUBTRACT, _.FUNC_ADD], N;
 }
 export {
-  p as generateBlurFragSource
+  A as mapWebGLBlendModesToPixi
 };
 //# sourceMappingURL=index247.js.map

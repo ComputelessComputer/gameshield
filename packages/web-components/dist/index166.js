@@ -1,66 +1,68 @@
-import { ALPHA_MODES as o } from "./index164.js";
-import { Resource as A } from "./index227.js";
-class p extends A {
-  /**
-   * @param source - Source buffer
-   * @param options - Options
-   * @param {number} options.width - Width of the texture
-   * @param {number} options.height - Height of the texture
-   * @param {1|2|4|8} [options.unpackAlignment=4] - The alignment of the pixel rows.
-   */
-  constructor(t, i) {
-    const { width: n, height: a } = i || {};
-    if (!n || !a)
-      throw new Error("BufferResource width or height invalid");
-    super(n, a), this.data = t, this.unpackAlignment = i.unpackAlignment ?? 4;
-  }
-  /**
-   * Upload the texture to the GPU.
-   * @param renderer - Upload to the renderer
-   * @param baseTexture - Reference to parent texture
-   * @param glTexture - glTexture
-   * @returns - true is success
-   */
-  upload(t, i, n) {
-    const a = t.gl;
-    a.pixelStorei(a.UNPACK_ALIGNMENT, this.unpackAlignment), a.pixelStorei(a.UNPACK_PREMULTIPLY_ALPHA_WEBGL, i.alphaMode === o.UNPACK);
-    const r = i.realWidth, h = i.realHeight;
-    return n.width === r && n.height === h ? a.texSubImage2D(
-      i.target,
-      0,
-      0,
-      0,
-      r,
-      h,
-      i.format,
-      n.type,
-      this.data
-    ) : (n.width = r, n.height = h, a.texImage2D(
-      i.target,
-      0,
-      n.internalFormat,
-      r,
-      h,
-      0,
-      i.format,
-      n.type,
-      this.data
-    )), !0;
-  }
-  /** Destroy and don't use after this. */
-  dispose() {
-    this.data = null;
-  }
-  /**
-   * Used to auto-detect the type of resource.
-   * @param {*} source - The source object
-   * @returns {boolean} `true` if buffer source
-   */
-  static test(t) {
-    return t === null || t instanceof Int8Array || t instanceof Uint8Array || t instanceof Uint8ClampedArray || t instanceof Int16Array || t instanceof Uint16Array || t instanceof Int32Array || t instanceof Uint32Array || t instanceof Float32Array;
-  }
+import "./index20.js";
+import "./index21.js";
+import "./index22.js";
+import "./index23.js";
+import "./index24.js";
+import "./index25.js";
+import "./index26.js";
+import "./index27.js";
+import "./index28.js";
+import "./index29.js";
+import "./index30.js";
+import "./index31.js";
+import "./index32.js";
+import "./index33.js";
+import "./index34.js";
+import "./index35.js";
+import "./index36.js";
+import "./index37.js";
+import "./index38.js";
+import "./index39.js";
+import "./index40.js";
+import { path as i } from "./index169.js";
+import "./index41.js";
+import "./index42.js";
+import "./index43.js";
+import "./index44.js";
+import "./index45.js";
+import "./index46.js";
+import "./index47.js";
+import "./index48.js";
+import "./index49.js";
+import "./index50.js";
+import "./index51.js";
+import "./index52.js";
+import "./index53.js";
+import "./index54.js";
+import "./index55.js";
+import "./index56.js";
+import "./index57.js";
+import "./index58.js";
+import "./index59.js";
+import "./index60.js";
+import "./index61.js";
+import "./index62.js";
+import "./index63.js";
+import "./index64.js";
+import "./index65.js";
+import "./index66.js";
+import "./index67.js";
+import "./index68.js";
+import "./index69.js";
+import "./index70.js";
+import "./index71.js";
+import "./index72.js";
+import "./index73.js";
+import "./index74.js";
+import "./index75.js";
+import "./index76.js";
+import "./index77.js";
+import "./index78.js";
+function ur(o, r) {
+  const p = o.split("?")[0], t = i.extname(p).toLowerCase();
+  return Array.isArray(r) ? r.includes(t) : t === r;
 }
 export {
-  p as BufferResource
+  ur as checkExtension
 };
 //# sourceMappingURL=index166.js.map

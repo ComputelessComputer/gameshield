@@ -1,23 +1,7 @@
-import { BaseImageResource as a } from "./index236.js";
-class o extends a {
-  /**
-   * @param source - Canvas element to use
-   */
-  // eslint-disable-next-line @typescript-eslint/no-useless-constructor
-  constructor(e) {
-    super(e);
-  }
-  /**
-   * Used to auto-detect the type of resource.
-   * @param {*} source - The source object
-   * @returns {boolean} `true` if source is HTMLCanvasElement or OffscreenCanvas
-   */
-  static test(e) {
-    const { OffscreenCanvas: s } = globalThis;
-    return s && e instanceof s ? !0 : globalThis.HTMLCanvasElement && e instanceof HTMLCanvasElement;
-  }
-}
+const e = {}, c = /* @__PURE__ */ Object.create(null), t = /* @__PURE__ */ Object.create(null);
 export {
-  o as CanvasResource
+  t as BaseTextureCache,
+  e as ProgramCache,
+  c as TextureCache
 };
 //# sourceMappingURL=index230.js.map

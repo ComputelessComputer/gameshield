@@ -1,22 +1,18 @@
-import { BaseImageResource as o } from "./index236.js";
-class t extends o {
-  /**
-   * @param source - Image element to use
-   */
-  // eslint-disable-next-line @typescript-eslint/no-useless-constructor
-  constructor(e) {
-    super(e);
+import { PRECISION as t } from "./index164.js";
+import { getTestContext as i } from "./index246.js";
+let r;
+function m() {
+  if (!r) {
+    r = t.MEDIUM;
+    const e = i();
+    if (e && e.getShaderPrecisionFormat) {
+      const o = e.getShaderPrecisionFormat(e.FRAGMENT_SHADER, e.HIGH_FLOAT);
+      o && (r = o.precision ? t.HIGH : t.MEDIUM);
+    }
   }
-  /**
-   * Used to auto-detect the type of resource.
-   * @param {*} source - The source object
-   * @returns {boolean} `true` if source is an VideoFrame
-   */
-  static test(e) {
-    return !!globalThis.VideoFrame && e instanceof globalThis.VideoFrame;
-  }
+  return r;
 }
 export {
-  t as VideoFrameResource
+  m as getMaxFragmentPrecision
 };
 //# sourceMappingURL=index233.js.map

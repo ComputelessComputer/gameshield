@@ -1,6 +1,11 @@
+import "./index18.js";
+import "./index19.js";
+import "./index20.js";
+import "./index21.js";
+import { ExtensionType as g, extensions as k } from "./index158.js";
+import "./index22.js";
 import "./index23.js";
 import "./index24.js";
-import { ExtensionType as a, extensions as u } from "./index140.js";
 import "./index25.js";
 import "./index26.js";
 import "./index27.js";
@@ -9,6 +14,7 @@ import "./index29.js";
 import "./index30.js";
 import "./index31.js";
 import "./index32.js";
+import { settings as A } from "./index163.js";
 import "./index33.js";
 import "./index34.js";
 import "./index35.js";
@@ -17,6 +23,7 @@ import "./index37.js";
 import "./index38.js";
 import "./index39.js";
 import "./index40.js";
+import { path as f } from "./index169.js";
 import "./index41.js";
 import "./index42.js";
 import "./index43.js";
@@ -30,7 +37,7 @@ import "./index50.js";
 import "./index51.js";
 import "./index52.js";
 import "./index53.js";
-import { BaseTexture as c } from "./index54.js";
+import "./index54.js";
 import "./index55.js";
 import "./index56.js";
 import "./index57.js";
@@ -55,45 +62,149 @@ import "./index75.js";
 import "./index76.js";
 import "./index77.js";
 import "./index78.js";
+import { copySearchParams as P } from "./index185.js";
 import "./index79.js";
 import "./index80.js";
 import "./index81.js";
-import "./index110.js";
-import { Graphics as e } from "./index111.js";
-import "./index112.js";
-import { BasePrepare as h } from "./index116.js";
-function s(r, t) {
-  return t instanceof c ? (t._glTextures[r.CONTEXT_UID] || r.texture.bind(t), !0) : !1;
-}
-function f(r, t) {
-  if (!(t instanceof e))
-    return !1;
-  const { geometry: o } = t;
-  t.finishPoly(), o.updateBatches();
-  const { batches: p } = o;
-  for (let i = 0; i < p.length; i++) {
-    const { texture: m } = p[i].style;
-    m && s(r, m.baseTexture);
+import "./index82.js";
+import "./index83.js";
+import "./index84.js";
+import "./index85.js";
+import { LoaderParserPriority as E } from "./index167.js";
+import "./index86.js";
+import "./index87.js";
+import "./index88.js";
+import "./index89.js";
+import "./index90.js";
+import "./index91.js";
+import "./index92.js";
+import { Spritesheet as b } from "./index116.js";
+const j = [
+  "jpg",
+  "png",
+  "jpeg",
+  "avif",
+  "webp",
+  "s3tc",
+  "s3tc_sRGB",
+  "etc",
+  "etc1",
+  "pvrtc",
+  "atc",
+  "astc",
+  "bptc"
+];
+function y(r, t, e) {
+  const i = {};
+  if (r.forEach((o) => {
+    i[o] = t;
+  }), Object.keys(t.textures).forEach((o) => {
+    i[`${t.cachePrefix}${o}`] = t.textures[o];
+  }), !e) {
+    const o = f.dirname(r[0]);
+    t.linkedSheets.forEach((n, m) => {
+      Object.assign(i, y(
+        [`${o}/${t.data.meta.related_multi_packs[m]}`],
+        n,
+        !0
+      ));
+    });
   }
-  return o.batchable || r.geometry.bind(o, t._resolveDirectShader(r)), !0;
+  return i;
 }
-function l(r, t) {
-  return r instanceof e ? (t.push(r), !0) : !1;
-}
-class n extends h {
+const w = {
+  extension: g.Asset,
+  /** Handle the caching of the related Spritesheet Textures */
+  cache: {
+    test: (r) => r instanceof b,
+    getCacheableAssets: (r, t) => y(r, t, !1)
+  },
+  /** Resolve the the resolution of the asset. */
+  resolver: {
+    test: (r) => {
+      const t = r.split("?")[0].split("."), e = t.pop(), i = t.pop();
+      return e === "json" && j.includes(i);
+    },
+    parse: (r) => {
+      var e;
+      const t = r.split(".");
+      return {
+        resolution: parseFloat(((e = A.RETINA_PREFIX.exec(r)) == null ? void 0 : e[1]) ?? "1"),
+        format: t[t.length - 2],
+        src: r
+      };
+    }
+  },
   /**
-   * @param {PIXI.Renderer} renderer - A reference to the current renderer
+   * Loader plugin that parses sprite sheets!
+   * once the JSON has been loaded this checks to see if the JSON is spritesheet data.
+   * If it is, we load the spritesheets image and parse the data into PIXI.Spritesheet
+   * All textures in the sprite sheet are then added to the cache
+   * @ignore
    */
-  constructor(t) {
-    super(t), this.uploadHookHelper = this.renderer, this.registerFindHook(l), this.registerUploadHook(s), this.registerUploadHook(f);
+  loader: {
+    name: "spritesheetLoader",
+    extension: {
+      type: g.LoadParser,
+      priority: E.Normal
+    },
+    async testParse(r, t) {
+      return f.extname(t.src).toLowerCase() === ".json" && !!r.frames;
+    },
+    async parse(r, t, e) {
+      var h, u;
+      const {
+        texture: i,
+        // if user need to use preloaded texture
+        imageFilename: o,
+        // if user need to use custom filename (not from jsonFile.meta.image)
+        cachePrefix: n
+        // if user need to use custom cache prefix
+      } = (t == null ? void 0 : t.data) ?? {};
+      let m = f.dirname(t.src);
+      m && m.lastIndexOf("/") !== m.length - 1 && (m += "/");
+      let l;
+      if (i && i.baseTexture)
+        l = i;
+      else {
+        const a = P(m + (o ?? r.meta.image), t.src);
+        l = (await e.load([a]))[a];
+      }
+      const p = new b({
+        texture: l.baseTexture,
+        data: r,
+        resolutionFilename: t.src,
+        cachePrefix: n
+      });
+      await p.parse();
+      const d = (h = r == null ? void 0 : r.meta) == null ? void 0 : h.related_multi_packs;
+      if (Array.isArray(d)) {
+        const a = [];
+        for (const s of d) {
+          if (typeof s != "string")
+            continue;
+          let c = m + s;
+          (u = t.data) != null && u.ignoreMultiPack || (c = P(c, t.src), a.push(e.load({
+            src: c,
+            data: {
+              ignoreMultiPack: !0
+            }
+          })));
+        }
+        const x = await Promise.all(a);
+        p.linkedSheets = x, x.forEach((s) => {
+          s.linkedSheets = [p].concat(p.linkedSheets.filter((c) => c !== s));
+        });
+      }
+      return p;
+    },
+    unload(r) {
+      r.destroy(!0);
+    }
   }
-}
-n.extension = {
-  name: "prepare",
-  type: a.RendererSystem
 };
-u.add(n);
+k.add(w);
 export {
-  n as Prepare
+  w as spritesheetAsset
 };
 //# sourceMappingURL=index117.js.map

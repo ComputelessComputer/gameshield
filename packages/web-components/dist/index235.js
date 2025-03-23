@@ -1,114 +1,226 @@
-import { TYPES as E, FORMATS as G } from "./index164.js";
-function I(R) {
-  let _;
-  return "WebGL2RenderingContext" in globalThis && R instanceof globalThis.WebGL2RenderingContext ? _ = {
-    [E.UNSIGNED_BYTE]: {
-      [G.RGBA]: R.RGBA8,
-      [G.RGB]: R.RGB8,
-      [G.RG]: R.RG8,
-      [G.RED]: R.R8,
-      [G.RGBA_INTEGER]: R.RGBA8UI,
-      [G.RGB_INTEGER]: R.RGB8UI,
-      [G.RG_INTEGER]: R.RG8UI,
-      [G.RED_INTEGER]: R.R8UI,
-      [G.ALPHA]: R.ALPHA,
-      [G.LUMINANCE]: R.LUMINANCE,
-      [G.LUMINANCE_ALPHA]: R.LUMINANCE_ALPHA
-    },
-    [E.BYTE]: {
-      [G.RGBA]: R.RGBA8_SNORM,
-      [G.RGB]: R.RGB8_SNORM,
-      [G.RG]: R.RG8_SNORM,
-      [G.RED]: R.R8_SNORM,
-      [G.RGBA_INTEGER]: R.RGBA8I,
-      [G.RGB_INTEGER]: R.RGB8I,
-      [G.RG_INTEGER]: R.RG8I,
-      [G.RED_INTEGER]: R.R8I
-    },
-    [E.UNSIGNED_SHORT]: {
-      [G.RGBA_INTEGER]: R.RGBA16UI,
-      [G.RGB_INTEGER]: R.RGB16UI,
-      [G.RG_INTEGER]: R.RG16UI,
-      [G.RED_INTEGER]: R.R16UI,
-      [G.DEPTH_COMPONENT]: R.DEPTH_COMPONENT16
-    },
-    [E.SHORT]: {
-      [G.RGBA_INTEGER]: R.RGBA16I,
-      [G.RGB_INTEGER]: R.RGB16I,
-      [G.RG_INTEGER]: R.RG16I,
-      [G.RED_INTEGER]: R.R16I
-    },
-    [E.UNSIGNED_INT]: {
-      [G.RGBA_INTEGER]: R.RGBA32UI,
-      [G.RGB_INTEGER]: R.RGB32UI,
-      [G.RG_INTEGER]: R.RG32UI,
-      [G.RED_INTEGER]: R.R32UI,
-      [G.DEPTH_COMPONENT]: R.DEPTH_COMPONENT24
-    },
-    [E.INT]: {
-      [G.RGBA_INTEGER]: R.RGBA32I,
-      [G.RGB_INTEGER]: R.RGB32I,
-      [G.RG_INTEGER]: R.RG32I,
-      [G.RED_INTEGER]: R.R32I
-    },
-    [E.FLOAT]: {
-      [G.RGBA]: R.RGBA32F,
-      [G.RGB]: R.RGB32F,
-      [G.RG]: R.RG32F,
-      [G.RED]: R.R32F,
-      [G.DEPTH_COMPONENT]: R.DEPTH_COMPONENT32F
-    },
-    [E.HALF_FLOAT]: {
-      [G.RGBA]: R.RGBA16F,
-      [G.RGB]: R.RGB16F,
-      [G.RG]: R.RG16F,
-      [G.RED]: R.R16F
-    },
-    [E.UNSIGNED_SHORT_5_6_5]: {
-      [G.RGB]: R.RGB565
-    },
-    [E.UNSIGNED_SHORT_4_4_4_4]: {
-      [G.RGBA]: R.RGBA4
-    },
-    [E.UNSIGNED_SHORT_5_5_5_1]: {
-      [G.RGBA]: R.RGB5_A1
-    },
-    [E.UNSIGNED_INT_2_10_10_10_REV]: {
-      [G.RGBA]: R.RGB10_A2,
-      [G.RGBA_INTEGER]: R.RGB10_A2UI
-    },
-    [E.UNSIGNED_INT_10F_11F_11F_REV]: {
-      [G.RGB]: R.R11F_G11F_B10F
-    },
-    [E.UNSIGNED_INT_5_9_9_9_REV]: {
-      [G.RGB]: R.RGB9_E5
-    },
-    [E.UNSIGNED_INT_24_8]: {
-      [G.DEPTH_STENCIL]: R.DEPTH24_STENCIL8
-    },
-    [E.FLOAT_32_UNSIGNED_INT_24_8_REV]: {
-      [G.DEPTH_STENCIL]: R.DEPTH32F_STENCIL8
+import { uniformParsers as l } from "./index244.js";
+const t = {
+  float: `
+    if (cv !== v)
+    {
+        cu.value = v;
+        gl.uniform1f(location, v);
+    }`,
+  vec2: `
+    if (cv[0] !== v[0] || cv[1] !== v[1])
+    {
+        cv[0] = v[0];
+        cv[1] = v[1];
+
+        gl.uniform2f(location, v[0], v[1])
+    }`,
+  vec3: `
+    if (cv[0] !== v[0] || cv[1] !== v[1] || cv[2] !== v[2])
+    {
+        cv[0] = v[0];
+        cv[1] = v[1];
+        cv[2] = v[2];
+
+        gl.uniform3f(location, v[0], v[1], v[2])
+    }`,
+  vec4: `
+    if (cv[0] !== v[0] || cv[1] !== v[1] || cv[2] !== v[2] || cv[3] !== v[3])
+    {
+        cv[0] = v[0];
+        cv[1] = v[1];
+        cv[2] = v[2];
+        cv[3] = v[3];
+
+        gl.uniform4f(location, v[0], v[1], v[2], v[3]);
+    }`,
+  int: `
+    if (cv !== v)
+    {
+        cu.value = v;
+
+        gl.uniform1i(location, v);
+    }`,
+  ivec2: `
+    if (cv[0] !== v[0] || cv[1] !== v[1])
+    {
+        cv[0] = v[0];
+        cv[1] = v[1];
+
+        gl.uniform2i(location, v[0], v[1]);
+    }`,
+  ivec3: `
+    if (cv[0] !== v[0] || cv[1] !== v[1] || cv[2] !== v[2])
+    {
+        cv[0] = v[0];
+        cv[1] = v[1];
+        cv[2] = v[2];
+
+        gl.uniform3i(location, v[0], v[1], v[2]);
+    }`,
+  ivec4: `
+    if (cv[0] !== v[0] || cv[1] !== v[1] || cv[2] !== v[2] || cv[3] !== v[3])
+    {
+        cv[0] = v[0];
+        cv[1] = v[1];
+        cv[2] = v[2];
+        cv[3] = v[3];
+
+        gl.uniform4i(location, v[0], v[1], v[2], v[3]);
+    }`,
+  uint: `
+    if (cv !== v)
+    {
+        cu.value = v;
+
+        gl.uniform1ui(location, v);
+    }`,
+  uvec2: `
+    if (cv[0] !== v[0] || cv[1] !== v[1])
+    {
+        cv[0] = v[0];
+        cv[1] = v[1];
+
+        gl.uniform2ui(location, v[0], v[1]);
+    }`,
+  uvec3: `
+    if (cv[0] !== v[0] || cv[1] !== v[1] || cv[2] !== v[2])
+    {
+        cv[0] = v[0];
+        cv[1] = v[1];
+        cv[2] = v[2];
+
+        gl.uniform3ui(location, v[0], v[1], v[2]);
+    }`,
+  uvec4: `
+    if (cv[0] !== v[0] || cv[1] !== v[1] || cv[2] !== v[2] || cv[3] !== v[3])
+    {
+        cv[0] = v[0];
+        cv[1] = v[1];
+        cv[2] = v[2];
+        cv[3] = v[3];
+
+        gl.uniform4ui(location, v[0], v[1], v[2], v[3]);
+    }`,
+  bool: `
+    if (cv !== v)
+    {
+        cu.value = v;
+        gl.uniform1i(location, v);
+    }`,
+  bvec2: `
+    if (cv[0] != v[0] || cv[1] != v[1])
+    {
+        cv[0] = v[0];
+        cv[1] = v[1];
+
+        gl.uniform2i(location, v[0], v[1]);
+    }`,
+  bvec3: `
+    if (cv[0] !== v[0] || cv[1] !== v[1] || cv[2] !== v[2])
+    {
+        cv[0] = v[0];
+        cv[1] = v[1];
+        cv[2] = v[2];
+
+        gl.uniform3i(location, v[0], v[1], v[2]);
+    }`,
+  bvec4: `
+    if (cv[0] !== v[0] || cv[1] !== v[1] || cv[2] !== v[2] || cv[3] !== v[3])
+    {
+        cv[0] = v[0];
+        cv[1] = v[1];
+        cv[2] = v[2];
+        cv[3] = v[3];
+
+        gl.uniform4i(location, v[0], v[1], v[2], v[3]);
+    }`,
+  mat2: "gl.uniformMatrix2fv(location, false, v)",
+  mat3: "gl.uniformMatrix3fv(location, false, v)",
+  mat4: "gl.uniformMatrix4fv(location, false, v)",
+  sampler2D: `
+    if (cv !== v)
+    {
+        cu.value = v;
+
+        gl.uniform1i(location, v);
+    }`,
+  samplerCube: `
+    if (cv !== v)
+    {
+        cu.value = v;
+
+        gl.uniform1i(location, v);
+    }`,
+  sampler2DArray: `
+    if (cv !== v)
+    {
+        cu.value = v;
+
+        gl.uniform1i(location, v);
+    }`
+}, e = {
+  float: "gl.uniform1fv(location, v)",
+  vec2: "gl.uniform2fv(location, v)",
+  vec3: "gl.uniform3fv(location, v)",
+  vec4: "gl.uniform4fv(location, v)",
+  mat4: "gl.uniformMatrix4fv(location, false, v)",
+  mat3: "gl.uniformMatrix3fv(location, false, v)",
+  mat2: "gl.uniformMatrix2fv(location, false, v)",
+  int: "gl.uniform1iv(location, v)",
+  ivec2: "gl.uniform2iv(location, v)",
+  ivec3: "gl.uniform3iv(location, v)",
+  ivec4: "gl.uniform4iv(location, v)",
+  uint: "gl.uniform1uiv(location, v)",
+  uvec2: "gl.uniform2uiv(location, v)",
+  uvec3: "gl.uniform3uiv(location, v)",
+  uvec4: "gl.uniform4uiv(location, v)",
+  bool: "gl.uniform1iv(location, v)",
+  bvec2: "gl.uniform2iv(location, v)",
+  bvec3: "gl.uniform3iv(location, v)",
+  bvec4: "gl.uniform4iv(location, v)",
+  sampler2D: "gl.uniform1iv(location, v)",
+  samplerCube: "gl.uniform1iv(location, v)",
+  sampler2DArray: "gl.uniform1iv(location, v)"
+};
+function g(n, a) {
+  var u;
+  const i = [`
+        var v = null;
+        var cv = null;
+        var cu = null;
+        var t = 0;
+        var gl = renderer.gl;
+    `];
+  for (const v in n.uniforms) {
+    const o = a[v];
+    if (!o) {
+      ((u = n.uniforms[v]) == null ? void 0 : u.group) === !0 && (n.uniforms[v].ubo ? i.push(`
+                        renderer.shader.syncUniformBufferGroup(uv.${v}, '${v}');
+                    `) : i.push(`
+                        renderer.shader.syncUniformGroup(uv.${v}, syncData);
+                    `));
+      continue;
     }
-  } : _ = {
-    [E.UNSIGNED_BYTE]: {
-      [G.RGBA]: R.RGBA,
-      [G.RGB]: R.RGB,
-      [G.ALPHA]: R.ALPHA,
-      [G.LUMINANCE]: R.LUMINANCE,
-      [G.LUMINANCE_ALPHA]: R.LUMINANCE_ALPHA
-    },
-    [E.UNSIGNED_SHORT_5_6_5]: {
-      [G.RGB]: R.RGB
-    },
-    [E.UNSIGNED_SHORT_4_4_4_4]: {
-      [G.RGBA]: R.RGBA
-    },
-    [E.UNSIGNED_SHORT_5_5_5_1]: {
-      [G.RGBA]: R.RGBA
+    const r = n.uniforms[v];
+    let f = !1;
+    for (let c = 0; c < l.length; c++)
+      if (l[c].test(o, r)) {
+        i.push(l[c].code(v, r)), f = !0;
+        break;
+      }
+    if (!f) {
+      const c = (o.size === 1 && !o.isArray ? t : e)[o.type].replace("location", `ud["${v}"].location`);
+      i.push(`
+            cu = ud["${v}"];
+            cv = cu.value;
+            v = uv["${v}"];
+            ${c};`);
     }
-  }, _;
+  }
+  return new Function("ud", "uv", "renderer", "syncData", i.join(`
+`));
 }
 export {
-  I as mapTypeAndFormatToInternalFormat
+  g as generateUniformsSync
 };
 //# sourceMappingURL=index235.js.map

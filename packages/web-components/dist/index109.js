@@ -1,11 +1,15 @@
+import "./index20.js";
+import { Color as D } from "./index21.js";
+import { WRAP_MODES as S, DRAW_MODES as f } from "./index164.js";
+import "./index22.js";
 import "./index23.js";
-import { Color as d } from "./index24.js";
+import "./index24.js";
 import "./index25.js";
 import "./index26.js";
 import "./index27.js";
 import "./index28.js";
 import "./index29.js";
-import "./index30.js";
+import { Point as I } from "./index30.js";
 import "./index31.js";
 import "./index32.js";
 import "./index33.js";
@@ -20,16 +24,18 @@ import "./index41.js";
 import "./index42.js";
 import "./index43.js";
 import "./index44.js";
+import { BatchDrawCall as T } from "./index191.js";
+import { BatchGeometry as L } from "./index192.js";
 import "./index45.js";
 import "./index46.js";
 import "./index47.js";
+import { BatchTextureArray as A } from "./index198.js";
 import "./index48.js";
 import "./index49.js";
 import "./index50.js";
-import "./index51.js";
-import { Filter as a } from "./index52.js";
+import { BaseTexture as C } from "./index51.js";
+import "./index52.js";
 import "./index53.js";
-import { defaultFilterVertex as y } from "./index193.js";
 import "./index54.js";
 import "./index55.js";
 import "./index56.js";
@@ -55,725 +61,324 @@ import "./index75.js";
 import "./index76.js";
 import "./index77.js";
 import "./index78.js";
-import "./index79.js";
-import "./index80.js";
-import "./index81.js";
-import w from "./index246.js";
-class _ extends a {
+import "./index99.js";
+import { Bounds as M } from "./index261.js";
+import "./index100.js";
+import "./index101.js";
+import { GraphicsData as _ } from "./index288.js";
+import { DRAW_CALL_POOL as y, FILL_COMMANDS as x, BATCH_POOL as v } from "./index107.js";
+import { BatchPart as U } from "./index289.js";
+import { buildPoly as G } from "./index279.js";
+import { buildLine as B } from "./index290.js";
+const g = new I(), E = class P extends L {
+  // eslint-disable-next-line @typescript-eslint/no-useless-constructor
   constructor() {
-    const i = {
-      m: new Float32Array([
-        1,
-        0,
-        0,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        0,
-        0,
-        1,
-        0
-      ]),
-      uAlpha: 1
-    };
-    super(y, w, i), this.alpha = 1;
+    super(), this.closePointEps = 1e-4, this.boundsPadding = 0, this.uvsFloat32 = null, this.indicesUint16 = null, this.batchable = !1, this.points = [], this.colors = [], this.uvs = [], this.indices = [], this.textureIds = [], this.graphicsData = [], this.drawCalls = [], this.batchDirty = -1, this.batches = [], this.dirty = 0, this.cacheDirty = -1, this.clearDirty = 0, this.shapeIndex = 0, this._bounds = new M(), this.boundsDirty = -1;
   }
   /**
-   * Transforms current matrix and set the new one
-   * @param {number[]} matrix - 5x4 matrix
-   * @param multiply - if true, current matrix and matrix are multiplied. If false,
-   *  just set the current matrix with @param matrix
-   */
-  _loadMatrix(i, r = !1) {
-    let t = i;
-    r && (this._multiply(t, this.uniforms.m, i), t = this._colorMatrix(t)), this.uniforms.m = t;
-  }
-  /**
-   * Multiplies two mat5's
-   * @private
-   * @param out - 5x4 matrix the receiving matrix
-   * @param a - 5x4 matrix the first operand
-   * @param b - 5x4 matrix the second operand
-   * @returns {number[]} 5x4 matrix
-   */
-  _multiply(i, r, t) {
-    return i[0] = r[0] * t[0] + r[1] * t[5] + r[2] * t[10] + r[3] * t[15], i[1] = r[0] * t[1] + r[1] * t[6] + r[2] * t[11] + r[3] * t[16], i[2] = r[0] * t[2] + r[1] * t[7] + r[2] * t[12] + r[3] * t[17], i[3] = r[0] * t[3] + r[1] * t[8] + r[2] * t[13] + r[3] * t[18], i[4] = r[0] * t[4] + r[1] * t[9] + r[2] * t[14] + r[3] * t[19] + r[4], i[5] = r[5] * t[0] + r[6] * t[5] + r[7] * t[10] + r[8] * t[15], i[6] = r[5] * t[1] + r[6] * t[6] + r[7] * t[11] + r[8] * t[16], i[7] = r[5] * t[2] + r[6] * t[7] + r[7] * t[12] + r[8] * t[17], i[8] = r[5] * t[3] + r[6] * t[8] + r[7] * t[13] + r[8] * t[18], i[9] = r[5] * t[4] + r[6] * t[9] + r[7] * t[14] + r[8] * t[19] + r[9], i[10] = r[10] * t[0] + r[11] * t[5] + r[12] * t[10] + r[13] * t[15], i[11] = r[10] * t[1] + r[11] * t[6] + r[12] * t[11] + r[13] * t[16], i[12] = r[10] * t[2] + r[11] * t[7] + r[12] * t[12] + r[13] * t[17], i[13] = r[10] * t[3] + r[11] * t[8] + r[12] * t[13] + r[13] * t[18], i[14] = r[10] * t[4] + r[11] * t[9] + r[12] * t[14] + r[13] * t[19] + r[14], i[15] = r[15] * t[0] + r[16] * t[5] + r[17] * t[10] + r[18] * t[15], i[16] = r[15] * t[1] + r[16] * t[6] + r[17] * t[11] + r[18] * t[16], i[17] = r[15] * t[2] + r[16] * t[7] + r[17] * t[12] + r[18] * t[17], i[18] = r[15] * t[3] + r[16] * t[8] + r[17] * t[13] + r[18] * t[18], i[19] = r[15] * t[4] + r[16] * t[9] + r[17] * t[14] + r[18] * t[19] + r[19], i;
-  }
-  /**
-   * Create a Float32 Array and normalize the offset component to 0-1
-   * @param {number[]} matrix - 5x4 matrix
-   * @returns {number[]} 5x4 matrix with all values between 0-1
-   */
-  _colorMatrix(i) {
-    const r = new Float32Array(i);
-    return r[4] /= 255, r[9] /= 255, r[14] /= 255, r[19] /= 255, r;
-  }
-  /**
-   * Adjusts brightness
-   * @param b - value of the brigthness (0-1, where 0 is black)
-   * @param multiply - if true, current matrix and matrix are multiplied. If false,
-   *  just set the current matrix with @param matrix
-   */
-  brightness(i, r) {
-    const t = [
-      i,
-      0,
-      0,
-      0,
-      0,
-      0,
-      i,
-      0,
-      0,
-      0,
-      0,
-      0,
-      i,
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0
-    ];
-    this._loadMatrix(t, r);
-  }
-  /**
-   * Sets each channel on the diagonal of the color matrix.
-   * This can be used to achieve a tinting effect on Containers similar to the tint field of some
-   * display objects like Sprite, Text, Graphics, and Mesh.
-   * @param color - Color of the tint. This is a hex value.
-   * @param multiply - if true, current matrix and matrix are multiplied. If false,
-   *  just set the current matrix with @param matrix
-   */
-  tint(i, r) {
-    const [t, o, p] = d.shared.setValue(i).toArray(), m = [
-      t,
-      0,
-      0,
-      0,
-      0,
-      0,
-      o,
-      0,
-      0,
-      0,
-      0,
-      0,
-      p,
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0
-    ];
-    this._loadMatrix(m, r);
-  }
-  /**
-   * Set the matrices in grey scales
-   * @param scale - value of the grey (0-1, where 0 is black)
-   * @param multiply - if true, current matrix and matrix are multiplied. If false,
-   *  just set the current matrix with @param matrix
-   */
-  greyscale(i, r) {
-    const t = [
-      i,
-      i,
-      i,
-      0,
-      0,
-      i,
-      i,
-      i,
-      0,
-      0,
-      i,
-      i,
-      i,
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0
-    ];
-    this._loadMatrix(t, r);
-  }
-  /**
-   * Set the black and white matrice.
-   * @param multiply - if true, current matrix and matrix are multiplied. If false,
-   *  just set the current matrix with @param matrix
-   */
-  blackAndWhite(i) {
-    const r = [
-      0.3,
-      0.6,
-      0.1,
-      0,
-      0,
-      0.3,
-      0.6,
-      0.1,
-      0,
-      0,
-      0.3,
-      0.6,
-      0.1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0
-    ];
-    this._loadMatrix(r, i);
-  }
-  /**
-   * Set the hue property of the color
-   * @param rotation - in degrees
-   * @param multiply - if true, current matrix and matrix are multiplied. If false,
-   *  just set the current matrix with @param matrix
-   */
-  hue(i, r) {
-    i = (i || 0) / 180 * Math.PI;
-    const t = Math.cos(i), o = Math.sin(i), p = Math.sqrt, m = 1 / 3, s = p(m), x = t + (1 - t) * m, h = m * (1 - t) - s * o, l = m * (1 - t) + s * o, e = m * (1 - t) + s * o, c = t + m * (1 - t), M = m * (1 - t) - s * o, n = m * (1 - t) - s * o, f = m * (1 - t) + s * o, g = t + m * (1 - t), A = [
-      x,
-      h,
-      l,
-      0,
-      0,
-      e,
-      c,
-      M,
-      0,
-      0,
-      n,
-      f,
-      g,
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0
-    ];
-    this._loadMatrix(A, r);
-  }
-  /**
-   * Set the contrast matrix, increase the separation between dark and bright
-   * Increase contrast : shadows darker and highlights brighter
-   * Decrease contrast : bring the shadows up and the highlights down
-   * @param amount - value of the contrast (0-1)
-   * @param multiply - if true, current matrix and matrix are multiplied. If false,
-   *  just set the current matrix with @param matrix
-   */
-  contrast(i, r) {
-    const t = (i || 0) + 1, o = -0.5 * (t - 1), p = [
-      t,
-      0,
-      0,
-      0,
-      o,
-      0,
-      t,
-      0,
-      0,
-      o,
-      0,
-      0,
-      t,
-      0,
-      o,
-      0,
-      0,
-      0,
-      1,
-      0
-    ];
-    this._loadMatrix(p, r);
-  }
-  /**
-   * Set the saturation matrix, increase the separation between colors
-   * Increase saturation : increase contrast, brightness, and sharpness
-   * @param amount - The saturation amount (0-1)
-   * @param multiply - if true, current matrix and matrix are multiplied. If false,
-   *  just set the current matrix with @param matrix
-   */
-  saturate(i = 0, r) {
-    const t = i * 2 / 3 + 1, o = (t - 1) * -0.5, p = [
-      t,
-      o,
-      o,
-      0,
-      0,
-      o,
-      t,
-      o,
-      0,
-      0,
-      o,
-      o,
-      t,
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0
-    ];
-    this._loadMatrix(p, r);
-  }
-  /** Desaturate image (remove color) Call the saturate function */
-  desaturate() {
-    this.saturate(-1);
-  }
-  /**
-   * Negative image (inverse of classic rgb matrix)
-   * @param multiply - if true, current matrix and matrix are multiplied. If false,
-   *  just set the current matrix with @param matrix
-   */
-  negative(i) {
-    const r = [
-      -1,
-      0,
-      0,
-      1,
-      0,
-      0,
-      -1,
-      0,
-      1,
-      0,
-      0,
-      0,
-      -1,
-      1,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0
-    ];
-    this._loadMatrix(r, i);
-  }
-  /**
-   * Sepia image
-   * @param multiply - if true, current matrix and matrix are multiplied. If false,
-   *  just set the current matrix with @param matrix
-   */
-  sepia(i) {
-    const r = [
-      0.393,
-      0.7689999,
-      0.18899999,
-      0,
-      0,
-      0.349,
-      0.6859999,
-      0.16799999,
-      0,
-      0,
-      0.272,
-      0.5339999,
-      0.13099999,
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0
-    ];
-    this._loadMatrix(r, i);
-  }
-  /**
-   * Color motion picture process invented in 1916 (thanks Dominic Szablewski)
-   * @param multiply - if true, current matrix and matrix are multiplied. If false,
-   *  just set the current matrix with @param matrix
-   */
-  technicolor(i) {
-    const r = [
-      1.9125277891456083,
-      -0.8545344976951645,
-      -0.09155508482755585,
-      0,
-      11.793603434377337,
-      -0.3087833385928097,
-      1.7658908555458428,
-      -0.10601743074722245,
-      0,
-      -70.35205161461398,
-      -0.231103377548616,
-      -0.7501899197440212,
-      1.847597816108189,
-      0,
-      30.950940869491138,
-      0,
-      0,
-      0,
-      1,
-      0
-    ];
-    this._loadMatrix(r, i);
-  }
-  /**
-   * Polaroid filter
-   * @param multiply - if true, current matrix and matrix are multiplied. If false,
-   *  just set the current matrix with @param matrix
-   */
-  polaroid(i) {
-    const r = [
-      1.438,
-      -0.062,
-      -0.062,
-      0,
-      0,
-      -0.122,
-      1.378,
-      -0.122,
-      0,
-      0,
-      -0.016,
-      -0.016,
-      1.483,
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0
-    ];
-    this._loadMatrix(r, i);
-  }
-  /**
-   * Filter who transforms : Red -> Blue and Blue -> Red
-   * @param multiply - if true, current matrix and matrix are multiplied. If false,
-   *  just set the current matrix with @param matrix
-   */
-  toBGR(i) {
-    const r = [
-      0,
-      0,
-      1,
-      0,
-      0,
-      0,
-      1,
-      0,
-      0,
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0
-    ];
-    this._loadMatrix(r, i);
-  }
-  /**
-   * Color reversal film introduced by Eastman Kodak in 1935. (thanks Dominic Szablewski)
-   * @param multiply - if true, current matrix and matrix are multiplied. If false,
-   *  just set the current matrix with @param matrix
-   */
-  kodachrome(i) {
-    const r = [
-      1.1285582396593525,
-      -0.3967382283601348,
-      -0.03992559172921793,
-      0,
-      63.72958762196502,
-      -0.16404339962244616,
-      1.0835251566291304,
-      -0.05498805115633132,
-      0,
-      24.732407896706203,
-      -0.16786010706155763,
-      -0.5603416277695248,
-      1.6014850761964943,
-      0,
-      35.62982807460946,
-      0,
-      0,
-      0,
-      1,
-      0
-    ];
-    this._loadMatrix(r, i);
-  }
-  /**
-   * Brown delicious browni filter (thanks Dominic Szablewski)
-   * @param multiply - if true, current matrix and matrix are multiplied. If false,
-   *  just set the current matrix with @param matrix
-   */
-  browni(i) {
-    const r = [
-      0.5997023498159715,
-      0.34553243048391263,
-      -0.2708298674538042,
-      0,
-      47.43192855600873,
-      -0.037703249837783157,
-      0.8609577587992641,
-      0.15059552388459913,
-      0,
-      -36.96841498319127,
-      0.24113635128153335,
-      -0.07441037908422492,
-      0.44972182064877153,
-      0,
-      -7.562075277591283,
-      0,
-      0,
-      0,
-      1,
-      0
-    ];
-    this._loadMatrix(r, i);
-  }
-  /**
-   * Vintage filter (thanks Dominic Szablewski)
-   * @param multiply - if true, current matrix and matrix are multiplied. If false,
-   *  just set the current matrix with @param matrix
-   */
-  vintage(i) {
-    const r = [
-      0.6279345635605994,
-      0.3202183420819367,
-      -0.03965408211312453,
-      0,
-      9.651285835294123,
-      0.02578397704808868,
-      0.6441188644374771,
-      0.03259127616149294,
-      0,
-      7.462829176470591,
-      0.0466055556782719,
-      -0.0851232987247891,
-      0.5241648018700465,
-      0,
-      5.159190588235296,
-      0,
-      0,
-      0,
-      1,
-      0
-    ];
-    this._loadMatrix(r, i);
-  }
-  /**
-   * We don't know exactly what it does, kind of gradient map, but funny to play with!
-   * @param desaturation - Tone values.
-   * @param toned - Tone values.
-   * @param lightColor - Tone values, example: `0xFFE580`
-   * @param darkColor - Tone values, example: `0xFFE580`
-   * @param multiply - if true, current matrix and matrix are multiplied. If false,
-   *  just set the current matrix with @param matrix
-   */
-  colorTone(i, r, t, o, p) {
-    i = i || 0.2, r = r || 0.15, t = t || 16770432, o = o || 3375104;
-    const m = d.shared, [s, x, h] = m.setValue(t).toArray(), [l, e, c] = m.setValue(o).toArray(), M = [
-      0.3,
-      0.59,
-      0.11,
-      0,
-      0,
-      s,
-      x,
-      h,
-      i,
-      0,
-      l,
-      e,
-      c,
-      r,
-      0,
-      s - l,
-      x - e,
-      h - c,
-      0,
-      0
-    ];
-    this._loadMatrix(M, p);
-  }
-  /**
-   * Night effect
-   * @param intensity - The intensity of the night effect.
-   * @param multiply - if true, current matrix and matrix are multiplied. If false,
-   *  just set the current matrix with @param matrix
-   */
-  night(i, r) {
-    i = i || 0.1;
-    const t = [
-      i * -2,
-      -i,
-      0,
-      0,
-      0,
-      -i,
-      0,
-      i,
-      0,
-      0,
-      0,
-      i,
-      i * 2,
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0
-    ];
-    this._loadMatrix(t, r);
-  }
-  /**
-   * Predator effect
+   * Get the current bounds of the graphic geometry.
    *
-   * Erase the current matrix by setting a new indepent one
-   * @param amount - how much the predator feels his future victim
-   * @param multiply - if true, current matrix and matrix are multiplied. If false,
-   *  just set the current matrix with @param matrix
+   * Since 6.5.0, bounds of the graphics geometry are calculated based on the vertices of generated geometry.
+   * Since shapes or strokes with full transparency (`alpha: 0`) will not generate geometry, they are not considered
+   * when calculating bounds for the graphics geometry. See PR [#8343]{@link https://github.com/pixijs/pixijs/pull/8343}
+   * and issue [#8623]{@link https://github.com/pixijs/pixijs/pull/8623}.
+   * @readonly
    */
-  predator(i, r) {
-    const t = [
-      // row 1
-      11.224130630493164 * i,
-      -4.794486999511719 * i,
-      -2.8746118545532227 * i,
-      0 * i,
-      0.40342438220977783 * i,
-      // row 2
-      -3.6330697536468506 * i,
-      9.193157196044922 * i,
-      -2.951810836791992 * i,
-      0 * i,
-      -1.316135048866272 * i,
-      // row 3
-      -3.2184197902679443 * i,
-      -4.2375030517578125 * i,
-      7.476448059082031 * i,
-      0 * i,
-      0.8044459223747253 * i,
-      // row 4
-      0,
-      0,
-      0,
-      1,
-      0
-    ];
-    this._loadMatrix(t, r);
+  get bounds() {
+    return this.updateBatches(), this.boundsDirty !== this.dirty && (this.boundsDirty = this.dirty, this.calculateBounds()), this._bounds;
+  }
+  /** Call if you changed graphicsData manually. Empties all batch buffers. */
+  invalidate() {
+    this.boundsDirty = -1, this.dirty++, this.batchDirty++, this.shapeIndex = 0, this.points.length = 0, this.colors.length = 0, this.uvs.length = 0, this.indices.length = 0, this.textureIds.length = 0;
+    for (let t = 0; t < this.drawCalls.length; t++)
+      this.drawCalls[t].texArray.clear(), y.push(this.drawCalls[t]);
+    this.drawCalls.length = 0;
+    for (let t = 0; t < this.batches.length; t++) {
+      const e = this.batches[t];
+      e.reset(), v.push(e);
+    }
+    this.batches.length = 0;
   }
   /**
-   * LSD effect
-   *
-   * Multiply the current matrix
-   * @param multiply - if true, current matrix and matrix are multiplied. If false,
-   *  just set the current matrix with @param matrix
+   * Clears the graphics that were drawn to this Graphics object, and resets fill and line style settings.
+   * @returns - This GraphicsGeometry object. Good for chaining method calls
    */
-  lsd(i) {
-    const r = [
-      2,
-      -0.4,
-      0.5,
-      0,
-      0,
-      -0.5,
-      2,
-      -0.4,
-      0,
-      0,
-      -0.4,
-      -0.5,
-      3,
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0
-    ];
-    this._loadMatrix(r, i);
-  }
-  /** Erase the current matrix by setting the default one. */
-  reset() {
-    const i = [
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0
-    ];
-    this._loadMatrix(i, !1);
+  clear() {
+    return this.graphicsData.length > 0 && (this.invalidate(), this.clearDirty++, this.graphicsData.length = 0), this;
   }
   /**
-   * The matrix of the color matrix filter
-   * @member {number[]}
-   * @default [1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0]
+   * Draws the given shape to this Graphics object. Can be any of Circle, Rectangle, Ellipse, Line or Polygon.
+   * @param {PIXI.Circle|PIXI.Ellipse|PIXI.Polygon|PIXI.Rectangle|PIXI.RoundedRectangle} shape - The shape object to draw.
+   * @param fillStyle - Defines style of the fill.
+   * @param lineStyle - Defines style of the lines.
+   * @param matrix - Transform applied to the points of the shape.
+   * @returns - Returns geometry for chaining.
    */
-  get matrix() {
-    return this.uniforms.m;
-  }
-  set matrix(i) {
-    this.uniforms.m = i;
+  drawShape(t, e = null, s = null, i = null) {
+    const r = new _(t, e, s, i);
+    return this.graphicsData.push(r), this.dirty++, this;
   }
   /**
-   * The opacity value to use when mixing the original and resultant colors.
-   *
-   * When the value is 0, the original color is used without modification.
-   * When the value is 1, the result color is used.
-   * When in the range (0, 1) the color is interpolated between the original and result by this amount.
-   * @default 1
+   * Draws the given shape to this Graphics object. Can be any of Circle, Rectangle, Ellipse, Line or Polygon.
+   * @param {PIXI.Circle|PIXI.Ellipse|PIXI.Polygon|PIXI.Rectangle|PIXI.RoundedRectangle} shape - The shape object to draw.
+   * @param matrix - Transform applied to the points of the shape.
+   * @returns - Returns geometry for chaining.
    */
-  get alpha() {
-    return this.uniforms.uAlpha;
+  drawHole(t, e = null) {
+    if (!this.graphicsData.length)
+      return null;
+    const s = new _(t, null, null, e), i = this.graphicsData[this.graphicsData.length - 1];
+    return s.lineStyle = i.lineStyle, i.holes.push(s), this.dirty++, this;
   }
-  set alpha(i) {
-    this.uniforms.uAlpha = i;
+  /** Destroys the GraphicsGeometry object. */
+  destroy() {
+    super.destroy();
+    for (let t = 0; t < this.graphicsData.length; ++t)
+      this.graphicsData[t].destroy();
+    this.points.length = 0, this.points = null, this.colors.length = 0, this.colors = null, this.uvs.length = 0, this.uvs = null, this.indices.length = 0, this.indices = null, this.indexBuffer.destroy(), this.indexBuffer = null, this.graphicsData.length = 0, this.graphicsData = null, this.drawCalls.length = 0, this.drawCalls = null, this.batches.length = 0, this.batches = null, this._bounds = null;
   }
-}
-_.prototype.grayscale = _.prototype.greyscale;
+  /**
+   * Check to see if a point is contained within this geometry.
+   * @param point - Point to check if it's contained.
+   * @returns {boolean} `true` if the point is contained within geometry.
+   */
+  containsPoint(t) {
+    const e = this.graphicsData;
+    for (let s = 0; s < e.length; ++s) {
+      const i = e[s];
+      if (i.fillStyle.visible && i.shape && (i.matrix ? i.matrix.applyInverse(t, g) : g.copyFrom(t), i.shape.contains(g.x, g.y))) {
+        let r = !1;
+        if (i.holes) {
+          for (let h = 0; h < i.holes.length; h++)
+            if (i.holes[h].shape.contains(g.x, g.y)) {
+              r = !0;
+              break;
+            }
+        }
+        if (!r)
+          return !0;
+      }
+    }
+    return !1;
+  }
+  /**
+   * Generates intermediate batch data. Either gets converted to drawCalls
+   * or used to convert to batch objects directly by the Graphics object.
+   */
+  updateBatches() {
+    if (!this.graphicsData.length) {
+      this.batchable = !0;
+      return;
+    }
+    if (!this.validateBatching())
+      return;
+    this.cacheDirty = this.dirty;
+    const t = this.uvs, e = this.graphicsData;
+    let s = null, i = null;
+    this.batches.length > 0 && (s = this.batches[this.batches.length - 1], i = s.style);
+    for (let l = this.shapeIndex; l < e.length; l++) {
+      this.shapeIndex++;
+      const a = e[l], m = a.fillStyle, c = a.lineStyle;
+      x[a.type].build(a), a.matrix && this.transformPoints(a.points, a.matrix), (m.visible || c.visible) && this.processHoles(a.holes);
+      for (let o = 0; o < 2; o++) {
+        const d = o === 0 ? m : c;
+        if (!d.visible)
+          continue;
+        const u = d.texture.baseTexture, n = this.indices.length, b = this.points.length / 2;
+        u.wrapMode = S.REPEAT, o === 0 ? this.processFill(a) : this.processLine(a);
+        const w = this.points.length / 2 - b;
+        w !== 0 && (s && !this._compareStyles(i, d) && (s.end(n, b), s = null), s || (s = v.pop() || new U(), s.begin(d, n, b), this.batches.push(s), i = d), this.addUvs(this.points, t, d.texture, b, w, d.matrix));
+      }
+    }
+    const r = this.indices.length, h = this.points.length / 2;
+    if (s && s.end(r, h), this.batches.length === 0) {
+      this.batchable = !0;
+      return;
+    }
+    const p = h > 65535;
+    this.indicesUint16 && this.indices.length === this.indicesUint16.length && p === this.indicesUint16.BYTES_PER_ELEMENT > 2 ? this.indicesUint16.set(this.indices) : this.indicesUint16 = p ? new Uint32Array(this.indices) : new Uint16Array(this.indices), this.batchable = this.isBatchable(), this.batchable ? this.packBatches() : this.buildDrawCalls();
+  }
+  /**
+   * Affinity check
+   * @param styleA
+   * @param styleB
+   */
+  _compareStyles(t, e) {
+    return !(!t || !e || t.texture.baseTexture !== e.texture.baseTexture || t.color + t.alpha !== e.color + e.alpha || !!t.native != !!e.native);
+  }
+  /** Test geometry for batching process. */
+  validateBatching() {
+    if (this.dirty === this.cacheDirty || !this.graphicsData.length)
+      return !1;
+    for (let t = 0, e = this.graphicsData.length; t < e; t++) {
+      const s = this.graphicsData[t], i = s.fillStyle, r = s.lineStyle;
+      if (i && !i.texture.baseTexture.valid || r && !r.texture.baseTexture.valid)
+        return !1;
+    }
+    return !0;
+  }
+  /** Offset the indices so that it works with the batcher. */
+  packBatches() {
+    this.batchDirty++, this.uvsFloat32 = new Float32Array(this.uvs);
+    const t = this.batches;
+    for (let e = 0, s = t.length; e < s; e++) {
+      const i = t[e];
+      for (let r = 0; r < i.size; r++) {
+        const h = i.start + r;
+        this.indicesUint16[h] = this.indicesUint16[h] - i.attribStart;
+      }
+    }
+  }
+  /**
+   * Checks to see if this graphics geometry can be batched.
+   * Currently it needs to be small enough and not contain any native lines.
+   */
+  isBatchable() {
+    if (this.points.length > 65535 * 2)
+      return !1;
+    const t = this.batches;
+    for (let e = 0; e < t.length; e++)
+      if (t[e].style.native)
+        return !1;
+    return this.points.length < P.BATCHABLE_SIZE * 2;
+  }
+  /** Converts intermediate batches data to drawCalls. */
+  buildDrawCalls() {
+    let t = ++C._globalBatch;
+    for (let c = 0; c < this.drawCalls.length; c++)
+      this.drawCalls[c].texArray.clear(), y.push(this.drawCalls[c]);
+    this.drawCalls.length = 0;
+    const e = this.colors, s = this.textureIds;
+    let i = y.pop();
+    i || (i = new T(), i.texArray = new A()), i.texArray.count = 0, i.start = 0, i.size = 0, i.type = f.TRIANGLES;
+    let r = 0, h = null, p = 0, l = !1, a = f.TRIANGLES, m = 0;
+    this.drawCalls.push(i);
+    for (let c = 0; c < this.batches.length; c++) {
+      const o = this.batches[c], d = 8, u = o.style, n = u.texture.baseTexture;
+      l !== !!u.native && (l = !!u.native, a = l ? f.LINES : f.TRIANGLES, h = null, r = d, t++), h !== n && (h = n, n._batchEnabled !== t && (r === d && (t++, r = 0, i.size > 0 && (i = y.pop(), i || (i = new T(), i.texArray = new A()), this.drawCalls.push(i)), i.start = m, i.size = 0, i.texArray.count = 0, i.type = a), n.touched = 1, n._batchEnabled = t, n._batchLocation = r, n.wrapMode = S.REPEAT, i.texArray.elements[i.texArray.count++] = n, r++)), i.size += o.size, m += o.size, p = n._batchLocation, this.addColors(e, u.color, u.alpha, o.attribSize, o.attribStart), this.addTextureIds(s, p, o.attribSize, o.attribStart);
+    }
+    C._globalBatch = t, this.packAttributes();
+  }
+  /** Packs attributes to single buffer. */
+  packAttributes() {
+    const t = this.points, e = this.uvs, s = this.colors, i = this.textureIds, r = new ArrayBuffer(t.length * 3 * 4), h = new Float32Array(r), p = new Uint32Array(r);
+    let l = 0;
+    for (let a = 0; a < t.length / 2; a++)
+      h[l++] = t[a * 2], h[l++] = t[a * 2 + 1], h[l++] = e[a * 2], h[l++] = e[a * 2 + 1], p[l++] = s[a], h[l++] = i[a];
+    this._buffer.update(r), this._indexBuffer.update(this.indicesUint16);
+  }
+  /**
+   * Process fill part of Graphics.
+   * @param data
+   */
+  processFill(t) {
+    t.holes.length ? G.triangulate(t, this) : x[t.type].triangulate(t, this);
+  }
+  /**
+   * Process line part of Graphics.
+   * @param data
+   */
+  processLine(t) {
+    B(t, this);
+    for (let e = 0; e < t.holes.length; e++)
+      B(t.holes[e], this);
+  }
+  /**
+   * Process the holes data.
+   * @param holes
+   */
+  processHoles(t) {
+    for (let e = 0; e < t.length; e++) {
+      const s = t[e];
+      x[s.type].build(s), s.matrix && this.transformPoints(s.points, s.matrix);
+    }
+  }
+  /** Update the local bounds of the object. Expensive to use performance-wise. */
+  calculateBounds() {
+    const t = this._bounds;
+    t.clear(), t.addVertexData(this.points, 0, this.points.length), t.pad(this.boundsPadding, this.boundsPadding);
+  }
+  /**
+   * Transform points using matrix.
+   * @param points - Points to transform
+   * @param matrix - Transform matrix
+   */
+  transformPoints(t, e) {
+    for (let s = 0; s < t.length / 2; s++) {
+      const i = t[s * 2], r = t[s * 2 + 1];
+      t[s * 2] = e.a * i + e.c * r + e.tx, t[s * 2 + 1] = e.b * i + e.d * r + e.ty;
+    }
+  }
+  /**
+   * Add colors.
+   * @param colors - List of colors to add to
+   * @param color - Color to add
+   * @param alpha - Alpha to use
+   * @param size - Number of colors to add
+   * @param offset
+   */
+  addColors(t, e, s, i, r = 0) {
+    const h = D.shared.setValue(e).toLittleEndianNumber(), p = D.shared.setValue(h).toPremultiplied(s);
+    t.length = Math.max(t.length, r + i);
+    for (let l = 0; l < i; l++)
+      t[r + l] = p;
+  }
+  /**
+   * Add texture id that the shader/fragment wants to use.
+   * @param textureIds
+   * @param id
+   * @param size
+   * @param offset
+   */
+  addTextureIds(t, e, s, i = 0) {
+    t.length = Math.max(t.length, i + s);
+    for (let r = 0; r < s; r++)
+      t[i + r] = e;
+  }
+  /**
+   * Generates the UVs for a shape.
+   * @param verts - Vertices
+   * @param uvs - UVs
+   * @param texture - Reference to Texture
+   * @param start - Index buffer start index.
+   * @param size - The size/length for index buffer.
+   * @param matrix - Optional transform for all points.
+   */
+  addUvs(t, e, s, i, r, h = null) {
+    let p = 0;
+    const l = e.length, a = s.frame;
+    for (; p < r; ) {
+      let c = t[(i + p) * 2], o = t[(i + p) * 2 + 1];
+      if (h) {
+        const d = h.a * c + h.c * o + h.tx;
+        o = h.b * c + h.d * o + h.ty, c = d;
+      }
+      p++, e.push(c / a.width, o / a.height);
+    }
+    const m = s.baseTexture;
+    (a.width < m.width || a.height < m.height) && this.adjustUvs(e, s, l, r);
+  }
+  /**
+   * Modify uvs array according to position of texture region
+   * Does not work with rotated or trimmed textures
+   * @param uvs - array
+   * @param texture - region
+   * @param start - starting index for uvs
+   * @param size - how many points to adjust
+   */
+  adjustUvs(t, e, s, i) {
+    const r = e.baseTexture, h = 1e-6, p = s + i * 2, l = e.frame, a = l.width / r.width, m = l.height / r.height;
+    let c = l.x / l.width, o = l.y / l.height, d = Math.floor(t[s] + h), u = Math.floor(t[s + 1] + h);
+    for (let n = s + 2; n < p; n += 2)
+      d = Math.min(d, Math.floor(t[n] + h)), u = Math.min(u, Math.floor(t[n + 1] + h));
+    c -= d, o -= u;
+    for (let n = s; n < p; n += 2)
+      t[n] = (t[n] + c) * a, t[n + 1] = (t[n + 1] + o) * m;
+  }
+};
+E.BATCHABLE_SIZE = 100;
+let ti = E;
 export {
-  _ as ColorMatrixFilter
+  ti as GraphicsGeometry
 };
 //# sourceMappingURL=index109.js.map

@@ -1,86 +1,174 @@
-import { BaseTexture as l } from "./index54.js";
-import { autoDetectResource as a } from "./index226.js";
-import { Resource as r } from "./index227.js";
-class p extends r {
-  /**
-   * @param length
-   * @param options - Options to for Resource constructor
-   * @param {number} [options.width] - Width of the resource
-   * @param {number} [options.height] - Height of the resource
-   */
-  constructor(t, i) {
-    const { width: e, height: h } = i || {};
-    super(e, h), this.items = [], this.itemDirtyIds = [];
-    for (let s = 0; s < t; s++) {
-      const o = new l();
-      this.items.push(o), this.itemDirtyIds.push(-2);
+import { uniformParsers as u } from "./index244.js";
+import "./index33.js";
+import { mapSize as h } from "./index245.js";
+function z(r, n, t, e, a) {
+  t.buffer.update(a);
+}
+const S = {
+  float: `
+        data[offset] = v;
+    `,
+  vec2: `
+        data[offset] = v[0];
+        data[offset+1] = v[1];
+    `,
+  vec3: `
+        data[offset] = v[0];
+        data[offset+1] = v[1];
+        data[offset+2] = v[2];
+
+    `,
+  vec4: `
+        data[offset] = v[0];
+        data[offset+1] = v[1];
+        data[offset+2] = v[2];
+        data[offset+3] = v[3];
+    `,
+  mat2: `
+        data[offset] = v[0];
+        data[offset+1] = v[1];
+
+        data[offset+4] = v[2];
+        data[offset+5] = v[3];
+    `,
+  mat3: `
+        data[offset] = v[0];
+        data[offset+1] = v[1];
+        data[offset+2] = v[2];
+
+        data[offset + 4] = v[3];
+        data[offset + 5] = v[4];
+        data[offset + 6] = v[5];
+
+        data[offset + 8] = v[6];
+        data[offset + 9] = v[7];
+        data[offset + 10] = v[8];
+    `,
+  mat4: `
+        for(var i = 0; i < 16; i++)
+        {
+            data[offset + i] = v[i];
+        }
+    `
+}, p = {
+  float: 4,
+  vec2: 8,
+  vec3: 12,
+  vec4: 16,
+  int: 4,
+  ivec2: 8,
+  ivec3: 12,
+  ivec4: 16,
+  uint: 4,
+  uvec2: 8,
+  uvec3: 12,
+  uvec4: 16,
+  bool: 4,
+  bvec2: 8,
+  bvec3: 12,
+  bvec4: 16,
+  mat2: 16 * 2,
+  mat3: 16 * 3,
+  mat4: 16 * 4
+};
+function $(r) {
+  const n = r.map((o) => ({
+    data: o,
+    offset: 0,
+    dataLen: 0,
+    dirty: 0
+  }));
+  let t = 0, e = 0, a = 0;
+  for (let o = 0; o < n.length; o++) {
+    const s = n[o];
+    if (t = p[s.data.type], s.data.size > 1 && (t = Math.max(t, 16) * s.data.size), s.dataLen = t, e % t !== 0 && e < 16) {
+      const f = e % t % 16;
+      e += f, a += f;
     }
-    this.length = t, this._load = null, this.baseTexture = null;
+    e + t > 16 ? (a = Math.ceil(a / 16) * 16, s.offset = a, a += t, e = t) : (s.offset = a, e += t, a += t);
   }
-  /**
-   * Used from ArrayResource and CubeResource constructors.
-   * @param resources - Can be resources, image elements, canvas, etc. ,
-   *  length should be same as constructor length
-   * @param options - Detect options for resources
-   */
-  initFromArray(t, i) {
-    for (let e = 0; e < this.length; e++)
-      t[e] && (t[e].castToBaseTexture ? this.addBaseTextureAt(t[e].castToBaseTexture(), e) : t[e] instanceof r ? this.addResourceAt(t[e], e) : this.addResourceAt(a(t[e], i), e));
-  }
-  /** Destroy this BaseImageResource. */
-  dispose() {
-    for (let t = 0, i = this.length; t < i; t++)
-      this.items[t].destroy();
-    this.items = null, this.itemDirtyIds = null, this._load = null;
-  }
-  /**
-   * Set a resource by ID
-   * @param resource
-   * @param index - Zero-based index of resource to set
-   * @returns - Instance for chaining
-   */
-  addResourceAt(t, i) {
-    if (!this.items[i])
-      throw new Error(`Index ${i} is out of bounds`);
-    return t.valid && !this.valid && this.resize(t.width, t.height), this.items[i].setResource(t), this;
-  }
-  /**
-   * Set the parent base texture.
-   * @param baseTexture
-   */
-  bind(t) {
-    if (this.baseTexture !== null)
-      throw new Error("Only one base texture per TextureArray is allowed");
-    super.bind(t);
-    for (let i = 0; i < this.length; i++)
-      this.items[i].parentTextureArray = t, this.items[i].on("update", t.update, t);
-  }
-  /**
-   * Unset the parent base texture.
-   * @param baseTexture
-   */
-  unbind(t) {
-    super.unbind(t);
-    for (let i = 0; i < this.length; i++)
-      this.items[i].parentTextureArray = null, this.items[i].off("update", t.update, t);
-  }
-  /**
-   * Load all the resources simultaneously
-   * @returns - When load is resolved
-   */
-  load() {
-    if (this._load)
-      return this._load;
-    const t = this.items.map((i) => i.resource).filter((i) => i).map((i) => i.load());
-    return this._load = Promise.all(t).then(
-      () => {
-        const { realWidth: i, realHeight: e } = this.items[0];
-        return this.resize(i, e), this.update(), Promise.resolve(this);
+  return a = Math.ceil(a / 16) * 16, { uboElements: n, size: a };
+}
+function y(r, n) {
+  const t = [];
+  for (const e in r)
+    n[e] && t.push(n[e]);
+  return t.sort((e, a) => e.index - a.index), t;
+}
+function g(r, n) {
+  if (!r.autoManage)
+    return { size: 0, syncFunc: z };
+  const t = y(r.uniforms, n), { uboElements: e, size: a } = $(t), o = [`
+    var v = null;
+    var v2 = null;
+    var cv = null;
+    var t = 0;
+    var gl = renderer.gl
+    var index = 0;
+    var data = buffer.data;
+    `];
+  for (let s = 0; s < e.length; s++) {
+    const f = e[s], c = r.uniforms[f.data.name], i = f.data.name;
+    let m = !1;
+    for (let v = 0; v < u.length; v++) {
+      const d = u[v];
+      if (d.codeUbo && d.test(f.data, c)) {
+        o.push(
+          `offset = ${f.offset / 4};`,
+          u[v].codeUbo(f.data.name, c)
+        ), m = !0;
+        break;
       }
-    ), this._load;
+    }
+    if (!m)
+      if (f.data.size > 1) {
+        const v = h(f.data.type), d = Math.max(p[f.data.type] / 16, 1), l = v / d, b = (4 - l % 4) % 4;
+        o.push(`
+                cv = ud.${i}.value;
+                v = uv.${i};
+                offset = ${f.offset / 4};
+
+                t = 0;
+
+                for(var i=0; i < ${f.data.size * d}; i++)
+                {
+                    for(var j = 0; j < ${l}; j++)
+                    {
+                        data[offset++] = v[t++];
+                    }
+                    offset += ${b};
+                }
+
+                `);
+      } else {
+        const v = S[f.data.type];
+        o.push(`
+                cv = ud.${i}.value;
+                v = uv.${i};
+                offset = ${f.offset / 4};
+                ${v};
+                `);
+      }
   }
+  return o.push(`
+       renderer.buffer.update(buffer);
+    `), {
+    size: a,
+    // eslint-disable-next-line no-new-func
+    syncFunc: new Function(
+      "ud",
+      "uv",
+      "renderer",
+      "syncData",
+      "buffer",
+      o.join(`
+`)
+    )
+  };
 }
 export {
-  p as AbstractMultiResource
+  $ as createUBOElements,
+  g as generateUniformBufferSync,
+  y as getUBOData
 };
 //# sourceMappingURL=index238.js.map

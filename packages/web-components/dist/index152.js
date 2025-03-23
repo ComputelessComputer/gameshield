@@ -1,5 +1,16 @@
-var h = /* @__PURE__ */ ((g) => (g[g.Low = 0] = "Low", g[g.Normal = 1] = "Normal", g[g.High = 2] = "High", g))(h || {});
+import { ExtensionType as e } from "./index153.js";
+const t = {
+  extension: {
+    type: e.Environment,
+    name: "webworker",
+    priority: 0
+  },
+  test: () => typeof self < "u" && self.WorkerGlobalScope !== void 0,
+  load: async () => {
+    await import("./index319.js");
+  }
+};
 export {
-  h as LoaderParserPriority
+  t as webworkerExt
 };
 //# sourceMappingURL=index152.js.map

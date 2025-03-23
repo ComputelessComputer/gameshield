@@ -1,28 +1,33 @@
+import "./index20.js";
+import { Color as X } from "./index21.js";
+import { BLEND_MODES as A } from "./index164.js";
+import "./index22.js";
 import "./index23.js";
 import "./index24.js";
 import "./index25.js";
 import "./index26.js";
 import "./index27.js";
 import "./index28.js";
-import "./index29.js";
-import "./index30.js";
+import { ObservablePoint as G } from "./index29.js";
+import { Point as I } from "./index30.js";
 import "./index31.js";
 import "./index32.js";
+import { settings as U } from "./index163.js";
 import "./index33.js";
 import "./index34.js";
 import "./index35.js";
-import { settings as M } from "./index153.js";
 import "./index36.js";
 import "./index37.js";
 import "./index38.js";
 import "./index39.js";
 import "./index40.js";
 import "./index41.js";
+import { removeItems as Z } from "./index159.js";
 import "./index42.js";
 import "./index43.js";
 import "./index44.js";
 import "./index45.js";
-import "./index46.js";
+import { Program as J } from "./index46.js";
 import "./index47.js";
 import "./index48.js";
 import "./index49.js";
@@ -40,7 +45,7 @@ import "./index60.js";
 import "./index61.js";
 import "./index62.js";
 import "./index63.js";
-import "./index64.js";
+import { Texture as T } from "./index135.js";
 import "./index65.js";
 import "./index66.js";
 import "./index67.js";
@@ -52,430 +57,333 @@ import "./index72.js";
 import "./index73.js";
 import "./index74.js";
 import "./index75.js";
+import "./index64.js";
 import "./index76.js";
 import "./index77.js";
 import "./index78.js";
-import "./index79.js";
-import "./index80.js";
-import "./index81.js";
-const C = {
-  // TextMetrics requires getImageData readback for measuring fonts.
-  willReadFrequently: !0
-}, f = class i {
+import "./index99.js";
+import { Container as K } from "./index100.js";
+import "./index101.js";
+import { Mesh as Y } from "./index110.js";
+import { MeshGeometry as Q } from "./index274.js";
+import { MeshMaterial as k } from "./index275.js";
+import { BitmapFont as y } from "./index121.js";
+import tt from "./index310.js";
+import et from "./index311.js";
+import "./index118.js";
+import "./index119.js";
+import "./index120.js";
+import { extractCharCode as it } from "./index308.js";
+import { splitTextToCharacters as st } from "./index312.js";
+const j = [], V = [], $ = [], rt = class q extends K {
   /**
-   * Checking that we can use modern canvas 2D API.
-   *
-   * Note: This is an unstable API, Chrome < 94 use `textLetterSpacing`, later versions use `letterSpacing`.
-   * @see PIXI.TextMetrics.experimentalLetterSpacing
-   * @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/letterSpacing
-   * @see https://developer.chrome.com/origintrials/#/view_trial/3585991203293757441
+   * @param text - A string that you would like the text to display.
+   * @param style - The style parameters.
+   * @param {string} style.fontName - The installed BitmapFont name.
+   * @param {number} [style.fontSize] - The size of the font in pixels, e.g. 24. If undefined,
+   *.     this will default to the BitmapFont size.
+   * @param {string} [style.align='left'] - Alignment for multiline text ('left', 'center', 'right' or 'justify'),
+   *      does not affect single line text.
+   * @param {PIXI.ColorSource} [style.tint=0xFFFFFF] - The tint color.
+   * @param {number} [style.letterSpacing=0] - The amount of spacing between letters.
+   * @param {number} [style.maxWidth=0] - The max width of the text before line wrapping.
    */
-  static get experimentalLetterSpacingSupported() {
-    let e = i._experimentalLetterSpacingSupported;
-    if (e !== void 0) {
-      const t = M.ADAPTER.getCanvasRenderingContext2D().prototype;
-      e = i._experimentalLetterSpacingSupported = "letterSpacing" in t || "textLetterSpacing" in t;
-    }
-    return e;
-  }
-  /**
-   * @param text - the text that was measured
-   * @param style - the style that was measured
-   * @param width - the measured width of the text
-   * @param height - the measured height of the text
-   * @param lines - an array of the lines of text broken by new lines and wrapping if specified in style
-   * @param lineWidths - an array of the line widths for each line matched to `lines`
-   * @param lineHeight - the measured line height for this style
-   * @param maxLineWidth - the maximum line width for all measured lines
-   * @param {PIXI.IFontMetrics} fontProperties - the font properties object from TextMetrics.measureFont
-   */
-  constructor(e, t, a, o, n, r, s, c, d) {
-    this.text = e, this.style = t, this.width = a, this.height = o, this.lines = n, this.lineWidths = r, this.lineHeight = s, this.maxLineWidth = c, this.fontProperties = d;
-  }
-  /**
-   * Measures the supplied string of text and returns a Rectangle.
-   * @param text - The text to measure.
-   * @param style - The text style to use for measuring
-   * @param wordWrap - Override for if word-wrap should be applied to the text.
-   * @param canvas - optional specification of the canvas to use for measuring.
-   * @returns Measured width and height of the text.
-   */
-  static measureText(e, t, a, o = i._canvas) {
-    a = a ?? t.wordWrap;
-    const n = t.toFontString(), r = i.measureFont(n);
-    r.fontSize === 0 && (r.fontSize = t.fontSize, r.ascent = t.fontSize);
-    const s = o.getContext("2d", C);
-    s.font = n;
-    const c = (a ? i.wordWrap(e, t, o) : e).split(/(?:\r\n|\r|\n)/), d = new Array(c.length);
-    let u = 0;
-    for (let l = 0; l < c.length; l++) {
-      const h = i._measureText(c[l], t.letterSpacing, s);
-      d[l] = h, u = Math.max(u, h);
-    }
-    let g = u + t.strokeThickness;
-    t.dropShadow && (g += t.dropShadowDistance);
-    const p = t.lineHeight || r.fontSize + t.strokeThickness;
-    let m = Math.max(p, r.fontSize + t.strokeThickness * 2) + t.leading + (c.length - 1) * (p + t.leading);
-    return t.dropShadow && (m += t.dropShadowDistance), new i(
-      e,
-      t,
-      g,
-      m,
-      c,
-      d,
-      p + t.leading,
-      u,
-      r
+  constructor(t, p = {}) {
+    super();
+    const { align: l, tint: a, maxWidth: c, letterSpacing: x, fontName: f, fontSize: P } = Object.assign(
+      {},
+      q.styleDefaults,
+      p
     );
+    if (!y.available[f])
+      throw new Error(`Missing BitmapFont "${f}"`);
+    this._activePagesMeshData = [], this._textWidth = 0, this._textHeight = 0, this._align = l, this._tintColor = new X(a), this._font = void 0, this._fontName = f, this._fontSize = P, this.text = t, this._maxWidth = c, this._maxLineHeight = 0, this._letterSpacing = x, this._anchor = new G(() => {
+      this.dirty = !0;
+    }, this, 0, 0), this._roundPixels = U.ROUND_PIXELS, this.dirty = !0, this._resolution = U.RESOLUTION, this._autoResolution = !0, this._textureCache = {};
   }
-  static _measureText(e, t, a) {
-    let o = !1;
-    i.experimentalLetterSpacingSupported && (i.experimentalLetterSpacing ? (a.letterSpacing = `${t}px`, a.textLetterSpacing = `${t}px`, o = !0) : (a.letterSpacing = "0px", a.textLetterSpacing = "0px"));
-    let n = a.measureText(e).width;
-    return n > 0 && (o ? n -= t : n += (i.graphemeSegmenter(e).length - 1) * t), n;
-  }
-  /**
-   * Applies newlines to a string to have it optimally fit into the horizontal
-   * bounds set by the Text object's wordWrapWidth property.
-   * @param text - String to apply word wrapping to
-   * @param style - the style to use when wrapping
-   * @param canvas - optional specification of the canvas to use for measuring.
-   * @returns New string with new lines applied where required
-   */
-  static wordWrap(e, t, a = i._canvas) {
-    const o = a.getContext("2d", C);
-    let n = 0, r = "", s = "";
-    const c = /* @__PURE__ */ Object.create(null), { letterSpacing: d, whiteSpace: u } = t, g = i.collapseSpaces(u), p = i.collapseNewlines(u);
-    let m = !g;
-    const l = t.wordWrapWidth + d, h = i.tokenize(e);
-    for (let L = 0; L < h.length; L++) {
-      let S = h[L];
-      if (i.isNewline(S)) {
-        if (!p) {
-          s += i.addLine(r), m = !g, r = "", n = 0;
-          continue;
-        }
-        S = " ";
-      }
-      if (g) {
-        const k = i.isBreakingSpace(S), x = i.isBreakingSpace(r[r.length - 1]);
-        if (k && x)
-          continue;
-      }
-      const E = i.getFromCache(S, d, c, o);
-      if (E > l)
-        if (r !== "" && (s += i.addLine(r), r = "", n = 0), i.canBreakWords(S, t.breakWords)) {
-          const k = i.wordWrapSplit(S);
-          for (let x = 0; x < k.length; x++) {
-            let w = k[x], W = w, T = 1;
-            for (; k[x + T]; ) {
-              const B = k[x + T];
-              if (!i.canBreakChars(W, B, S, x, t.breakWords))
-                w += B;
-              else
-                break;
-              W = B, T++;
-            }
-            x += T - 1;
-            const R = i.getFromCache(w, d, c, o);
-            R + n > l && (s += i.addLine(r), m = !1, r = "", n = 0), r += w, n += R;
-          }
-        } else {
-          r.length > 0 && (s += i.addLine(r), r = "", n = 0);
-          const k = L === h.length - 1;
-          s += i.addLine(S, !k), m = !1, r = "", n = 0;
-        }
-      else
-        E + n > l && (m = !1, s += i.addLine(r), r = "", n = 0), (r.length > 0 || !i.isBreakingSpace(S) || m) && (r += S, n += E);
-    }
-    return s += i.addLine(r, !1), s;
-  }
-  /**
-   * Convienience function for logging each line added during the wordWrap method.
-   * @param line    - The line of text to add
-   * @param newLine - Add new line character to end
-   * @returns A formatted line
-   */
-  static addLine(e, t = !0) {
-    return e = i.trimRight(e), e = t ? `${e}
-` : e, e;
-  }
-  /**
-   * Gets & sets the widths of calculated characters in a cache object
-   * @param key            - The key
-   * @param letterSpacing  - The letter spacing
-   * @param cache          - The cache
-   * @param context        - The canvas context
-   * @returns The from cache.
-   */
-  static getFromCache(e, t, a, o) {
-    let n = a[e];
-    return typeof n != "number" && (n = i._measureText(e, t, o) + t, a[e] = n), n;
-  }
-  /**
-   * Determines whether we should collapse breaking spaces.
-   * @param whiteSpace - The TextStyle property whiteSpace
-   * @returns Should collapse
-   */
-  static collapseSpaces(e) {
-    return e === "normal" || e === "pre-line";
-  }
-  /**
-   * Determines whether we should collapse newLine chars.
-   * @param whiteSpace - The white space
-   * @returns should collapse
-   */
-  static collapseNewlines(e) {
-    return e === "normal";
-  }
-  /**
-   * Trims breaking whitespaces from string.
-   * @param text - The text
-   * @returns Trimmed string
-   */
-  static trimRight(e) {
-    if (typeof e != "string")
-      return "";
-    for (let t = e.length - 1; t >= 0; t--) {
-      const a = e[t];
-      if (!i.isBreakingSpace(a))
-        break;
-      e = e.slice(0, -1);
-    }
-    return e;
-  }
-  /**
-   * Determines if char is a newline.
-   * @param char - The character
-   * @returns True if newline, False otherwise.
-   */
-  static isNewline(e) {
-    return typeof e != "string" ? !1 : i._newlines.includes(e.charCodeAt(0));
-  }
-  /**
-   * Determines if char is a breaking whitespace.
-   *
-   * It allows one to determine whether char should be a breaking whitespace
-   * For example certain characters in CJK langs or numbers.
-   * It must return a boolean.
-   * @param char - The character
-   * @param [_nextChar] - The next character
-   * @returns True if whitespace, False otherwise.
-   */
-  static isBreakingSpace(e, t) {
-    return typeof e != "string" ? !1 : i._breakingSpaces.includes(e.charCodeAt(0));
-  }
-  /**
-   * Splits a string into words, breaking-spaces and newLine characters
-   * @param text - The text
-   * @returns A tokenized array
-   */
-  static tokenize(e) {
-    const t = [];
-    let a = "";
-    if (typeof e != "string")
-      return t;
-    for (let o = 0; o < e.length; o++) {
-      const n = e[o], r = e[o + 1];
-      if (i.isBreakingSpace(n, r) || i.isNewline(n)) {
-        a !== "" && (t.push(a), a = ""), t.push(n);
+  /** Renders text and updates it when needed. This should only be called if the BitmapFont is regenerated. */
+  updateText() {
+    var R;
+    const t = y.available[this._fontName], p = this.fontSize, l = p / t.size, a = new I(), c = [], x = [], f = [], P = this._text.replace(/(?:\r\n|\r)/g, `
+`) || " ", C = st(P), w = this._maxWidth * t.size / p, W = t.distanceFieldType === "none" ? j : V;
+    let v = null, _ = 0, g = 0, b = 0, S = -1, B = 0, O = 0, z = 0, N = 0;
+    for (let i = 0; i < C.length; i++) {
+      const e = C[i], n = it(e);
+      if (/(?:\s)/.test(e) && (S = i, B = _, N++), e === "\r" || e === `
+`) {
+        x.push(_), f.push(-1), g = Math.max(g, _), ++b, ++O, a.x = 0, a.y += t.lineHeight, v = null, N = 0;
         continue;
       }
-      a += n;
+      const s = t.chars[n];
+      if (!s)
+        continue;
+      v && s.kerning[v] && (a.x += s.kerning[v]);
+      const h = $.pop() || {
+        texture: T.EMPTY,
+        line: 0,
+        charCode: 0,
+        prevSpaces: 0,
+        position: new I()
+      };
+      h.texture = s.texture, h.line = b, h.charCode = n, h.position.x = Math.round(a.x + s.xOffset + this._letterSpacing / 2), h.position.y = Math.round(a.y + s.yOffset), h.prevSpaces = N, c.push(h), _ = h.position.x + Math.max(s.xAdvance - s.xOffset, s.texture.orig.width), a.x += s.xAdvance + this._letterSpacing, z = Math.max(z, s.yOffset + s.texture.height), v = n, S !== -1 && w > 0 && a.x > w && (++O, Z(c, 1 + S - O, 1 + i - S), i = S, S = -1, x.push(B), f.push(c.length > 0 ? c[c.length - 1].prevSpaces : 0), g = Math.max(g, B), b++, a.x = 0, a.y += t.lineHeight, v = null, N = 0);
     }
-    return a !== "" && t.push(a), t;
-  }
-  /**
-   * Overridable helper method used internally by TextMetrics, exposed to allow customizing the class's behavior.
-   *
-   * It allows one to customise which words should break
-   * Examples are if the token is CJK or numbers.
-   * It must return a boolean.
-   * @param _token - The token
-   * @param breakWords - The style attr break words
-   * @returns Whether to break word or not
-   */
-  static canBreakWords(e, t) {
-    return t;
-  }
-  /**
-   * Overridable helper method used internally by TextMetrics, exposed to allow customizing the class's behavior.
-   *
-   * It allows one to determine whether a pair of characters
-   * should be broken by newlines
-   * For example certain characters in CJK langs or numbers.
-   * It must return a boolean.
-   * @param _char - The character
-   * @param _nextChar - The next character
-   * @param _token - The token/word the characters are from
-   * @param _index - The index in the token of the char
-   * @param _breakWords - The style attr break words
-   * @returns whether to break word or not
-   */
-  static canBreakChars(e, t, a, o, n) {
-    return !0;
-  }
-  /**
-   * Overridable helper method used internally by TextMetrics, exposed to allow customizing the class's behavior.
-   *
-   * It is called when a token (usually a word) has to be split into separate pieces
-   * in order to determine the point to break a word.
-   * It must return an array of characters.
-   * @param token - The token to split
-   * @returns The characters of the token
-   * @see TextMetrics.graphemeSegmenter
-   */
-  static wordWrapSplit(e) {
-    return i.graphemeSegmenter(e);
-  }
-  /**
-   * Calculates the ascent, descent and fontSize of a given font-style
-   * @param font - String representing the style of the font
-   * @returns Font properties object
-   */
-  static measureFont(e) {
-    if (i._fonts[e])
-      return i._fonts[e];
-    const t = {
-      ascent: 0,
-      descent: 0,
-      fontSize: 0
-    }, a = i._canvas, o = i._context;
-    o.font = e;
-    const n = i.METRICS_STRING + i.BASELINE_SYMBOL, r = Math.ceil(o.measureText(n).width);
-    let s = Math.ceil(o.measureText(i.BASELINE_SYMBOL).width);
-    const c = Math.ceil(i.HEIGHT_MULTIPLIER * s);
-    if (s = s * i.BASELINE_MULTIPLIER | 0, r === 0 || c === 0)
-      return i._fonts[e] = t, t;
-    a.width = r, a.height = c, o.fillStyle = "#f00", o.fillRect(0, 0, r, c), o.font = e, o.textBaseline = "alphabetic", o.fillStyle = "#000", o.fillText(n, 0, s);
-    const d = o.getImageData(0, 0, r, c).data, u = d.length, g = r * 4;
-    let p = 0, m = 0, l = !1;
-    for (p = 0; p < s; ++p) {
-      for (let h = 0; h < g; h += 4)
-        if (d[m + h] !== 255) {
-          l = !0;
-          break;
+    const L = C[C.length - 1];
+    L !== "\r" && L !== `
+` && (/(?:\s)/.test(L) && (_ = B), x.push(_), g = Math.max(g, _), f.push(-1));
+    const E = [];
+    for (let i = 0; i <= b; i++) {
+      let e = 0;
+      this._align === "right" ? e = g - x[i] : this._align === "center" ? e = (g - x[i]) / 2 : this._align === "justify" && (e = f[i] < 0 ? 0 : (g - x[i]) / f[i]), E.push(e);
+    }
+    const H = c.length, M = {}, D = [], F = this._activePagesMeshData;
+    W.push(...F);
+    for (let i = 0; i < H; i++) {
+      const e = c[i].texture, n = e.baseTexture.uid;
+      if (!M[n]) {
+        let s = W.pop();
+        if (!s) {
+          const m = new Q();
+          let r, d;
+          t.distanceFieldType === "none" ? (r = new k(T.EMPTY), d = A.NORMAL) : (r = new k(
+            T.EMPTY,
+            { program: J.from(et, tt), uniforms: { uFWidth: 0 } }
+          ), d = A.NORMAL_NPM);
+          const u = new Y(m, r);
+          u.blendMode = d, s = {
+            index: 0,
+            indexCount: 0,
+            vertexCount: 0,
+            uvsCount: 0,
+            total: 0,
+            mesh: u,
+            vertices: null,
+            uvs: null,
+            indices: null
+          };
         }
-      if (!l)
-        m += g;
-      else
-        break;
-    }
-    for (t.ascent = s - p, m = u - g, l = !1, p = c; p > s; --p) {
-      for (let h = 0; h < g; h += 4)
-        if (d[m + h] !== 255) {
-          l = !0;
-          break;
-        }
-      if (!l)
-        m -= g;
-      else
-        break;
-    }
-    return t.descent = p - s, t.fontSize = t.ascent + t.descent, i._fonts[e] = t, t;
-  }
-  /**
-   * Clear font metrics in metrics cache.
-   * @param {string} [font] - font name. If font name not set then clear cache for all fonts.
-   */
-  static clearMetrics(e = "") {
-    e ? delete i._fonts[e] : i._fonts = {};
-  }
-  /**
-   * Cached canvas element for measuring text
-   * TODO: this should be private, but isn't because of backward compat, will fix later.
-   * @ignore
-   */
-  static get _canvas() {
-    var e;
-    if (!i.__canvas) {
-      let t;
-      try {
-        const a = new OffscreenCanvas(0, 0);
-        if ((e = a.getContext("2d", C)) != null && e.measureText)
-          return i.__canvas = a, a;
-        t = M.ADAPTER.createCanvas();
-      } catch {
-        t = M.ADAPTER.createCanvas();
+        s.index = 0, s.indexCount = 0, s.vertexCount = 0, s.uvsCount = 0, s.total = 0;
+        const { _textureCache: h } = this;
+        h[n] = h[n] || new T(e.baseTexture), s.mesh.texture = h[n], s.mesh.tint = this._tintColor.value, D.push(s), M[n] = s;
       }
-      t.width = t.height = 10, i.__canvas = t;
+      M[n].total++;
     }
-    return i.__canvas;
+    for (let i = 0; i < F.length; i++)
+      D.includes(F[i]) || this.removeChild(F[i].mesh);
+    for (let i = 0; i < D.length; i++)
+      D[i].mesh.parent !== this && this.addChild(D[i].mesh);
+    this._activePagesMeshData = D;
+    for (const i in M) {
+      const e = M[i], n = e.total;
+      if (!(((R = e.indices) == null ? void 0 : R.length) > 6 * n) || e.vertices.length < Y.BATCHABLE_SIZE * 2)
+        e.vertices = new Float32Array(4 * 2 * n), e.uvs = new Float32Array(4 * 2 * n), e.indices = new Uint16Array(6 * n);
+      else {
+        const s = e.total, h = e.vertices;
+        for (let m = s * 4 * 2; m < h.length; m++)
+          h[m] = 0;
+      }
+      e.mesh.size = 6 * n;
+    }
+    for (let i = 0; i < H; i++) {
+      const e = c[i];
+      let n = e.position.x + E[e.line] * (this._align === "justify" ? e.prevSpaces : 1);
+      this._roundPixels && (n = Math.round(n));
+      const s = n * l, h = e.position.y * l, m = e.texture, r = M[m.baseTexture.uid], d = m.frame, u = m._uvs, o = r.index++;
+      r.indices[o * 6 + 0] = 0 + o * 4, r.indices[o * 6 + 1] = 1 + o * 4, r.indices[o * 6 + 2] = 2 + o * 4, r.indices[o * 6 + 3] = 0 + o * 4, r.indices[o * 6 + 4] = 2 + o * 4, r.indices[o * 6 + 5] = 3 + o * 4, r.vertices[o * 8 + 0] = s, r.vertices[o * 8 + 1] = h, r.vertices[o * 8 + 2] = s + d.width * l, r.vertices[o * 8 + 3] = h, r.vertices[o * 8 + 4] = s + d.width * l, r.vertices[o * 8 + 5] = h + d.height * l, r.vertices[o * 8 + 6] = s, r.vertices[o * 8 + 7] = h + d.height * l, r.uvs[o * 8 + 0] = u.x0, r.uvs[o * 8 + 1] = u.y0, r.uvs[o * 8 + 2] = u.x1, r.uvs[o * 8 + 3] = u.y1, r.uvs[o * 8 + 4] = u.x2, r.uvs[o * 8 + 5] = u.y2, r.uvs[o * 8 + 6] = u.x3, r.uvs[o * 8 + 7] = u.y3;
+    }
+    this._textWidth = g * l, this._textHeight = (a.y + t.lineHeight) * l;
+    for (const i in M) {
+      const e = M[i];
+      if (this.anchor.x !== 0 || this.anchor.y !== 0) {
+        let m = 0;
+        const r = this._textWidth * this.anchor.x, d = this._textHeight * this.anchor.y;
+        for (let u = 0; u < e.total; u++)
+          e.vertices[m++] -= r, e.vertices[m++] -= d, e.vertices[m++] -= r, e.vertices[m++] -= d, e.vertices[m++] -= r, e.vertices[m++] -= d, e.vertices[m++] -= r, e.vertices[m++] -= d;
+      }
+      this._maxLineHeight = z * l;
+      const n = e.mesh.geometry.getBuffer("aVertexPosition"), s = e.mesh.geometry.getBuffer("aTextureCoord"), h = e.mesh.geometry.getIndex();
+      n.data = e.vertices, s.data = e.uvs, h.data = e.indices, n.update(), s.update(), h.update();
+    }
+    for (let i = 0; i < c.length; i++)
+      $.push(c[i]);
+    this._font = t, this.dirty = !1;
+  }
+  updateTransform() {
+    this.validate(), this.containerUpdateTransform();
+  }
+  _render(t) {
+    this._autoResolution && this._resolution !== t.resolution && (this._resolution = t.resolution, this.dirty = !0);
+    const { distanceFieldRange: p, distanceFieldType: l, size: a } = y.available[this._fontName];
+    if (l !== "none") {
+      const { a: c, b: x, c: f, d: P } = this.worldTransform, C = Math.sqrt(c * c + x * x), w = Math.sqrt(f * f + P * P), W = (Math.abs(C) + Math.abs(w)) / 2, v = this.fontSize / a, _ = t._view.resolution;
+      for (const g of this._activePagesMeshData)
+        g.mesh.shader.uniforms.uFWidth = W * p * v * _;
+    }
+    super._render(t);
   }
   /**
-   * TODO: this should be private, but isn't because of backward compat, will fix later.
-   * @ignore
+   * Validates text before calling parent's getLocalBounds
+   * @returns - The rectangular bounding area
    */
-  static get _context() {
-    return i.__context || (i.__context = i._canvas.getContext("2d", C)), i.__context;
+  getLocalBounds() {
+    return this.validate(), super.getLocalBounds();
+  }
+  /**
+   * Updates text when needed
+   * @private
+   */
+  validate() {
+    const t = y.available[this._fontName];
+    if (!t)
+      throw new Error(`Missing BitmapFont "${this._fontName}"`);
+    this._font !== t && (this.dirty = !0), this.dirty && this.updateText();
+  }
+  /**
+   * The tint of the BitmapText object.
+   * @default 0xffffff
+   */
+  get tint() {
+    return this._tintColor.value;
+  }
+  set tint(t) {
+    if (this.tint !== t) {
+      this._tintColor.setValue(t);
+      for (let p = 0; p < this._activePagesMeshData.length; p++)
+        this._activePagesMeshData[p].mesh.tint = t;
+    }
+  }
+  /**
+   * The alignment of the BitmapText object.
+   * @member {string}
+   * @default 'left'
+   */
+  get align() {
+    return this._align;
+  }
+  set align(t) {
+    this._align !== t && (this._align = t, this.dirty = !0);
+  }
+  /** The name of the BitmapFont. */
+  get fontName() {
+    return this._fontName;
+  }
+  set fontName(t) {
+    if (!y.available[t])
+      throw new Error(`Missing BitmapFont "${t}"`);
+    this._fontName !== t && (this._fontName = t, this.dirty = !0);
+  }
+  /** The size of the font to display. */
+  get fontSize() {
+    return this._fontSize ?? y.available[this._fontName].size;
+  }
+  set fontSize(t) {
+    this._fontSize !== t && (this._fontSize = t, this.dirty = !0);
+  }
+  /**
+   * The anchor sets the origin point of the text.
+   *
+   * The default is `(0,0)`, this means the text's origin is the top left.
+   *
+   * Setting the anchor to `(0.5,0.5)` means the text's origin is centered.
+   *
+   * Setting the anchor to `(1,1)` would mean the text's origin point will be the bottom right corner.
+   */
+  get anchor() {
+    return this._anchor;
+  }
+  set anchor(t) {
+    typeof t == "number" ? this._anchor.set(t) : this._anchor.copyFrom(t);
+  }
+  /** The text of the BitmapText object. */
+  get text() {
+    return this._text;
+  }
+  set text(t) {
+    t = String(t ?? ""), this._text !== t && (this._text = t, this.dirty = !0);
+  }
+  /**
+   * The max width of this bitmap text in pixels. If the text provided is longer than the
+   * value provided, line breaks will be automatically inserted in the last whitespace.
+   * Disable by setting the value to 0.
+   */
+  get maxWidth() {
+    return this._maxWidth;
+  }
+  set maxWidth(t) {
+    this._maxWidth !== t && (this._maxWidth = t, this.dirty = !0);
+  }
+  /**
+   * The max line height. This is useful when trying to use the total height of the Text,
+   * i.e. when trying to vertically align.
+   * @readonly
+   */
+  get maxLineHeight() {
+    return this.validate(), this._maxLineHeight;
+  }
+  /**
+   * The width of the overall text, different from fontSize,
+   * which is defined in the style object.
+   * @readonly
+   */
+  get textWidth() {
+    return this.validate(), this._textWidth;
+  }
+  /** Additional space between characters. */
+  get letterSpacing() {
+    return this._letterSpacing;
+  }
+  set letterSpacing(t) {
+    this._letterSpacing !== t && (this._letterSpacing = t, this.dirty = !0);
+  }
+  /**
+   * If true PixiJS will Math.floor() x/y values when rendering, stopping pixel interpolation.
+   * Advantages can include sharper image quality (like text) and faster rendering on canvas.
+   * The main disadvantage is movement of objects may appear less smooth.
+   * To set the global default, change {@link PIXI.settings.ROUND_PIXELS}
+   * @default PIXI.settings.ROUND_PIXELS
+   */
+  get roundPixels() {
+    return this._roundPixels;
+  }
+  set roundPixels(t) {
+    t !== this._roundPixels && (this._roundPixels = t, this.dirty = !0);
+  }
+  /**
+   * The height of the overall text, different from fontSize,
+   * which is defined in the style object.
+   * @readonly
+   */
+  get textHeight() {
+    return this.validate(), this._textHeight;
+  }
+  /**
+   * The resolution / device pixel ratio of the canvas.
+   *
+   * This is set to automatically match the renderer resolution by default, but can be overridden by setting manually.
+   * @default 1
+   */
+  get resolution() {
+    return this._resolution;
+  }
+  set resolution(t) {
+    this._autoResolution = !1, this._resolution !== t && (this._resolution = t, this.dirty = !0);
+  }
+  destroy(t) {
+    const { _textureCache: p } = this, l = y.available[this._fontName].distanceFieldType === "none" ? j : V;
+    l.push(...this._activePagesMeshData);
+    for (const a of this._activePagesMeshData)
+      this.removeChild(a.mesh);
+    this._activePagesMeshData = [], l.filter((a) => p[a.mesh.texture.baseTexture.uid]).forEach((a) => {
+      a.mesh.texture = T.EMPTY;
+    });
+    for (const a in p)
+      p[a].destroy(), delete p[a];
+    this._font = null, this._tintColor = null, this._textureCache = null, super.destroy(t);
   }
 };
-f.METRICS_STRING = "|ÉqÅ", /** Baseline symbol for calculate font metrics. */
-f.BASELINE_SYMBOL = "M", /** Baseline multiplier for calculate font metrics. */
-f.BASELINE_MULTIPLIER = 1.4, /** Height multiplier for setting height of canvas to calculate font metrics. */
-f.HEIGHT_MULTIPLIER = 2, /**
-* A Unicode "character", or "grapheme cluster", can be composed of multiple Unicode code points,
-* such as letters with diacritical marks (e.g. `'\u0065\u0301'`, letter e with acute)
-* or emojis with modifiers (e.g. `'\uD83E\uDDD1\u200D\uD83D\uDCBB'`, technologist).
-* The new `Intl.Segmenter` API in ES2022 can split the string into grapheme clusters correctly. If it is not available,
-* PixiJS will fallback to use the iterator of String, which can only spilt the string into code points.
-* If you want to get full functionality in environments that don't support `Intl.Segmenter` (such as Firefox),
-* you can use other libraries such as [grapheme-splitter]{@link https://www.npmjs.com/package/grapheme-splitter}
-* or [graphemer]{@link https://www.npmjs.com/package/graphemer} to create a polyfill. Since these libraries can be
-* relatively large in size to handle various Unicode grapheme clusters properly, PixiJS won't use them directly.
-*/
-f.graphemeSegmenter = (() => {
-  if (typeof (Intl == null ? void 0 : Intl.Segmenter) == "function") {
-    const I = new Intl.Segmenter();
-    return (e) => [...I.segment(e)].map((t) => t.segment);
-  }
-  return (I) => [...I];
-})(), /**
-* New rendering behavior for letter-spacing which uses Chrome's new native API. This will
-* lead to more accurate letter-spacing results because it does not try to manually draw
-* each character. However, this Chrome API is experimental and may not serve all cases yet.
-* @see PIXI.TextMetrics.experimentalLetterSpacingSupported
-*/
-f.experimentalLetterSpacing = !1, /** Cache of {@see PIXI.TextMetrics.FontMetrics} objects. */
-f._fonts = {}, /** Cache of new line chars. */
-f._newlines = [
-  10,
-  // line feed
-  13
-  // carriage return
-], /** Cache of breaking spaces. */
-f._breakingSpaces = [
-  9,
-  // character tabulation
-  32,
-  // space
-  8192,
-  // en quad
-  8193,
-  // em quad
-  8194,
-  // en space
-  8195,
-  // em space
-  8196,
-  // three-per-em space
-  8197,
-  // four-per-em space
-  8198,
-  // six-per-em space
-  8200,
-  // punctuation space
-  8201,
-  // thin space
-  8202,
-  // hair space
-  8287,
-  // medium mathematical space
-  12288
-  // ideographic space
-];
-let Dt = f;
-export {
-  Dt as TextMetrics
+rt.styleDefaults = {
+  align: "left",
+  tint: 16777215,
+  maxWidth: 0,
+  letterSpacing: 0
 };
 //# sourceMappingURL=index122.js.map

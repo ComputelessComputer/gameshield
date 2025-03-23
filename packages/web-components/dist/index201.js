@@ -1,37 +1,38 @@
-import "./index40.js";
-import "./index36.js";
-import "./index41.js";
-import "./index42.js";
-import "./index43.js";
-import "./index24.js";
-import "./index44.js";
-import { getBufferType as g } from "./index200.js";
-import "./index45.js";
-const s = {
-  Float32Array,
-  Uint32Array,
-  Int32Array,
-  Uint8Array
-};
-function U(e, p) {
-  let f = 0, m = 0;
-  const n = {};
-  for (let t = 0; t < e.length; t++)
-    m += p[t], f += e[t].length;
-  const a = new ArrayBuffer(f * 4);
-  let u = null, y = 0;
-  for (let t = 0; t < e.length; t++) {
-    const i = p[t], l = e[t], o = g(l);
-    n[o] || (n[o] = new s[o](a)), u = n[o];
-    for (let r = 0; r < l.length; r++) {
-      const A = (r / i | 0) * m + y, c = r % i;
-      u[A + c] = l[r];
-    }
-    y += i;
+class t {
+  /**
+   * @param renderer - The renderer this manager works for.
+   */
+  constructor(e) {
+    this.renderer = e;
   }
-  return new Float32Array(a);
+  /** Stub method that should be used to empty the current batch by rendering objects now. */
+  flush() {
+  }
+  /** Generic destruction method that frees all resources. This should be called by subclasses. */
+  destroy() {
+    this.renderer = null;
+  }
+  /**
+   * Stub method that initializes any state required before
+   * rendering starts. It is different from the `prerender`
+   * signal, which occurs every frame, in that it is called
+   * whenever an object requests _this_ renderer specifically.
+   */
+  start() {
+  }
+  /** Stops the renderer. It should free up any state and become dormant. */
+  stop() {
+    this.flush();
+  }
+  /**
+   * Keeps the object to render. It doesn't have to be
+   * rendered immediately.
+   * @param {PIXI.DisplayObject} _object - The object to render.
+   */
+  render(e) {
+  }
 }
 export {
-  U as interleaveTypedArrays
+  t as ObjectRenderer
 };
 //# sourceMappingURL=index201.js.map

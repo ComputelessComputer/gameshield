@@ -1,37 +1,60 @@
-import { BUFFER_TYPE as r } from "./index164.js";
-import { Buffer as o } from "./index171.js";
-let u = 0;
-class s {
-  /**
-   * @param {object | Buffer} [uniforms] - Custom uniforms to use to augment the built-in ones. Or a pixi buffer.
-   * @param isStatic - Uniforms wont be changed after creation.
-   * @param isUbo - If true, will treat this uniform group as a uniform buffer object.
-   */
-  constructor(t, i, e) {
-    this.group = !0, this.syncUniforms = {}, this.dirtyId = 0, this.id = u++, this.static = !!i, this.ubo = !!e, t instanceof o ? (this.buffer = t, this.buffer.type = r.UNIFORM_BUFFER, this.autoManage = !1, this.ubo = !0) : (this.uniforms = t, this.ubo && (this.buffer = new o(new Float32Array(1)), this.buffer.type = r.UNIFORM_BUFFER, this.autoManage = !0));
+import i from "./index600.js";
+import h from "./index601.js";
+let o = 0, s;
+class u {
+  constructor() {
+    this._initialized = !1, this._createdWorkers = 0, this.workerPool = [], this.queue = [], this.resolveHash = {};
   }
-  update() {
-    this.dirtyId++, !this.autoManage && this.buffer && this.buffer.update();
+  isImageBitmapSupported() {
+    return this._isImageBitmapSupported !== void 0 ? this._isImageBitmapSupported : (this._isImageBitmapSupported = new Promise((e) => {
+      const { worker: r } = new i();
+      r.addEventListener("message", (t) => {
+        r.terminate(), i.revokeObjectURL(), e(t.data);
+      });
+    }), this._isImageBitmapSupported);
   }
-  add(t, i, e) {
-    if (!this.ubo)
-      this.uniforms[t] = new s(i, e);
-    else
-      throw new Error("[UniformGroup] uniform groups in ubo mode cannot be modified, or have uniform groups nested in them");
+  loadImageBitmap(e) {
+    return this._run("loadImageBitmap", [e]);
   }
-  static from(t, i, e) {
-    return new s(t, i, e);
+  async _initWorkers() {
+    this._initialized || (this._initialized = !0);
   }
-  /**
-   * A short hand function for creating a static UBO UniformGroup.
-   * @param uniforms - the ubo item
-   * @param _static - should this be updated each time it is used? defaults to true here!
-   */
-  static uboFrom(t, i) {
-    return new s(t, i ?? !0, !0);
+  getWorker() {
+    s === void 0 && (s = navigator.hardwareConcurrency || 4);
+    let e = this.workerPool.pop();
+    return !e && this._createdWorkers < s && (this._createdWorkers++, e = new h().worker, e.addEventListener("message", (r) => {
+      this.complete(r.data), this.returnWorker(r.target), this.next();
+    })), e;
+  }
+  returnWorker(e) {
+    this.workerPool.push(e);
+  }
+  complete(e) {
+    e.error !== void 0 ? this.resolveHash[e.uuid].reject(e.error) : this.resolveHash[e.uuid].resolve(e.data), this.resolveHash[e.uuid] = null;
+  }
+  async _run(e, r) {
+    await this._initWorkers();
+    const t = new Promise((a, n) => {
+      this.queue.push({ id: e, arguments: r, resolve: a, reject: n });
+    });
+    return this.next(), t;
+  }
+  next() {
+    if (!this.queue.length)
+      return;
+    const e = this.getWorker();
+    if (!e)
+      return;
+    const r = this.queue.pop(), t = r.id;
+    this.resolveHash[o] = { resolve: r.resolve, reject: r.reject }, e.postMessage({
+      data: r.arguments,
+      uuid: o++,
+      id: t
+    });
   }
 }
+const l = new u();
 export {
-  s as UniformGroup
+  l as WorkerManager
 };
 //# sourceMappingURL=index183.js.map

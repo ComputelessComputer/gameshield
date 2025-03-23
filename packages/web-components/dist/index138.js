@@ -1,3 +1,6 @@
+import "./index20.js";
+import "./index21.js";
+import "./index22.js";
 import "./index23.js";
 import "./index24.js";
 import "./index25.js";
@@ -24,10 +27,11 @@ import "./index45.js";
 import "./index46.js";
 import "./index47.js";
 import "./index48.js";
-import "./index49.js";
+import { Filter as t } from "./index49.js";
 import "./index50.js";
+import { defaultVertex as p } from "./index215.js";
 import "./index51.js";
-import { Filter as r } from "./index52.js";
+import "./index52.js";
 import "./index53.js";
 import "./index54.js";
 import "./index55.js";
@@ -54,17 +58,26 @@ import "./index75.js";
 import "./index76.js";
 import "./index77.js";
 import "./index78.js";
-import "./index79.js";
-import "./index80.js";
-import "./index81.js";
-import t from "./index252.js";
-import o from "./index253.js";
-class nr extends r {
-  constructor() {
-    super(o, t);
+import o from "./index263.js";
+class fr extends t {
+  /**
+   * @param alpha - Amount of alpha from 0 to 1, where 0 is transparent
+   */
+  constructor(r = 1) {
+    super(p, o, { uAlpha: 1 }), this.alpha = r;
+  }
+  /**
+   * Coefficient for alpha multiplication
+   * @default 1
+   */
+  get alpha() {
+    return this.uniforms.uAlpha;
+  }
+  set alpha(r) {
+    this.uniforms.uAlpha = r;
   }
 }
 export {
-  nr as FXAAFilter
+  fr as AlphaFilter
 };
 //# sourceMappingURL=index138.js.map

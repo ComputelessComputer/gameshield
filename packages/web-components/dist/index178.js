@@ -1,21 +1,5 @@
-import { settings as r } from "./index153.js";
-import { isMobile as e } from "./index36.js";
-function c(n) {
-  let o = !0;
-  const a = r.ADAPTER.getNavigator();
-  if (e.tablet || e.phone) {
-    if (e.apple.device) {
-      const t = a.userAgent.match(/OS (\d+)_(\d+)?/);
-      t && parseInt(t[1], 10) < 11 && (o = !1);
-    }
-    if (e.android.device) {
-      const t = a.userAgent.match(/Android\s([0-9.]*)/);
-      t && parseInt(t[1], 10) < 7 && (o = !1);
-    }
-  }
-  return o ? n : 4;
-}
+const a = (r, s, y = !1) => (Array.isArray(r) || (r = [r]), s ? r.map((o) => typeof o == "string" || y ? s(o) : o) : r);
 export {
-  c as maxRecommendedTextures
+  a as convertToList
 };
 //# sourceMappingURL=index178.js.map

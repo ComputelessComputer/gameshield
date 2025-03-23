@@ -1,339 +1,343 @@
-import "./index23.js";
-import "./index24.js";
-import "./index25.js";
-import "./index26.js";
-import "./index27.js";
-import "./index28.js";
-import "./index29.js";
-import "./index30.js";
-import "./index31.js";
-import "./index32.js";
-import "./index33.js";
-import "./index34.js";
-import "./index35.js";
-import { settings as h } from "./index153.js";
-import "./index36.js";
-import "./index37.js";
-import "./index38.js";
-import "./index39.js";
-import "./index40.js";
-import "./index41.js";
-import "./index42.js";
-import "./index43.js";
-import { path as d } from "./index156.js";
-import { rgb2hex as m, hex2string as f } from "./index297.js";
-import "./index44.js";
-import "./index45.js";
-import "./index46.js";
-import "./index47.js";
-import "./index48.js";
-import "./index49.js";
-import "./index50.js";
-import "./index51.js";
-import "./index52.js";
-import "./index53.js";
-import "./index54.js";
-import "./index55.js";
-import "./index56.js";
-import "./index57.js";
-import "./index58.js";
-import "./index59.js";
-import "./index60.js";
-import "./index61.js";
-import "./index62.js";
-import "./index63.js";
-import "./index64.js";
-import "./index65.js";
-import "./index66.js";
-import "./index67.js";
-import "./index68.js";
-import "./index69.js";
-import "./index70.js";
-import "./index71.js";
-import "./index72.js";
-import "./index73.js";
-import "./index74.js";
-import "./index75.js";
-import "./index76.js";
-import "./index77.js";
-import "./index78.js";
-import "./index79.js";
-import "./index80.js";
-import "./index81.js";
-import "./index121.js";
-import "./index122.js";
-import { TextStyle as c } from "./index123.js";
-const p = class n extends c {
-  constructor() {
-    super(...arguments), this._fonts = [], this._overrides = [], this._stylesheet = "", this.fontsDirty = !1;
+import "./index8.js";
+import { BaseGame as d } from "./index144.js";
+import { getAssetUrl as u, randomInt as m } from "./index127.js";
+import { Text as c } from "./index145.js";
+import { Assets as g } from "./index146.js";
+import { Sprite as r } from "./index147.js";
+import { Container as w } from "./index148.js";
+import { Graphics as a } from "./index149.js";
+import { RenderTexture as p } from "./index150.js";
+class D extends d {
+  /**
+   * Create a new PuzzleGame instance
+   *
+   * @param options - Game creation options
+   */
+  constructor(e) {
+    super(e.app, {
+      width: e.width,
+      height: e.height,
+      difficulty: e.difficulty,
+      backgroundColor: e.backgroundColor,
+      assetsPath: e.assetsPath,
+      onLoad: e.onLoad
+    }), this.pieces = [], this.emptyCell = { row: 0, col: 0 }, this.image = null, this.isSolved = !1, this.moveCount = 0, this.solvedPositions = [], this.pieceMetadata = /* @__PURE__ */ new Map(), this.puzzleConfig = {
+      rows: e.rows || this.getDifficultyBasedRows(),
+      columns: e.columns || this.getDifficultyBasedColumns(),
+      imageUrl: e.imageUrl || this.getDefaultImageUrl(),
+      shuffleMoves: e.shuffleMoves || this.getDifficultyBasedShuffleMoves()
+    }, this.rows = this.puzzleConfig.rows, this.columns = this.puzzleConfig.columns, e.onComplete && this.setCompletionCallback(e.onComplete), this.init();
   }
   /**
-   * Convert a TextStyle to HTMLTextStyle
-   * @param originalStyle
-   * @example
-   * import {TextStyle } from 'pixi.js';
-   * import {HTMLTextStyle} from '@pixi/text-html';
-   * const style = new TextStyle();
-   * const htmlStyle = HTMLTextStyle.from(style);
+   * Initialize the puzzle game
+   *
+   * @protected
    */
-  static from(t) {
-    return new n(
-      Object.keys(n.defaultOptions).reduce((e, i) => ({ ...e, [i]: t[i] }), {})
-    );
-  }
-  /** Clear the current font */
-  cleanFonts() {
-    this._fonts.length > 0 && (this._fonts.forEach((t) => {
-      URL.revokeObjectURL(t.src), t.refs--, t.refs === 0 && (t.fontFace && document.fonts.delete(t.fontFace), delete n.availableFonts[t.originalUrl]);
-    }), this.fontFamily = "Arial", this._fonts.length = 0, this.styleID++, this.fontsDirty = !0);
-  }
-  /**
-   * Because of how HTMLText renders, fonts need to be imported
-   * @param url
-   * @param options
-   */
-  loadFont(t, e = {}) {
-    const { availableFonts: i } = n;
-    if (i[t]) {
-      const r = i[t];
-      return this._fonts.push(r), r.refs++, this.styleID++, this.fontsDirty = !0, Promise.resolve();
-    }
-    return h.ADAPTER.fetch(t).then((r) => r.blob()).then(async (r) => new Promise((s, o) => {
-      const a = URL.createObjectURL(r), l = new FileReader();
-      l.onload = () => s([a, l.result]), l.onerror = o, l.readAsDataURL(r);
-    })).then(async ([r, s]) => {
-      const o = Object.assign({
-        family: d.basename(t, d.extname(t)),
-        weight: "normal",
-        style: "normal",
-        display: "auto",
-        src: r,
-        dataSrc: s,
-        refs: 1,
-        originalUrl: t,
-        fontFace: null
-      }, e);
-      i[t] = o, this._fonts.push(o), this.styleID++;
-      const a = new FontFace(o.family, `url(${o.src})`, {
-        weight: o.weight,
-        style: o.style,
-        display: o.display
-      });
-      o.fontFace = a, await a.load(), document.fonts.add(a), await document.fonts.ready, this.styleID++, this.fontsDirty = !0;
+  initialize() {
+    const e = new c("Loading puzzle...", {
+      fontFamily: "Arial",
+      fontSize: 24,
+      fill: 16777215
+    });
+    e.anchor.set(0.5), e.x = this.config.width / 2, e.y = this.config.height / 2, this.container.addChild(e), g.load(this.puzzleConfig.imageUrl).then((t) => {
+      this.container.removeChild(e), this.image = new r(t), this.image.width = this.config.width, this.image.height = this.config.height, this.createPuzzlePieces(), this.shufflePuzzle(), this.app.ticker.add(this.update.bind(this));
+    }).catch((t) => {
+      console.error("Failed to load puzzle image:", t), e.text = "Failed to load puzzle image!", e.style.fill = 16711680;
     });
   }
   /**
-   * Add a style override, this can be any CSS property
-   * it will override any built-in style. This is the
-   * property and the value as a string (e.g., `color: red`).
-   * This will override any other internal style.
-   * @param {string} value - CSS style(s) to add.
-   * @example
-   * style.addOverride('background-color: red');
+   * Create puzzle pieces from the loaded image
+   *
+   * @private
    */
-  addOverride(...t) {
-    const e = t.filter((i) => !this._overrides.includes(i));
-    e.length > 0 && (this._overrides.push(...e), this.styleID++);
+  createPuzzlePieces() {
+    if (!this.image)
+      return;
+    const e = this.config.width / this.columns, t = this.config.height / this.rows;
+    this.solvedPositions = [];
+    const i = new w();
+    this.container.addChild(i);
+    for (let o = 0; o < this.rows; o++)
+      for (let n = 0; n < this.columns; n++) {
+        if (o === this.rows - 1 && n === this.columns - 1) {
+          this.emptyCell = { row: o, col: n };
+          continue;
+        }
+        const s = this.createPiece(o, n, e, t);
+        i.addChild(s), this.pieces.push(s), this.solvedPositions.push({
+          x: n * e,
+          y: o * t
+        });
+      }
   }
   /**
-   * Remove any overrides that match the value.
-   * @param {string} value - CSS style to remove.
-   * @example
-   * style.removeOverride('background-color: red');
+   * Create a single puzzle piece
+   *
+   * @param row - Row position
+   * @param col - Column position
+   * @param width - Piece width
+   * @param height - Piece height
+   * @returns Puzzle piece sprite
+   * @private
    */
-  removeOverride(...t) {
-    const e = t.filter((i) => this._overrides.includes(i));
-    e.length > 0 && (this._overrides = this._overrides.filter((i) => !e.includes(i)), this.styleID++);
+  createPiece(e, t, i, o) {
+    if (!this.image)
+      throw new Error("Image not loaded");
+    const n = this.createPieceTexture(e, t, i, o), s = new r(n);
+    return s.x = t * i, s.y = e * o, s.width = i, s.height = o, s.eventMode = "static", s.cursor = "pointer", s.on("pointerdown", () => this.handlePieceClick(s)), this.pieceMetadata.set(s, { row: e, col: t, originalIndex: e * this.columns + t }), s;
   }
   /**
-   * Internally converts all of the style properties into CSS equivalents.
-   * @param scale
-   * @returns The CSS style string, for setting `style` property of root HTMLElement.
+   * Create a texture for a puzzle piece from the main image
+   *
+   * @param row - Row position
+   * @param col - Column position
+   * @param width - Piece width
+   * @param height - Piece height
+   * @returns Texture for the piece
+   * @private
    */
-  toCSS(t) {
-    return [
-      `transform: scale(${t})`,
-      "transform-origin: top left",
-      "display: inline-block",
-      `color: ${this.normalizeColor(this.fill)}`,
-      `font-size: ${this.fontSize}px`,
-      `font-family: ${this.fontFamily}`,
-      `font-weight: ${this.fontWeight}`,
-      `font-style: ${this.fontStyle}`,
-      `font-variant: ${this.fontVariant}`,
-      `letter-spacing: ${this.letterSpacing}px`,
-      `text-align: ${this.align}`,
-      `padding: ${this.padding}px`,
-      `white-space: ${this.whiteSpace}`,
-      ...this.lineHeight ? [`line-height: ${this.lineHeight}px`] : [],
-      ...this.wordWrap ? [
-        `word-wrap: ${this.breakWords ? "break-all" : "break-word"}`,
-        `max-width: ${this.wordWrapWidth}px`
-      ] : [],
-      ...this.strokeThickness ? [
-        `-webkit-text-stroke-width: ${this.strokeThickness}px`,
-        `-webkit-text-stroke-color: ${this.normalizeColor(this.stroke)}`,
-        `text-stroke-width: ${this.strokeThickness}px`,
-        `text-stroke-color: ${this.normalizeColor(this.stroke)}`,
-        "paint-order: stroke"
-      ] : [],
-      ...this.dropShadow ? [this.dropShadowToCSS()] : [],
-      ...this._overrides
-    ].join(";");
-  }
-  /** Get the font CSS styles from the loaded font, If available. */
-  toGlobalCSS() {
-    return this._fonts.reduce((t, e) => `${t}
-            @font-face {
-                font-family: "${e.family}";
-                src: url('${e.dataSrc}');
-                font-weight: ${e.weight};
-                font-style: ${e.style};
-                font-display: ${e.display};
-            }`, this._stylesheet);
-  }
-  /** Internal stylesheet contents, useful for creating rules for rendering */
-  get stylesheet() {
-    return this._stylesheet;
-  }
-  set stylesheet(t) {
-    this._stylesheet !== t && (this._stylesheet = t, this.styleID++);
+  createPieceTexture(e, t, i, o) {
+    if (!this.image)
+      throw new Error("Image not loaded");
+    const n = new a();
+    n.beginFill(this.getRandomColor()), n.drawRect(0, 0, i, o), n.endFill();
+    const s = new c(`${e},${t}`, {
+      fontSize: 16,
+      fill: 16777215
+    });
+    s.anchor.set(0.5), s.position.set(i / 2, o / 2), n.addChild(s);
+    const h = p.create({
+      width: i,
+      height: o
+    });
+    return this.app.renderer.render(n, { renderTexture: h }), h;
   }
   /**
-   * Convert numerical colors into hex-strings
-   * @param color
+   * Get a random color for puzzle pieces
+   *
+   * @private
    */
-  normalizeColor(t) {
-    return Array.isArray(t) && (t = m(t)), typeof t == "number" ? f(t) : t;
-  }
-  /** Convert the internal drop-shadow settings to CSS text-shadow */
-  dropShadowToCSS() {
-    let t = this.normalizeColor(this.dropShadowColor);
-    const e = this.dropShadowAlpha, i = Math.round(Math.cos(this.dropShadowAngle) * this.dropShadowDistance), r = Math.round(Math.sin(this.dropShadowAngle) * this.dropShadowDistance);
-    t.startsWith("#") && e < 1 && (t += (e * 255 | 0).toString(16).padStart(2, "0"));
-    const s = `${i}px ${r}px`;
-    return this.dropShadowBlur > 0 ? `text-shadow: ${s} ${this.dropShadowBlur}px ${t}` : `text-shadow: ${s} ${t}`;
-  }
-  /** Resets all properties to the defaults specified in TextStyle.prototype._default */
-  reset() {
-    Object.assign(this, n.defaultOptions);
+  getRandomColor() {
+    const e = [3447003, 3066993, 15158332, 15844367, 10181046, 1752220, 13849600];
+    return e[Math.floor(Math.random() * e.length)];
   }
   /**
-   * Called after the image is loaded but before drawing to the canvas.
-   * Mostly used to handle Safari's font loading bug.
-   * @ignore
+   * Shuffle the puzzle by making random valid moves
+   *
+   * @private
    */
-  onBeforeDraw() {
-    const { fontsDirty: t } = this;
-    return this.fontsDirty = !1, this.isSafari && this._fonts.length > 0 && t ? new Promise((e) => setTimeout(e, 100)) : Promise.resolve();
+  shufflePuzzle() {
+    const e = this.puzzleConfig.shuffleMoves;
+    for (let t = 0; t < e; t++) {
+      const i = this.getEmptyCellNeighbors();
+      if (i.length > 0) {
+        const o = Math.floor(Math.random() * i.length);
+        this.swapWithEmptyCell(i[o]);
+      }
+    }
   }
   /**
-   * Proving that Safari is the new IE
-   * @ignore
+   * Get pieces adjacent to the empty cell
+   *
+   * @returns Array of neighboring pieces
+   * @private
    */
-  get isSafari() {
-    const { userAgent: t } = h.ADAPTER.getNavigator();
-    return /^((?!chrome|android).)*safari/i.test(t);
+  getEmptyCellNeighbors() {
+    const e = [], { row: t, col: i } = this.emptyCell, o = [
+      { row: -1, col: 0 },
+      // up
+      { row: 1, col: 0 },
+      // down
+      { row: 0, col: -1 },
+      // left
+      { row: 0, col: 1 }
+      // right
+    ];
+    for (const n of o) {
+      const s = t + n.row, h = i + n.col;
+      if (s >= 0 && s < this.rows && h >= 0 && h < this.columns) {
+        const l = this.findPieceAt(s, h);
+        l && e.push(l);
+      }
+    }
+    return e;
   }
-  set fillGradientStops(t) {
-    console.warn("[HTMLTextStyle] fillGradientStops is not supported by HTMLText");
-  }
-  get fillGradientStops() {
-    return super.fillGradientStops;
-  }
-  set fillGradientType(t) {
-    console.warn("[HTMLTextStyle] fillGradientType is not supported by HTMLText");
-  }
-  get fillGradientType() {
-    return super.fillGradientType;
-  }
-  set miterLimit(t) {
-    console.warn("[HTMLTextStyle] miterLimit is not supported by HTMLText");
-  }
-  get miterLimit() {
-    return super.miterLimit;
-  }
-  set trim(t) {
-    console.warn("[HTMLTextStyle] trim is not supported by HTMLText");
-  }
-  get trim() {
-    return super.trim;
-  }
-  set textBaseline(t) {
-    console.warn("[HTMLTextStyle] textBaseline is not supported by HTMLText");
-  }
-  get textBaseline() {
-    return super.textBaseline;
-  }
-  set leading(t) {
-    console.warn("[HTMLTextStyle] leading is not supported by HTMLText");
-  }
-  get leading() {
-    return super.leading;
-  }
-  set lineJoin(t) {
-    console.warn("[HTMLTextStyle] lineJoin is not supported by HTMLText");
-  }
-  get lineJoin() {
-    return super.lineJoin;
-  }
-};
-p.availableFonts = {}, /**
-* List of default options, these are largely the same as TextStyle,
-* with the exception of whiteSpace, which is set to 'normal' by default.
-*/
-p.defaultOptions = {
-  /** Align */
-  align: "left",
-  /** Break words */
-  breakWords: !1,
-  /** Drop shadow */
-  dropShadow: !1,
-  /** Drop shadow alpha */
-  dropShadowAlpha: 1,
   /**
-   * Drop shadow angle
-   * @type {number}
-   * @default Math.PI / 6
+   * Find a puzzle piece at a specific row and column
+   *
+   * @param row - Row position
+   * @param col - Column position
+   * @returns Puzzle piece at the position, or null if not found
+   * @private
    */
-  dropShadowAngle: Math.PI / 6,
-  /** Drop shadow blur */
-  dropShadowBlur: 0,
-  /** Drop shadow color */
-  dropShadowColor: "black",
-  /** Drop shadow distance */
-  dropShadowDistance: 5,
-  /** Fill */
-  fill: "black",
-  /** Font family */
-  fontFamily: "Arial",
-  /** Font size */
-  fontSize: 26,
-  /** Font style */
-  fontStyle: "normal",
-  /** Font variant */
-  fontVariant: "normal",
-  /** Font weight */
-  fontWeight: "normal",
-  /** Letter spacing */
-  letterSpacing: 0,
-  /** Line height */
-  lineHeight: 0,
-  /** Padding */
-  padding: 0,
-  /** Stroke */
-  stroke: "black",
-  /** Stroke thickness */
-  strokeThickness: 0,
-  /** White space */
-  whiteSpace: "normal",
-  /** Word wrap */
-  wordWrap: !1,
-  /** Word wrap width */
-  wordWrapWidth: 100
-};
-let Lt = p;
+  findPieceAt(e, t) {
+    const i = this.config.width / this.columns, o = this.config.height / this.rows, n = t * i, s = e * o;
+    for (const h of this.pieces) {
+      const l = Math.abs(h.x - n) < 5, f = Math.abs(h.y - s) < 5;
+      if (l && f)
+        return h;
+    }
+    return null;
+  }
+  /**
+   * Handle a click on a puzzle piece
+   *
+   * @param piece - Clicked puzzle piece
+   * @private
+   */
+  handlePieceClick(e) {
+    if (!this.isRunning || this.isSolved)
+      return;
+    this.getEmptyCellNeighbors().includes(e) && (this.swapWithEmptyCell(e), this.moveCount++, this.checkPuzzleSolved() && (this.isSolved = !0, this.handlePuzzleSolved()));
+  }
+  /**
+   * Swap a piece with the empty cell
+   *
+   * @param piece - Piece to swap
+   * @private
+   */
+  swapWithEmptyCell(e) {
+    const t = this.pieceMetadata.get(e);
+    if (!t)
+      return;
+    e.x, e.y;
+    const i = this.emptyCell.col * (this.config.width / this.columns), o = this.emptyCell.row * (this.config.height / this.rows);
+    e.x = i, e.y = o;
+    const n = t.row, s = t.col;
+    t.row = this.emptyCell.row, t.col = this.emptyCell.col, this.pieceMetadata.set(e, t), this.emptyCell.row = n, this.emptyCell.col = s;
+  }
+  /**
+   * Check if the puzzle is correctly solved
+   *
+   * @returns True if puzzle is solved
+   * @private
+   */
+  checkPuzzleSolved() {
+    for (const e of this.pieces) {
+      const t = this.pieceMetadata.get(e);
+      if (t && !(t.row === this.rows - 1 && t.col === this.columns - 1) && t.row * this.columns + t.col !== t.originalIndex)
+        return !1;
+    }
+    return !0;
+  }
+  /**
+   * Handle the puzzle being solved
+   *
+   * @private
+   */
+  handlePuzzleSolved() {
+    const e = Math.max(0, 1 - (Date.now() - this.startTime) / 6e4), t = Math.max(0, 1 - this.moveCount / (this.rows * this.columns * 3)), i = Math.round((e * 0.7 + t * 0.3) * 100);
+    this.showSuccessMessage(), this.complete(!0, i, {
+      moves: this.moveCount,
+      time: Date.now() - this.startTime,
+      grid: `${this.rows}x${this.columns}`
+    });
+  }
+  /**
+   * Show success message when puzzle is completed
+   *
+   * @private
+   */
+  showSuccessMessage() {
+    const e = new a();
+    e.beginFill(0, 0.7), e.drawRect(0, 0, this.config.width, this.config.height), e.endFill(), this.container.addChild(e);
+    const t = new c("Puzzle Completed!", {
+      fontFamily: "Arial",
+      fontSize: 32,
+      fill: 16777215,
+      align: "center"
+    });
+    t.anchor.set(0.5), t.x = this.config.width / 2, t.y = this.config.height / 2, this.container.addChild(t);
+    const i = new c(`Moves: ${this.moveCount}
+Time: ${((Date.now() - this.startTime) / 1e3).toFixed(1)}s`, {
+      fontFamily: "Arial",
+      fontSize: 20,
+      fill: 16777215,
+      align: "center"
+    });
+    i.anchor.set(0.5), i.x = this.config.width / 2, i.y = this.config.height / 2 + 60, this.container.addChild(i);
+  }
+  /**
+   * Update game state on each frame
+   *
+   * @param ticker - PIXI ticker
+   * @protected
+   */
+  update(e) {
+    e.deltaTime, this.isRunning && !this.isSolved && this.checkPuzzleSolved() && this.handlePuzzleSolved();
+  }
+  /**
+   * Get rows based on difficulty
+   *
+   * @returns Number of rows
+   * @private
+   */
+  getDifficultyBasedRows() {
+    switch (this.config.difficulty) {
+      case "easy":
+        return 3;
+      case "medium":
+        return 4;
+      case "hard":
+        return 5;
+      default:
+        return 4;
+    }
+  }
+  /**
+   * Get columns based on difficulty
+   *
+   * @returns Number of columns
+   * @private
+   */
+  getDifficultyBasedColumns() {
+    switch (this.config.difficulty) {
+      case "easy":
+        return 3;
+      case "medium":
+        return 4;
+      case "hard":
+        return 5;
+      default:
+        return 4;
+    }
+  }
+  /**
+   * Get number of shuffle moves based on difficulty
+   *
+   * @returns Number of shuffle moves
+   * @private
+   */
+  getDifficultyBasedShuffleMoves() {
+    const e = this.rows * this.columns * 2;
+    switch (this.config.difficulty) {
+      case "easy":
+        return e;
+      case "medium":
+        return e * 2;
+      case "hard":
+        return e * 3;
+      default:
+        return e * 2;
+    }
+  }
+  /**
+   * Get default image URL based on available assets
+   *
+   * @returns URL to the default puzzle image
+   * @private
+   */
+  getDefaultImageUrl() {
+    const e = [
+      "puzzle1",
+      "puzzle2",
+      "puzzle3",
+      "puzzle4"
+    ], t = e[m(0, e.length - 1)];
+    return u(t, "jpg", this.config.assetsPath);
+  }
+}
 export {
-  Lt as HTMLTextStyle
+  D as PuzzleGame
 };
 //# sourceMappingURL=index128.js.map

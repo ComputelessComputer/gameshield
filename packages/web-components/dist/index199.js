@@ -1,9 +1,8 @@
-class s {
-  constructor(t) {
-    this.buffer = t || null, this.updateID = -1, this.byteLength = -1, this.refCount = 0;
-  }
+import { isMobile as e } from "./index33.js";
+function r() {
+  return !e.apple.device;
 }
 export {
-  s as GLBuffer
+  r as canUploadSameBuffer
 };
 //# sourceMappingURL=index199.js.map

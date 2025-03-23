@@ -1,21 +1,16 @@
-var e = `attribute vec2 aVertexPosition;
-attribute vec2 aTextureCoord;
-
-uniform mat3 projectionMatrix;
-uniform mat3 otherMatrix;
-
-varying vec2 vMaskCoord;
-varying vec2 vTextureCoord;
-
-void main(void)
-{
-    gl_Position = vec4((projectionMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);
-
-    vTextureCoord = aTextureCoord;
-    vMaskCoord = ( otherMatrix * vec3( aTextureCoord, 1.0)  ).xy;
+import { TYPES as t } from "./index164.js";
+import { Buffer as r } from "./index193.js";
+import { Geometry as f } from "./index194.js";
+class s extends f {
+  /**
+   * @param {boolean} [_static=false] - Optimization flag, where `false`
+   *        is updated every frame, `true` doesn't change frame-to-frame.
+   */
+  constructor(e = !1) {
+    super(), this._buffer = new r(null, e, !1), this._indexBuffer = new r(null, e, !0), this.addAttribute("aVertexPosition", this._buffer, 2, !1, t.FLOAT).addAttribute("aTextureCoord", this._buffer, 2, !1, t.FLOAT).addAttribute("aColor", this._buffer, 4, !0, t.UNSIGNED_BYTE).addAttribute("aTextureId", this._buffer, 1, !0, t.FLOAT).addIndex(this._indexBuffer);
+  }
 }
-`;
 export {
-  e as default
+  s as BatchGeometry
 };
 //# sourceMappingURL=index192.js.map

@@ -1,77 +1,14 @@
-import { SAMPLER_TYPES as A } from "./index164.js";
-function L(T) {
-  let R;
-  return "WebGL2RenderingContext" in globalThis && T instanceof globalThis.WebGL2RenderingContext ? R = {
-    [T.RGB]: A.FLOAT,
-    [T.RGBA]: A.FLOAT,
-    [T.ALPHA]: A.FLOAT,
-    [T.LUMINANCE]: A.FLOAT,
-    [T.LUMINANCE_ALPHA]: A.FLOAT,
-    [T.R8]: A.FLOAT,
-    [T.R8_SNORM]: A.FLOAT,
-    [T.RG8]: A.FLOAT,
-    [T.RG8_SNORM]: A.FLOAT,
-    [T.RGB8]: A.FLOAT,
-    [T.RGB8_SNORM]: A.FLOAT,
-    [T.RGB565]: A.FLOAT,
-    [T.RGBA4]: A.FLOAT,
-    [T.RGB5_A1]: A.FLOAT,
-    [T.RGBA8]: A.FLOAT,
-    [T.RGBA8_SNORM]: A.FLOAT,
-    [T.RGB10_A2]: A.FLOAT,
-    [T.RGB10_A2UI]: A.FLOAT,
-    [T.SRGB8]: A.FLOAT,
-    [T.SRGB8_ALPHA8]: A.FLOAT,
-    [T.R16F]: A.FLOAT,
-    [T.RG16F]: A.FLOAT,
-    [T.RGB16F]: A.FLOAT,
-    [T.RGBA16F]: A.FLOAT,
-    [T.R32F]: A.FLOAT,
-    [T.RG32F]: A.FLOAT,
-    [T.RGB32F]: A.FLOAT,
-    [T.RGBA32F]: A.FLOAT,
-    [T.R11F_G11F_B10F]: A.FLOAT,
-    [T.RGB9_E5]: A.FLOAT,
-    [T.R8I]: A.INT,
-    [T.R8UI]: A.UINT,
-    [T.R16I]: A.INT,
-    [T.R16UI]: A.UINT,
-    [T.R32I]: A.INT,
-    [T.R32UI]: A.UINT,
-    [T.RG8I]: A.INT,
-    [T.RG8UI]: A.UINT,
-    [T.RG16I]: A.INT,
-    [T.RG16UI]: A.UINT,
-    [T.RG32I]: A.INT,
-    [T.RG32UI]: A.UINT,
-    [T.RGB8I]: A.INT,
-    [T.RGB8UI]: A.UINT,
-    [T.RGB16I]: A.INT,
-    [T.RGB16UI]: A.UINT,
-    [T.RGB32I]: A.INT,
-    [T.RGB32UI]: A.UINT,
-    [T.RGBA8I]: A.INT,
-    [T.RGBA8UI]: A.UINT,
-    [T.RGBA16I]: A.INT,
-    [T.RGBA16UI]: A.UINT,
-    [T.RGBA32I]: A.INT,
-    [T.RGBA32UI]: A.UINT,
-    [T.DEPTH_COMPONENT16]: A.FLOAT,
-    [T.DEPTH_COMPONENT24]: A.FLOAT,
-    [T.DEPTH_COMPONENT32F]: A.FLOAT,
-    [T.DEPTH_STENCIL]: A.FLOAT,
-    [T.DEPTH24_STENCIL8]: A.FLOAT,
-    [T.DEPTH32F_STENCIL8]: A.FLOAT
-  } : R = {
-    [T.RGB]: A.FLOAT,
-    [T.RGBA]: A.FLOAT,
-    [T.ALPHA]: A.FLOAT,
-    [T.LUMINANCE]: A.FLOAT,
-    [T.LUMINANCE_ALPHA]: A.FLOAT,
-    [T.DEPTH_STENCIL]: A.FLOAT
-  }, R;
+import { PRECISION as e } from "./index164.js";
+function t(i, n, r) {
+  if (i.substring(0, 9) !== "precision") {
+    let p = n;
+    return n === e.HIGH && r !== e.HIGH && (p = e.MEDIUM), `precision ${p} float;
+${i}`;
+  } else if (r !== e.HIGH && i.substring(0, 15) === "precision highp")
+    return i.replace("precision highp", "precision mediump");
+  return i;
 }
 export {
-  L as mapInternalFormatToSamplerType
+  t as setPrecision
 };
 //# sourceMappingURL=index234.js.map

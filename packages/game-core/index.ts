@@ -10,12 +10,22 @@
 
 // Export core game components
 export * from './src/game';
-export * from './src/types';
 export * from './src/constants';
 export * from './src/utils';
 
-// Export game implementations
-export * from './src/games';
+// Re-export all types and classes
+export * from './src/types';
+
+// Explicitly re-export from games to avoid ambiguity
+export { 
+  GameFactory,
+  BaseGame,
+  PuzzleGame,
+  BreakoutGame,
+  SnakeGame,
+  PongGame,
+  DinoRunGame
+} from './src/games';
 
 // Export behavior analysis
 export * from './src/behavior-analysis';

@@ -1,5 +1,5 @@
 {
-  "name": "game-core",
+  "name": "@gameshield/game-core",
   "version": "1.0.0",
   "description": "Core game engine for GameShield CAPTCHA",
   "main": "dist/index.js",

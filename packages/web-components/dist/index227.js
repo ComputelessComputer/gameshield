@@ -1,99 +1,93 @@
-import { Runner as i } from "./index35.js";
-class o {
-  /**
-   * @param width - Width of the resource
-   * @param height - Height of the resource
-   */
-  constructor(t = 0, e = 0) {
-    this._width = t, this._height = e, this.destroyed = !1, this.internal = !1, this.onResize = new i("setRealSize"), this.onUpdate = new i("update"), this.onError = new i("onError");
+import { Runner as h } from "./index32.js";
+import "./index37.js";
+import "./index33.js";
+import m from "./index38.js";
+import "./index39.js";
+import "./index40.js";
+import "./index21.js";
+import "./index41.js";
+import "./index42.js";
+class H extends m {
+  constructor() {
+    super(...arguments), this.runners = {}, this._systemsHash = {};
   }
   /**
-   * Bind to a parent BaseTexture
-   * @param baseTexture - Parent texture
+   * Set up a system with a collection of SystemClasses and runners.
+   * Systems are attached dynamically to this class when added.
+   * @param config - the config for the system manager
    */
-  bind(t) {
-    this.onResize.add(t), this.onUpdate.add(t), this.onError.add(t), (this._width || this._height) && this.onResize.emit(this._width, this._height);
+  setup(s) {
+    this.addRunners(...s.runners);
+    const t = (s.priority ?? []).filter((r) => s.systems[r]), e = [
+      ...t,
+      ...Object.keys(s.systems).filter((r) => !t.includes(r))
+    ];
+    for (const r of e)
+      this.addSystem(s.systems[r], r);
   }
   /**
-   * Unbind to a parent BaseTexture
-   * @param baseTexture - Parent texture
+   * Create a bunch of runners based of a collection of ids
+   * @param runnerIds - the runner ids to add
    */
-  unbind(t) {
-    this.onResize.remove(t), this.onUpdate.remove(t), this.onError.remove(t);
+  addRunners(...s) {
+    s.forEach((t) => {
+      this.runners[t] = new h(t);
+    });
   }
   /**
-   * Trigger a resize event
-   * @param width - X dimension
-   * @param height - Y dimension
+   * Add a new system to the renderer.
+   * @param ClassRef - Class reference
+   * @param name - Property name for system, if not specified
+   *        will use a static `name` property on the class itself. This
+   *        name will be assigned as s property on the Renderer so make
+   *        sure it doesn't collide with properties on Renderer.
+   * @returns Return instance of renderer
    */
-  resize(t, e) {
-    (t !== this._width || e !== this._height) && (this._width = t, this._height = e, this.onResize.emit(t, e));
+  addSystem(s, t) {
+    const e = new s(this);
+    if (this[t])
+      throw new Error(`Whoops! The name "${t}" is already in use`);
+    this[t] = e, this._systemsHash[t] = e;
+    for (const r in this.runners)
+      this.runners[r].add(e);
+    return this;
   }
   /**
-   * Has been validated
-   * @readonly
+   * A function that will run a runner and call the runners function but pass in different options
+   * to each system based on there name.
+   *
+   * E.g. If you have two systems added called `systemA` and `systemB` you could call do the following:
+   *
+   * ```js
+   * system.emitWithCustomOptions(init, {
+   *     systemA: {...optionsForA},
+   *     systemB: {...optionsForB},
+   * });
+   * ```
+   *
+   * `init` would be called on system A passing `optionsForA` and on system B passing `optionsForB`.
+   * @param runner - the runner to target
+   * @param options - key value options for each system
    */
-  get valid() {
-    return !!this._width && !!this._height;
+  emitWithCustomOptions(s, t) {
+    const e = Object.keys(this._systemsHash);
+    s.items.forEach((r) => {
+      const i = e.find((o) => this._systemsHash[o] === r);
+      r[s.name](t[i]);
+    });
   }
-  /** Has been updated trigger event. */
-  update() {
-    this.destroyed || this.onUpdate.emit();
-  }
-  /**
-   * This can be overridden to start preloading a resource
-   * or do any other prepare step.
-   * @protected
-   * @returns Handle the validate event
-   */
-  load() {
-    return Promise.resolve(this);
-  }
-  /**
-   * The width of the resource.
-   * @readonly
-   */
-  get width() {
-    return this._width;
-  }
-  /**
-   * The height of the resource.
-   * @readonly
-   */
-  get height() {
-    return this._height;
-  }
-  /**
-   * Set the style, optional to override
-   * @param _renderer - yeah, renderer!
-   * @param _baseTexture - the texture
-   * @param _glTexture - texture instance for this webgl context
-   * @returns - `true` is success
-   */
-  style(t, e, h) {
-    return !1;
-  }
-  /** Clean up anything, this happens when destroying is ready. */
-  dispose() {
-  }
-  /**
-   * Call when destroying resource, unbind any BaseTexture object
-   * before calling this method, as reference counts are maintained
-   * internally.
-   */
+  /** destroy the all runners and systems. Its apps job to */
   destroy() {
-    this.destroyed || (this.destroyed = !0, this.dispose(), this.onError.removeAll(), this.onError = null, this.onResize.removeAll(), this.onResize = null, this.onUpdate.removeAll(), this.onUpdate = null);
+    Object.values(this.runners).forEach((s) => {
+      s.destroy();
+    }), this._systemsHash = {};
   }
-  /**
-   * Abstract, used to auto-detect resource type.
-   * @param {*} _source - The source object
-   * @param {string} _extension - The extension of source, if set
-   */
-  static test(t, e) {
-    return !1;
-  }
+  // TODO implement!
+  // removeSystem(ClassRef: ISystemConstructor, name: string): void
+  // {
+  // }
 }
 export {
-  o as Resource
+  H as SystemManager
 };
 //# sourceMappingURL=index227.js.map

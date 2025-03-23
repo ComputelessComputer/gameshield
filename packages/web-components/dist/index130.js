@@ -1,65 +1,129 @@
-import { Texture as a } from "./index131.js";
-import { BaseRenderTexture as o } from "./index206.js";
-class h extends a {
+import "./index8.js";
+import { BaseGame as i } from "./index144.js";
+import { Text as r } from "./index145.js";
+class c extends i {
   /**
-   * @param baseRenderTexture - The base texture object that this texture uses.
-   * @param frame - The rectangle frame of the texture to show.
+   * Create a new SnakeGame instance
+   *
+   * @param options - Game creation options
    */
-  constructor(e, t) {
-    super(e, t), this.valid = !0, this.filterFrame = null, this.filterPoolKey = null, this.updateUvs();
+  constructor(e) {
+    var t;
+    super(e.app, {
+      width: e.width,
+      height: e.height,
+      difficulty: e.difficulty,
+      backgroundColor: e.backgroundColor,
+      assetsPath: e.assetsPath,
+      onLoad: e.onLoad
+    }), this.snake = [], this.direction = { x: 1, y: 0 }, this.nextDirection = { x: 1, y: 0 }, this.food = { x: 0, y: 0 }, this.graphics = null, this.cellSize = 0, this.score = 0, this.scoreText = null, this.lastUpdateTime = 0, this.gameConfig = {
+      gridSize: e.gridSize || this.getDifficultyBasedGridSize(),
+      startLength: e.startLength || this.getDifficultyBasedStartLength(),
+      speed: e.speed || this.getDifficultyBasedSpeed(),
+      wrapAround: (t = e.wrapAround) !== null && t !== void 0 ? t : this.getDifficultyBasedWrapAround()
+    }, this.cellSize = Math.min(this.config.width / this.gameConfig.gridSize, this.config.height / this.gameConfig.gridSize), e.onComplete && this.setCompletionCallback(e.onComplete), this.init();
   }
   /**
-   * Shortcut to `this.baseTexture.framebuffer`, saves baseTexture cast.
-   * @readonly
+   * Initialize the snake game
+   *
+   * @protected
    */
-  get framebuffer() {
-    return this.baseTexture.framebuffer;
+  initialize() {
+    const e = new r(`Snake Game
+
+Click to complete demo`, {
+      fontFamily: "Arial",
+      fontSize: 24,
+      fill: 16777215,
+      align: "center"
+    });
+    e.anchor.set(0.5), e.x = this.config.width / 2, e.y = this.config.height / 2, this.container.addChild(e), this.container.eventMode = "static", this.container.cursor = "pointer", this.container.on("pointerdown", () => {
+      this.complete(!0, 75, { demo: !0 });
+    }), this.app.ticker.add(this.update.bind(this));
   }
   /**
-   * Shortcut to `this.framebuffer.multisample`.
-   * @default PIXI.MSAA_QUALITY.NONE
+   * Update game state on each frame
+   *
+   * @param ticker - PIXI ticker
+   * @protected
    */
-  get multisample() {
-    return this.framebuffer.multisample;
-  }
-  set multisample(e) {
-    this.framebuffer.multisample = e;
-  }
-  /**
-   * Resizes the RenderTexture.
-   * @param desiredWidth - The desired width to resize to.
-   * @param desiredHeight - The desired height to resize to.
-   * @param resizeBaseTexture - Should the baseTexture.width and height values be resized as well?
-   */
-  resize(e, t, u = !0) {
-    const s = this.baseTexture.resolution, i = Math.round(e * s) / s, r = Math.round(t * s) / s;
-    this.valid = i > 0 && r > 0, this._frame.width = this.orig.width = i, this._frame.height = this.orig.height = r, u && this.baseTexture.resize(i, r), this.updateUvs();
+  update(e) {
+    e.deltaTime;
   }
   /**
-   * Changes the resolution of baseTexture, but does not change framebuffer size.
-   * @param resolution - The new resolution to apply to RenderTexture
+   * Get grid size based on difficulty
+   *
+   * @returns Grid size (number of cells)
+   * @private
    */
-  setResolution(e) {
-    const { baseTexture: t } = this;
-    t.resolution !== e && (t.setResolution(e), this.resize(t.width, t.height, !1));
+  getDifficultyBasedGridSize() {
+    switch (this.config.difficulty) {
+      case "easy":
+        return 15;
+      case "medium":
+        return 20;
+      case "hard":
+        return 25;
+      default:
+        return 20;
+    }
   }
   /**
-   * A short hand way of creating a render texture.
-   * @param options - Options
-   * @param {number} [options.width=100] - The width of the render texture
-   * @param {number} [options.height=100] - The height of the render texture
-   * @param {PIXI.SCALE_MODES} [options.scaleMode=PIXI.BaseTexture.defaultOptions.scaleMode] - See {@link PIXI.SCALE_MODES}
-   *    for possible values
-   * @param {number} [options.resolution=PIXI.settings.RESOLUTION] - The resolution / device pixel ratio of the texture
-   *    being generated
-   * @param {PIXI.MSAA_QUALITY} [options.multisample=PIXI.MSAA_QUALITY.NONE] - The number of samples of the frame buffer
-   * @returns The new render texture
+   * Get starting snake length based on difficulty
+   *
+   * @returns Starting length of snake
+   * @private
    */
-  static create(e) {
-    return new h(new o(e));
+  getDifficultyBasedStartLength() {
+    switch (this.config.difficulty) {
+      case "easy":
+        return 5;
+      case "medium":
+        return 4;
+      case "hard":
+        return 3;
+      default:
+        return 4;
+    }
+  }
+  /**
+   * Get snake speed based on difficulty
+   *
+   * @returns Speed in cells per second
+   * @private
+   */
+  getDifficultyBasedSpeed() {
+    switch (this.config.difficulty) {
+      case "easy":
+        return 5;
+      case "medium":
+        return 8;
+      case "hard":
+        return 12;
+      default:
+        return 8;
+    }
+  }
+  /**
+   * Get whether wrap around is enabled based on difficulty
+   *
+   * @returns Whether wrap around is enabled
+   * @private
+   */
+  getDifficultyBasedWrapAround() {
+    switch (this.config.difficulty) {
+      case "easy":
+        return !0;
+      case "medium":
+        return !0;
+      case "hard":
+        return !1;
+      default:
+        return !0;
+    }
   }
 }
 export {
-  h as RenderTexture
+  c as SnakeGame
 };
 //# sourceMappingURL=index130.js.map

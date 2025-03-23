@@ -1,8 +1,16 @@
-const e = "WorkerGlobalScope" in globalThis && globalThis instanceof globalThis.WorkerGlobalScope;
-function l(o) {
-  return e ? !1 : document.createElement("video").canPlayType(o) !== "";
-}
+import { ExtensionType as t } from "./index153.js";
+const o = {
+  extension: {
+    type: t.Environment,
+    name: "browser",
+    priority: -1
+  },
+  test: () => !0,
+  load: async () => {
+    await import("./index318.js");
+  }
+};
 export {
-  l as testVideoFormat
+  o as browserExt
 };
 //# sourceMappingURL=index151.js.map

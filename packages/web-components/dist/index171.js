@@ -1,55 +1,66 @@
-import { BUFFER_TYPE as s } from "./index164.js";
-import { Runner as n } from "./index35.js";
-let o = 0;
-class e {
+import { ALPHA_MODES as o } from "./index164.js";
+import { Resource as A } from "./index249.js";
+class p extends A {
   /**
-   * @param {PIXI.IArrayBuffer} data - the data to store in the buffer.
-   * @param _static - `true` for static buffer
-   * @param index - `true` for index buffer
+   * @param source - Source buffer
+   * @param options - Options
+   * @param {number} options.width - Width of the texture
+   * @param {number} options.height - Height of the texture
+   * @param {1|2|4|8} [options.unpackAlignment=4] - The alignment of the pixel rows.
    */
-  constructor(t, i = !0, r = !1) {
-    this.data = t || new Float32Array(1), this._glBuffers = {}, this._updateID = 0, this.index = r, this.static = i, this.id = o++, this.disposeRunner = new n("disposeBuffer");
+  constructor(t, i) {
+    const { width: n, height: a } = i || {};
+    if (!n || !a)
+      throw new Error("BufferResource width or height invalid");
+    super(n, a), this.data = t, this.unpackAlignment = i.unpackAlignment ?? 4;
   }
-  // TODO could explore flagging only a partial upload?
   /**
-   * Flags this buffer as requiring an upload to the GPU.
-   * @param {PIXI.IArrayBuffer|number[]} [data] - the data to update in the buffer.
+   * Upload the texture to the GPU.
+   * @param renderer - Upload to the renderer
+   * @param baseTexture - Reference to parent texture
+   * @param glTexture - glTexture
+   * @returns - true is success
    */
-  update(t) {
-    t instanceof Array && (t = new Float32Array(t)), this.data = t || this.data, this._updateID++;
+  upload(t, i, n) {
+    const a = t.gl;
+    a.pixelStorei(a.UNPACK_ALIGNMENT, this.unpackAlignment), a.pixelStorei(a.UNPACK_PREMULTIPLY_ALPHA_WEBGL, i.alphaMode === o.UNPACK);
+    const r = i.realWidth, h = i.realHeight;
+    return n.width === r && n.height === h ? a.texSubImage2D(
+      i.target,
+      0,
+      0,
+      0,
+      r,
+      h,
+      i.format,
+      n.type,
+      this.data
+    ) : (n.width = r, n.height = h, a.texImage2D(
+      i.target,
+      0,
+      n.internalFormat,
+      r,
+      h,
+      0,
+      i.format,
+      n.type,
+      this.data
+    )), !0;
   }
-  /** Disposes WebGL resources that are connected to this geometry. */
+  /** Destroy and don't use after this. */
   dispose() {
-    this.disposeRunner.emit(this, !1);
-  }
-  /** Destroys the buffer. */
-  destroy() {
-    this.dispose(), this.data = null;
+    this.data = null;
   }
   /**
-   * Flags whether this is an index buffer.
-   *
-   * Index buffers are of type `ELEMENT_ARRAY_BUFFER`. Note that setting this property to false will make
-   * the buffer of type `ARRAY_BUFFER`.
-   *
-   * For backwards compatibility.
+   * Used to auto-detect the type of resource.
+   * @param {*} source - The source object
+   * @returns {boolean} `true` if buffer source
    */
-  set index(t) {
-    this.type = t ? s.ELEMENT_ARRAY_BUFFER : s.ARRAY_BUFFER;
-  }
-  get index() {
-    return this.type === s.ELEMENT_ARRAY_BUFFER;
-  }
-  /**
-   * Helper function that creates a buffer based on an array or TypedArray
-   * @param {ArrayBufferView | number[]} data - the TypedArray that the buffer will store. If this is a regular Array it will be converted to a Float32Array.
-   * @returns - A new Buffer based on the data provided.
-   */
-  static from(t) {
-    return t instanceof Array && (t = new Float32Array(t)), new e(t);
+  static test(t) {
+    return t === null || t instanceof Int8Array || t instanceof Uint8Array || t instanceof Uint8ClampedArray || t instanceof Int16Array || t instanceof Uint16Array || t instanceof Int32Array || t instanceof Uint32Array || t instanceof Float32Array;
   }
 }
 export {
-  e as Buffer
+  p as BufferResource
 };
 //# sourceMappingURL=index171.js.map

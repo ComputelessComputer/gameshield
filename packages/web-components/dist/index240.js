@@ -1,9 +1,86 @@
-const I = Math.PI * 2, t = 180 / Math.PI, _ = Math.PI / 180;
-var C = /* @__PURE__ */ ((R) => (R[R.POLY = 0] = "POLY", R[R.RECT = 1] = "RECT", R[R.CIRC = 2] = "CIRC", R[R.ELIP = 3] = "ELIP", R[R.RREC = 4] = "RREC", R))(C || {});
+function n(e) {
+  const r = new Array(e);
+  for (let a = 0; a < r.length; a++)
+    r[a] = !1;
+  return r;
+}
+function t(e, r) {
+  switch (e) {
+    case "float":
+      return 0;
+    case "vec2":
+      return new Float32Array(2 * r);
+    case "vec3":
+      return new Float32Array(3 * r);
+    case "vec4":
+      return new Float32Array(4 * r);
+    case "int":
+    case "uint":
+    case "sampler2D":
+    case "sampler2DArray":
+      return 0;
+    case "ivec2":
+      return new Int32Array(2 * r);
+    case "ivec3":
+      return new Int32Array(3 * r);
+    case "ivec4":
+      return new Int32Array(4 * r);
+    case "uvec2":
+      return new Uint32Array(2 * r);
+    case "uvec3":
+      return new Uint32Array(3 * r);
+    case "uvec4":
+      return new Uint32Array(4 * r);
+    case "bool":
+      return !1;
+    case "bvec2":
+      return n(2 * r);
+    case "bvec3":
+      return n(3 * r);
+    case "bvec4":
+      return n(4 * r);
+    case "mat2":
+      return new Float32Array([
+        1,
+        0,
+        0,
+        1
+      ]);
+    case "mat3":
+      return new Float32Array([
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]);
+    case "mat4":
+      return new Float32Array([
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1
+      ]);
+  }
+  return null;
+}
 export {
-  _ as DEG_TO_RAD,
-  I as PI_2,
-  t as RAD_TO_DEG,
-  C as SHAPES
+  t as defaultValue
 };
 //# sourceMappingURL=index240.js.map
