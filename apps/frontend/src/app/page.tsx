@@ -1,5 +1,11 @@
-import GameshieldDemo from "../components/gameshield-demo";
+import Hero from "@/components/hero";
+import GameshieldDemo from "@/components/gameshield-demo";
 
 export default function Home() {
-  return <GameshieldDemo />;
+  return (
+    <div className="flex w-full max-w-6xl gap-4">
+      <Hero />
+      <GameshieldDemo />
+    </div>
+  );
 }

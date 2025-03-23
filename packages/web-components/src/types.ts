@@ -32,6 +32,7 @@ export interface GameResult {
 export interface Game {
   mount(container: HTMLElement): Promise<void>;
   destroy(): void;
+  resize?(width: number, height: number): void;
 }
 
 /**

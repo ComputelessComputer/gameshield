@@ -9,7 +9,7 @@ import { BehaviorMetrics, InteractionEvent, InteractionEventType } from '../type
 export class BehaviorAnalyzer {
   private events: InteractionEvent[] = [];
   private isTracking = false;
-  private boundHandlers: { [key: string]: EventListener } = {};
+  private boundHandlers: { [key: string]: (event: Event) => void } = {};
   
   /**
    * Start tracking user interactions
@@ -22,11 +22,11 @@ export class BehaviorAnalyzer {
     
     // Bind event handlers
     this.boundHandlers = {
-      mousemove: this.handleMouseMove.bind(this),
-      mousedown: this.handleMouseEvent.bind(this, 'mousedown'),
-      mouseup: this.handleMouseEvent.bind(this, 'mouseup'),
-      keydown: this.handleKeyEvent.bind(this, 'keydown'),
-      keyup: this.handleKeyEvent.bind(this, 'keyup')
+      mousemove: this.handleMouseMove.bind(this) as EventListener,
+      mousedown: this.handleMouseEvent.bind(this, 'mousedown') as EventListener,
+      mouseup: this.handleMouseEvent.bind(this, 'mouseup') as EventListener,
+      keydown: this.handleKeyEvent.bind(this, 'keydown') as EventListener,
+      keyup: this.handleKeyEvent.bind(this, 'keyup') as EventListener
     };
     
     // Add event listeners

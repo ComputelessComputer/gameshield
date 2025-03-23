@@ -97,6 +97,54 @@ export class BreakoutGame implements Game {
   }
   
   /**
+   * Resize the game canvas and reposition elements
+   */
+  public resize(width: number, height: number): void {
+    if (!this.app) return;
+    
+    // Resize the renderer
+    this.app.renderer.resize(width, height);
+    
+    // Reposition paddle
+    if (this.paddle) {
+      this.paddle.x = this.app.screen.width / 2 - this.paddle.width / 2;
+      this.paddle.y = this.app.screen.height - 20;
+    }
+    
+    // Reposition ball if game hasn't started
+    if (this.ball && !this.gameStarted) {
+      this.ball.x = this.app.screen.width / 2;
+      this.ball.y = this.app.screen.height - 40;
+    }
+    
+    // Reposition score text
+    if (this.scoreText) {
+      this.scoreText.x = 10;
+      this.scoreText.y = 10;
+    }
+    
+    // Reposition instruction text
+    if (this.instructionText) {
+      this.instructionText.x = this.app.screen.width / 2 - this.instructionText.width / 2;
+      this.instructionText.y = this.app.screen.height / 2;
+    }
+    
+    // Recreate bricks with new dimensions
+    if (!this.gameStarted) {
+      // Clear existing bricks
+      this.bricks.forEach(brick => {
+        if (this.app && brick.graphics.parent) {
+          this.app.stage.removeChild(brick.graphics);
+        }
+      });
+      this.bricks = [];
+      
+      // Create new bricks with updated dimensions
+      this.createBricks();
+    }
+  }
+  
+  /**
    * Create game elements
    */
   private createGameElements(): void {
