@@ -1,6 +1,9 @@
+import "./index20.js";
+import "./index21.js";
+import { ExtensionType as r, extensions as i } from "./index158.js";
+import "./index22.js";
 import "./index23.js";
 import "./index24.js";
-import { ExtensionType as o, extensions as i } from "./index140.js";
 import "./index25.js";
 import "./index26.js";
 import "./index27.js";
@@ -55,24 +58,18 @@ import "./index75.js";
 import "./index76.js";
 import "./index77.js";
 import "./index78.js";
-import "./index79.js";
-import "./index80.js";
-import "./index81.js";
-import { testImageFormat as m } from "./index150.js";
-const r = {
+import { testVideoFormat as m } from "./index181.js";
+const p = {
   extension: {
-    type: o.DetectionParser,
-    priority: 1
+    type: r.DetectionParser,
+    priority: 0
   },
-  test: async () => m(
-    // eslint-disable-next-line max-len
-    "data:image/avif;base64,AAAAIGZ0eXBhdmlmAAAAAGF2aWZtaWYxbWlhZk1BMUIAAADybWV0YQAAAAAAAAAoaGRscgAAAAAAAAAAcGljdAAAAAAAAAAAAAAAAGxpYmF2aWYAAAAADnBpdG0AAAAAAAEAAAAeaWxvYwAAAABEAAABAAEAAAABAAABGgAAAB0AAAAoaWluZgAAAAAAAQAAABppbmZlAgAAAAABAABhdjAxQ29sb3IAAAAAamlwcnAAAABLaXBjbwAAABRpc3BlAAAAAAAAAAIAAAACAAAAEHBpeGkAAAAAAwgICAAAAAxhdjFDgQ0MAAAAABNjb2xybmNseAACAAIAAYAAAAAXaXBtYQAAAAAAAAABAAEEAQKDBAAAACVtZGF0EgAKCBgANogQEAwgMg8f8D///8WfhwB8+ErK42A="
-  ),
-  add: async (A) => [...A, "avif"],
-  remove: async (A) => A.filter((t) => t !== "avif")
+  test: async () => m("video/webm"),
+  add: async (t) => [...t, "webm"],
+  remove: async (t) => t.filter((o) => o !== "webm")
 };
-i.add(r);
+i.add(p);
 export {
-  r as detectAvif
+  p as detectWebm
 };
 //# sourceMappingURL=index83.js.map

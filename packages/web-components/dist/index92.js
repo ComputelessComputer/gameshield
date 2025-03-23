@@ -1,6 +1,9 @@
+import "./index20.js";
+import "./index21.js";
+import { ExtensionType as r, extensions as i } from "./index158.js";
+import "./index22.js";
 import "./index23.js";
 import "./index24.js";
-import { ExtensionType as s, extensions as n } from "./index140.js";
 import "./index25.js";
 import "./index26.js";
 import "./index27.js";
@@ -9,21 +12,21 @@ import "./index29.js";
 import "./index30.js";
 import "./index31.js";
 import "./index32.js";
+import { settings as m } from "./index163.js";
 import "./index33.js";
 import "./index34.js";
 import "./index35.js";
-import { settings as c } from "./index153.js";
 import "./index36.js";
 import "./index37.js";
 import "./index38.js";
 import "./index39.js";
 import "./index40.js";
+import { path as p } from "./index169.js";
 import "./index41.js";
 import "./index42.js";
 import "./index43.js";
 import "./index44.js";
 import "./index45.js";
-import { getResolutionOfUrl as l } from "./index157.js";
 import "./index46.js";
 import "./index47.js";
 import "./index48.js";
@@ -32,7 +35,7 @@ import "./index50.js";
 import "./index51.js";
 import "./index52.js";
 import "./index53.js";
-import { BaseTexture as u } from "./index54.js";
+import "./index54.js";
 import "./index55.js";
 import "./index56.js";
 import "./index57.js";
@@ -57,43 +60,26 @@ import "./index75.js";
 import "./index76.js";
 import "./index77.js";
 import "./index78.js";
-import "./index79.js";
-import { SVGResource as p } from "./index80.js";
-import "./index81.js";
-import { checkDataUrl as f } from "./index154.js";
-import { checkExtension as a } from "./index155.js";
-import { LoaderParserPriority as x } from "./index152.js";
-import { loadTextures as y } from "./index93.js";
-import { createTexture as g } from "./index158.js";
-const E = ".svg", G = "image/svg+xml", P = {
-  extension: {
-    type: s.LoadParser,
-    priority: x.High
-  },
-  name: "loadSVG",
-  test(r) {
-    return f(r, G) || a(r, E);
-  },
-  async testParse(r) {
-    return p.test(r);
-  },
-  async parse(r, o, e) {
-    var m;
-    const t = new p(r, (m = o == null ? void 0 : o.data) == null ? void 0 : m.resourceOptions);
-    await t.load();
-    const i = new u(t, {
-      resolution: l(r),
-      ...o == null ? void 0 : o.data
-    });
-    return i.resource.src = o.src, g(i, e, o.src);
-  },
-  async load(r, o) {
-    return (await c.ADAPTER.fetch(r)).text();
-  },
-  unload: y.unload
+import "./index86.js";
+import "./index87.js";
+import "./index88.js";
+import "./index89.js";
+import { loadTextures as e } from "./index90.js";
+import "./index91.js";
+const s = {
+  extension: r.ResolveParser,
+  test: e.test,
+  parse: (t) => {
+    var o;
+    return {
+      resolution: parseFloat(((o = m.RETINA_PREFIX.exec(t)) == null ? void 0 : o[1]) ?? "1"),
+      format: p.extname(t).slice(1),
+      src: t
+    };
+  }
 };
-n.add(P);
+i.add(s);
 export {
-  P as loadSVG
+  s as resolveTextureUrl
 };
 //# sourceMappingURL=index92.js.map

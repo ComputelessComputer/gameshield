@@ -1,6 +1,9 @@
+import "./index20.js";
+import "./index21.js";
+import { ExtensionType as r, extensions as i } from "./index158.js";
+import "./index22.js";
 import "./index23.js";
 import "./index24.js";
-import { ExtensionType as i, extensions as p } from "./index140.js";
 import "./index25.js";
 import "./index26.js";
 import "./index27.js";
@@ -55,20 +58,18 @@ import "./index75.js";
 import "./index76.js";
 import "./index77.js";
 import "./index78.js";
-import "./index79.js";
-import "./index80.js";
-import "./index81.js";
-const o = ["png", "jpg", "jpeg"], m = {
+import { testVideoFormat as m } from "./index181.js";
+const p = {
   extension: {
-    type: i.DetectionParser,
-    priority: -1
+    type: r.DetectionParser,
+    priority: 0
   },
-  test: () => Promise.resolve(!0),
-  add: async (t) => [...t, ...o],
-  remove: async (t) => t.filter((r) => !o.includes(r))
+  test: async () => m("video/ogg"),
+  add: async (t) => [...t, "ogv"],
+  remove: async (t) => t.filter((o) => o !== "ogv")
 };
-p.add(m);
+i.add(p);
 export {
-  m as detectDefaults
+  p as detectOgv
 };
 //# sourceMappingURL=index85.js.map

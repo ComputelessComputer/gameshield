@@ -1,166 +1,149 @@
-import { ExtensionType as u, extensions as d } from "./index140.js";
-import { generateUniformsSync as f } from "./index213.js";
-import "./index36.js";
-import { unsafeEvalSupported as c } from "./index214.js";
-import { generateProgram as l } from "./index215.js";
-import { generateUniformBufferSync as g } from "./index216.js";
-let y = 0;
-const a = { textureCount: 0, uboCount: 0 };
-class h {
-  /** @param renderer - The renderer this System works for. */
-  constructor(r) {
-    this.destroyed = !1, this.renderer = r, this.systemCheck(), this.gl = null, this.shader = null, this.program = null, this.cache = {}, this._uboCache = {}, this.id = y++;
+import { BLEND_MODES as l } from "./index164.js";
+import { ExtensionType as d, extensions as a } from "./index158.js";
+import { State as n } from "./index69.js";
+import { mapWebGLBlendModesToPixi as o } from "./index247.js";
+const c = 0, f = 1, p = 2, g = 3, r = 4, b = 5, h = class i {
+  constructor() {
+    this.gl = null, this.stateId = 0, this.polygonOffset = 0, this.blendMode = l.NONE, this._blendEq = !1, this.map = [], this.map[c] = this.setBlend, this.map[f] = this.setOffset, this.map[p] = this.setCullFace, this.map[g] = this.setDepthTest, this.map[r] = this.setFrontFace, this.map[b] = this.setDepthMask, this.checks = [], this.defaultState = new n(), this.defaultState.blend = !0;
+  }
+  contextChange(t) {
+    this.gl = t, this.blendModes = o(t), this.set(this.defaultState), this.reset();
   }
   /**
-   * Overrideable function by `@pixi/unsafe-eval` to silence
-   * throwing an error if platform doesn't support unsafe-evals.
-   * @private
+   * Sets the current state
+   * @param {*} state - The state to set.
    */
-  systemCheck() {
-    if (!c())
-      throw new Error("Current environment does not allow unsafe-eval, please use @pixi/unsafe-eval module to enable support.");
-  }
-  contextChange(r) {
-    this.gl = r, this.reset();
-  }
-  /**
-   * Changes the current shader to the one given in parameter.
-   * @param shader - the new shader
-   * @param dontSync - false if the shader should automatically sync its uniforms.
-   * @returns the glProgram that belongs to the shader.
-   */
-  bind(r, e) {
-    r.disposeRunner.add(this), r.uniforms.globals = this.renderer.globalUniforms;
-    const t = r.program, s = t.glPrograms[this.renderer.CONTEXT_UID] || this.generateProgram(r);
-    return this.shader = r, this.program !== t && (this.program = t, this.gl.useProgram(s.program)), e || (a.textureCount = 0, a.uboCount = 0, this.syncUniformGroup(r.uniformGroup, a)), s;
-  }
-  /**
-   * Uploads the uniforms values to the currently bound shader.
-   * @param uniforms - the uniforms values that be applied to the current shader
-   */
-  setUniforms(r) {
-    const e = this.shader.program, t = e.glPrograms[this.renderer.CONTEXT_UID];
-    e.syncUniforms(t.uniformData, r, this.renderer);
-  }
-  /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-  /**
-   * Syncs uniforms on the group
-   * @param group - the uniform group to sync
-   * @param syncData - this is data that is passed to the sync function and any nested sync functions
-   */
-  syncUniformGroup(r, e) {
-    const t = this.getGlProgram();
-    (!r.static || r.dirtyId !== t.uniformDirtyGroups[r.id]) && (t.uniformDirtyGroups[r.id] = r.dirtyId, this.syncUniforms(r, t, e));
-  }
-  /**
-   * Overrideable by the @pixi/unsafe-eval package to use static syncUniforms instead.
-   * @param group
-   * @param glProgram
-   * @param syncData
-   */
-  syncUniforms(r, e, t) {
-    (r.syncUniforms[this.shader.program.id] || this.createSyncGroups(r))(e.uniformData, r.uniforms, this.renderer, t);
-  }
-  createSyncGroups(r) {
-    const e = this.getSignature(r, this.shader.program.uniformData, "u");
-    return this.cache[e] || (this.cache[e] = f(r, this.shader.program.uniformData)), r.syncUniforms[this.shader.program.id] = this.cache[e], r.syncUniforms[this.shader.program.id];
-  }
-  /**
-   * Syncs uniform buffers
-   * @param group - the uniform buffer group to sync
-   * @param name - the name of the uniform buffer
-   */
-  syncUniformBufferGroup(r, e) {
-    const t = this.getGlProgram();
-    if (!r.static || r.dirtyId !== 0 || !t.uniformGroups[r.id]) {
-      r.dirtyId = 0;
-      const s = t.uniformGroups[r.id] || this.createSyncBufferGroup(r, t, e);
-      r.buffer.update(), s(
-        t.uniformData,
-        r.uniforms,
-        this.renderer,
-        a,
-        r.buffer
-      );
+  set(t) {
+    if (t = t || this.defaultState, this.stateId !== t.data) {
+      let e = this.stateId ^ t.data, s = 0;
+      for (; e; )
+        e & 1 && this.map[s].call(this, !!(t.data & 1 << s)), e = e >> 1, s++;
+      this.stateId = t.data;
     }
-    this.renderer.buffer.bindBufferBase(r.buffer, t.uniformBufferBindings[e]);
+    for (let e = 0; e < this.checks.length; e++)
+      this.checks[e](this, t);
   }
   /**
-   * Will create a function that uploads a uniform buffer using the STD140 standard.
-   * The upload function will then be cached for future calls
-   * If a group is manually managed, then a simple upload function is generated
-   * @param group - the uniform buffer group to sync
-   * @param glProgram - the gl program to attach the uniform bindings to
-   * @param name - the name of the uniform buffer (must exist on the shader)
+   * Sets the state, when previous state is unknown.
+   * @param {*} state - The state to set
    */
-  createSyncBufferGroup(r, e, t) {
-    const { gl: s } = this.renderer;
-    this.renderer.buffer.bind(r.buffer);
-    const n = this.gl.getUniformBlockIndex(e.program, t);
-    e.uniformBufferBindings[t] = this.shader.uniformBindCount, s.uniformBlockBinding(e.program, n, this.shader.uniformBindCount), this.shader.uniformBindCount++;
-    const i = this.getSignature(r, this.shader.program.uniformData, "ubo");
-    let o = this._uboCache[i];
-    if (o || (o = this._uboCache[i] = g(r, this.shader.program.uniformData)), r.autoManage) {
-      const m = new Float32Array(o.size / 4);
-      r.buffer.update(m);
-    }
-    return e.uniformGroups[r.id] = o.syncFunc, e.uniformGroups[r.id];
+  forceState(t) {
+    t = t || this.defaultState;
+    for (let e = 0; e < this.map.length; e++)
+      this.map[e].call(this, !!(t.data & 1 << e));
+    for (let e = 0; e < this.checks.length; e++)
+      this.checks[e](this, t);
+    this.stateId = t.data;
   }
   /**
-   * Takes a uniform group and data and generates a unique signature for them.
-   * @param group - The uniform group to get signature of
-   * @param group.uniforms
-   * @param uniformData - Uniform information generated by the shader
-   * @param preFix
-   * @returns Unique signature of the uniform group
+   * Sets whether to enable or disable blending.
+   * @param value - Turn on or off WebGl blending.
    */
-  getSignature(r, e, t) {
-    const s = r.uniforms, n = [`${t}-`];
-    for (const i in s)
-      n.push(i), e[i] && n.push(e[i].type);
-    return n.join("-");
+  setBlend(t) {
+    this.updateCheck(i.checkBlendMode, t), this.gl[t ? "enable" : "disable"](this.gl.BLEND);
   }
   /**
-   * Returns the underlying GLShade rof the currently bound shader.
-   *
-   * This can be handy for when you to have a little more control over the setting of your uniforms.
-   * @returns The glProgram for the currently bound Shader for this context
+   * Sets whether to enable or disable polygon offset fill.
+   * @param value - Turn on or off webgl polygon offset testing.
    */
-  getGlProgram() {
-    return this.shader ? this.shader.program.glPrograms[this.renderer.CONTEXT_UID] : null;
+  setOffset(t) {
+    this.updateCheck(i.checkPolygonOffset, t), this.gl[t ? "enable" : "disable"](this.gl.POLYGON_OFFSET_FILL);
   }
   /**
-   * Generates a glProgram version of the Shader provided.
-   * @param shader - The shader that the glProgram will be based on.
-   * @returns A shiny new glProgram!
+   * Sets whether to enable or disable depth test.
+   * @param value - Turn on or off webgl depth testing.
    */
-  generateProgram(r) {
-    const e = this.gl, t = r.program, s = l(e, t);
-    return t.glPrograms[this.renderer.CONTEXT_UID] = s, s;
+  setDepthTest(t) {
+    this.gl[t ? "enable" : "disable"](this.gl.DEPTH_TEST);
   }
-  /** Resets ShaderSystem state, does not affect WebGL state. */
+  /**
+   * Sets whether to enable or disable depth mask.
+   * @param value - Turn on or off webgl depth mask.
+   */
+  setDepthMask(t) {
+    this.gl.depthMask(t);
+  }
+  /**
+   * Sets whether to enable or disable cull face.
+   * @param {boolean} value - Turn on or off webgl cull face.
+   */
+  setCullFace(t) {
+    this.gl[t ? "enable" : "disable"](this.gl.CULL_FACE);
+  }
+  /**
+   * Sets the gl front face.
+   * @param {boolean} value - true is clockwise and false is counter-clockwise
+   */
+  setFrontFace(t) {
+    this.gl.frontFace(this.gl[t ? "CW" : "CCW"]);
+  }
+  /**
+   * Sets the blend mode.
+   * @param {number} value - The blend mode to set to.
+   */
+  setBlendMode(t) {
+    if (t === this.blendMode)
+      return;
+    this.blendMode = t;
+    const e = this.blendModes[t], s = this.gl;
+    e.length === 2 ? s.blendFunc(e[0], e[1]) : s.blendFuncSeparate(e[0], e[1], e[2], e[3]), e.length === 6 ? (this._blendEq = !0, s.blendEquationSeparate(e[4], e[5])) : this._blendEq && (this._blendEq = !1, s.blendEquationSeparate(s.FUNC_ADD, s.FUNC_ADD));
+  }
+  /**
+   * Sets the polygon offset.
+   * @param {number} value - the polygon offset
+   * @param {number} scale - the polygon offset scale
+   */
+  setPolygonOffset(t, e) {
+    this.gl.polygonOffset(t, e);
+  }
+  // used
+  /** Resets all the logic and disables the VAOs. */
   reset() {
-    this.program = null, this.shader = null;
+    this.gl.pixelStorei(this.gl.UNPACK_FLIP_Y_WEBGL, !1), this.forceState(this.defaultState), this._blendEq = !0, this.blendMode = -1, this.setBlendMode(0);
   }
   /**
-   * Disposes shader.
-   * If disposing one equals with current shader, set current as null.
-   * @param shader - Shader object
+   * Checks to see which updates should be checked based on which settings have been activated.
+   *
+   * For example, if blend is enabled then we should check the blend modes each time the state is changed
+   * or if polygon fill is activated then we need to check if the polygon offset changes.
+   * The idea is that we only check what we have too.
+   * @param func - the checking function to add or remove
+   * @param value - should the check function be added or removed.
    */
-  disposeShader(r) {
-    this.shader === r && (this.shader = null);
+  updateCheck(t, e) {
+    const s = this.checks.indexOf(t);
+    e && s === -1 ? this.checks.push(t) : !e && s !== -1 && this.checks.splice(s, 1);
   }
-  /** Destroys this System and removes all its textures. */
+  /**
+   * A private little wrapper function that we call to check the blend mode.
+   * @param system - the System to perform the state check on
+   * @param state - the state that the blendMode will pulled from
+   */
+  static checkBlendMode(t, e) {
+    t.setBlendMode(e.blendMode);
+  }
+  /**
+   * A private little wrapper function that we call to check the polygon offset.
+   * @param system - the System to perform the state check on
+   * @param state - the state that the blendMode will pulled from
+   */
+  static checkPolygonOffset(t, e) {
+    t.setPolygonOffset(1, e.polygonOffset);
+  }
+  /**
+   * @ignore
+   */
   destroy() {
-    this.renderer = null, this.destroyed = !0;
+    this.gl = null;
   }
-}
-h.extension = {
-  type: u.RendererSystem,
-  name: "shader"
 };
-d.add(h);
+h.extension = {
+  type: d.RendererSystem,
+  name: "state"
+};
+let S = h;
+a.add(S);
 export {
-  h as ShaderSystem
+  S as StateSystem
 };
 //# sourceMappingURL=index70.js.map

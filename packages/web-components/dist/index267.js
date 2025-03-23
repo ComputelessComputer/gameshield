@@ -1,47 +1,57 @@
-import { curves as f } from "./index264.js";
-class y {
-  /**
-   * Calculate length of quadratic curve
-   * @see {@link http://www.malczak.linuxpl.com/blog/quadratic-bezier-curve-length/}
-   * for the detailed explanation of math behind this.
-   * @private
-   * @param fromX - x-coordinate of curve start point
-   * @param fromY - y-coordinate of curve start point
-   * @param cpX - x-coordinate of curve control point
-   * @param cpY - y-coordinate of curve control point
-   * @param toX - x-coordinate of curve end point
-   * @param toY - y-coordinate of curve end point
-   * @returns - Length of quadratic curve
-   */
-  static curveLength(e, r, l, b, s, c) {
-    const h = e - 2 * l + s, g = r - 2 * b + c, n = 2 * l - 2 * e, u = 2 * b - 2 * r, a = 4 * (h * h + g * g), t = 4 * (h * n + g * u), v = n * n + u * u, x = 2 * Math.sqrt(a + t + v), o = Math.sqrt(a), M = 2 * a * o, m = 2 * Math.sqrt(v), q = t / o;
-    return (M * x + o * t * (x - m) + (4 * v * a - t * t) * Math.log((2 * o + q + x) / (q + m))) / (4 * M);
-  }
-  /**
-   * Calculate the points for a quadratic bezier curve and then draws it.
-   * Based on: https://stackoverflow.com/questions/785097/how-do-i-implement-a-bezier-curve-in-c
-   * @private
-   * @param cpX - Control point x
-   * @param cpY - Control point y
-   * @param toX - Destination point x
-   * @param toY - Destination point y
-   * @param points - Points to add segments to.
-   */
-  static curveTo(e, r, l, b, s) {
-    const c = s[s.length - 2], h = s[s.length - 1], g = f._segmentsCount(
-      y.curveLength(c, h, e, r, l, b)
-    );
-    let n = 0, u = 0;
-    for (let a = 1; a <= g; ++a) {
-      const t = a / g;
-      n = c + (e - c) * t, u = h + (r - h) * t, s.push(
-        n + (e + (l - e) * t - n) * t,
-        u + (r + (b - r) * t - u) * t
-      );
+var r = `varying vec2 vTextureCoord;
+uniform sampler2D uSampler;
+uniform float m[20];
+uniform float uAlpha;
+
+void main(void)
+{
+    vec4 c = texture2D(uSampler, vTextureCoord);
+
+    if (uAlpha == 0.0) {
+        gl_FragColor = c;
+        return;
     }
-  }
+
+    // Un-premultiply alpha before applying the color matrix. See issue #3539.
+    if (c.a > 0.0) {
+      c.rgb /= c.a;
+    }
+
+    vec4 result;
+
+    result.r = (m[0] * c.r);
+        result.r += (m[1] * c.g);
+        result.r += (m[2] * c.b);
+        result.r += (m[3] * c.a);
+        result.r += m[4];
+
+    result.g = (m[5] * c.r);
+        result.g += (m[6] * c.g);
+        result.g += (m[7] * c.b);
+        result.g += (m[8] * c.a);
+        result.g += m[9];
+
+    result.b = (m[10] * c.r);
+       result.b += (m[11] * c.g);
+       result.b += (m[12] * c.b);
+       result.b += (m[13] * c.a);
+       result.b += m[14];
+
+    result.a = (m[15] * c.r);
+       result.a += (m[16] * c.g);
+       result.a += (m[17] * c.b);
+       result.a += (m[18] * c.a);
+       result.a += m[19];
+
+    vec3 rgb = mix(c.rgb, result.rgb, uAlpha);
+
+    // Premultiply alpha again.
+    rgb *= result.a;
+
+    gl_FragColor = vec4(rgb, result.a);
 }
+`;
 export {
-  y as QuadraticUtils
+  r as default
 };
 //# sourceMappingURL=index267.js.map

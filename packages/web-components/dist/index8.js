@@ -1,31 +1,22 @@
-import { PongGame as n } from "./index10.js";
-import { SnakeGame as o } from "./index11.js";
-import { BreakoutGame as t } from "./index12.js";
-import { DinoRunGame as m } from "./index13.js";
-class w {
-  /**
-   * Create a game instance
-   */
-  static createGame(r, e) {
-    if (r === "random") {
-      const a = ["pong", "snake", "breakout", "dino-run"];
-      r = a[Math.floor(Math.random() * a.length)];
-    }
-    switch (r) {
-      case "pong":
-        return new n(e);
-      case "snake":
-        return new o(e);
-      case "breakout":
-        return new t(e);
-      case "dino-run":
-        return new m(e);
-      default:
-        throw new Error(`Unsupported game type: ${r}`);
-    }
-  }
-}
+import { browserExt as r } from "./index151.js";
+import { webworkerExt as o } from "./index152.js";
+import { extensions as e } from "./index153.js";
+import { ExtensionType as s, normalizeExtensionPriority as a } from "./index153.js";
+import "./index154.js";
+import "./index155.js";
+import { resourceToTexture as E, textureFrom as d } from "./index156.js";
+import { default as w } from "./index157.js";
+import { default as b } from "./index39.js";
+e.add(r, o);
 export {
-  w as GameFactory
+  w as EventEmitter,
+  s as ExtensionType,
+  r as browserExt,
+  b as earcut,
+  e as extensions,
+  a as normalizeExtensionPriority,
+  E as resourceToTexture,
+  d as textureFrom,
+  o as webworkerExt
 };
 //# sourceMappingURL=index8.js.map

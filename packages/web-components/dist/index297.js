@@ -1,13 +1,31 @@
-import { Color as r } from "./index24.js";
-import { deprecation as t } from "./index133.js";
-function i(e) {
-  return t("7.2.0", "utils.hex2string is deprecated, use Color#toHex instead"), r.shared.setValue(e).toHex();
+var o = `#version 300 es
+#define SHADER_NAME Tiling-Sprite-100
+
+precision lowp float;
+
+in vec2 vTextureCoord;
+
+out vec4 fragmentColor;
+
+uniform sampler2D uSampler;
+uniform vec4 uColor;
+uniform mat3 uMapCoord;
+uniform vec4 uClampFrame;
+uniform vec2 uClampOffset;
+
+void main(void)
+{
+    vec2 coord = vTextureCoord + ceil(uClampOffset - vTextureCoord);
+    coord = (uMapCoord * vec3(coord, 1.0)).xy;
+    vec2 unclamped = coord;
+    coord = clamp(coord, uClampFrame.xy, uClampFrame.zw);
+
+    vec4 texSample = texture(uSampler, coord, unclamped == coord ? 0.0f : -32.0f);// lod-bias very negative to force lod 0
+
+    fragmentColor = texSample * uColor;
 }
-function u(e) {
-  return t("7.2.0", "utils.rgb2hex is deprecated, use Color#toNumber instead"), r.shared.setValue(e).toNumber();
-}
+`;
 export {
-  i as hex2string,
-  u as rgb2hex
+  o as default
 };
 //# sourceMappingURL=index297.js.map

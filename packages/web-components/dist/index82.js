@@ -1,6 +1,9 @@
+import "./index20.js";
+import "./index21.js";
+import { ExtensionType as i, extensions as p } from "./index158.js";
+import "./index22.js";
 import "./index23.js";
 import "./index24.js";
-import { ExtensionType as e, extensions as a } from "./index140.js";
 import "./index25.js";
 import "./index26.js";
 import "./index27.js";
@@ -43,7 +46,7 @@ import "./index63.js";
 import "./index64.js";
 import "./index65.js";
 import "./index66.js";
-import { Texture as n } from "./index131.js";
+import "./index67.js";
 import "./index68.js";
 import "./index69.js";
 import "./index70.js";
@@ -55,24 +58,17 @@ import "./index75.js";
 import "./index76.js";
 import "./index77.js";
 import "./index78.js";
-import "./index67.js";
-import "./index79.js";
-import "./index80.js";
-import "./index81.js";
-const s = {
-  extension: e.CacheParser,
-  test: (r) => Array.isArray(r) && r.every((t) => t instanceof n),
-  getCacheableAssets: (r, t) => {
-    const o = {};
-    return r.forEach((m) => {
-      t.forEach((p, i) => {
-        o[m + (i === 0 ? "" : i + 1)] = p;
-      });
-    }), o;
-  }
+const o = ["png", "jpg", "jpeg"], m = {
+  extension: {
+    type: i.DetectionParser,
+    priority: -1
+  },
+  test: () => Promise.resolve(!0),
+  add: async (t) => [...t, ...o],
+  remove: async (t) => t.filter((r) => !o.includes(r))
 };
-a.add(s);
+p.add(m);
 export {
-  s as cacheTextureArray
+  m as detectDefaults
 };
 //# sourceMappingURL=index82.js.map

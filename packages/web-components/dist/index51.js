@@ -1,181 +1,327 @@
-import { ENV as i } from "./index164.js";
-import { ExtensionType as x, extensions as l } from "./index140.js";
-import { settings as a } from "./index153.js";
-import "./index36.js";
-let o = 0;
-class r {
-  /** @param renderer - The renderer this System works for. */
-  constructor(e) {
-    this.renderer = e, this.webGLVersion = 1, this.extensions = {}, this.supports = {
-      uint32Indices: !1
-    }, this.handleContextLost = this.handleContextLost.bind(this), this.handleContextRestored = this.handleContextRestored.bind(this);
+import { SCALE_MODES as y, ALPHA_MODES as M, MIPMAP_MODES as w, WRAP_MODES as S, TARGETS as g, FORMATS as d, TYPES as n } from "./index164.js";
+import { settings as p } from "./index163.js";
+import "./index33.js";
+import "./index37.js";
+import O from "./index38.js";
+import "./index39.js";
+import "./index40.js";
+import "./index21.js";
+import "./index41.js";
+import { isPow2 as m } from "./index195.js";
+import { uid as I } from "./index133.js";
+import "./index42.js";
+import { BaseTextureCache as a, TextureCache as C } from "./index230.js";
+import { autoDetectResource as B } from "./index248.js";
+import { BufferResource as x } from "./index171.js";
+import { Resource as N } from "./index249.js";
+const G = {
+  scaleMode: y.NEAREST,
+  alphaMode: M.NPM
+}, c = class l extends O {
+  /**
+   * @param {PIXI.Resource|PIXI.ImageSource|string} [resource=null] -
+   *        The current resource to use, for things that aren't Resource objects, will be converted
+   *        into a Resource.
+   * @param options - Collection of options, default options inherited from {@link PIXI.BaseTexture.defaultOptions}.
+   * @param {PIXI.MIPMAP_MODES} [options.mipmap] - If mipmapping is enabled for texture
+   * @param {number} [options.anisotropicLevel] - Anisotropic filtering level of texture
+   * @param {PIXI.WRAP_MODES} [options.wrapMode] - Wrap mode for textures
+   * @param {PIXI.SCALE_MODES} [options.scaleMode] - Default scale mode, linear, nearest
+   * @param {PIXI.FORMATS} [options.format] - GL format type
+   * @param {PIXI.TYPES} [options.type] - GL data type
+   * @param {PIXI.TARGETS} [options.target] - GL texture target
+   * @param {PIXI.ALPHA_MODES} [options.alphaMode] - Pre multiply the image alpha
+   * @param {number} [options.width=0] - Width of the texture
+   * @param {number} [options.height=0] - Height of the texture
+   * @param {number} [options.resolution=PIXI.settings.RESOLUTION] - Resolution of the base texture
+   * @param {object} [options.resourceOptions] - Optional resource options,
+   *        see {@link PIXI.autoDetectResource autoDetectResource}
+   */
+  constructor(t = null, e = null) {
+    super(), e = Object.assign({}, l.defaultOptions, e);
+    const {
+      alphaMode: i,
+      mipmap: o,
+      anisotropicLevel: r,
+      scaleMode: s,
+      width: h,
+      height: u,
+      wrapMode: E,
+      format: _,
+      type: f,
+      target: R,
+      resolution: T,
+      resourceOptions: A
+    } = e;
+    t && !(t instanceof N) && (t = B(t, A), t.internal = !0), this.resolution = T || p.RESOLUTION, this.width = Math.round((h || 0) * this.resolution) / this.resolution, this.height = Math.round((u || 0) * this.resolution) / this.resolution, this._mipmap = o, this.anisotropicLevel = r, this._wrapMode = E, this._scaleMode = s, this.format = _, this.type = f, this.target = R, this.alphaMode = i, this.uid = I(), this.touched = 0, this.isPowerOfTwo = !1, this._refreshPOT(), this._glTextures = {}, this.dirtyId = 0, this.dirtyStyleId = 0, this.cacheId = null, this.valid = h > 0 && u > 0, this.textureCacheIds = [], this.destroyed = !1, this.resource = null, this._batchEnabled = 0, this._batchLocation = 0, this.parentTextureArray = null, this.setResource(t);
   }
   /**
-   * `true` if the context is lost
+   * Pixel width of the source of this texture
    * @readonly
    */
-  get isLost() {
-    return !this.gl || this.gl.isContextLost();
+  get realWidth() {
+    return Math.round(this.width * this.resolution);
   }
   /**
-   * Handles the context change event.
-   * @param {WebGLRenderingContext} gl - New WebGL context.
+   * Pixel height of the source of this texture
+   * @readonly
    */
-  contextChange(e) {
-    this.gl = e, this.renderer.gl = e, this.renderer.CONTEXT_UID = o++;
-  }
-  init(e) {
-    if (e.context)
-      this.initFromContext(e.context);
-    else {
-      const t = this.renderer.background.alpha < 1, n = e.premultipliedAlpha;
-      this.preserveDrawingBuffer = e.preserveDrawingBuffer, this.useContextAlpha = e.useContextAlpha, this.powerPreference = e.powerPreference, this.initFromOptions({
-        alpha: t,
-        premultipliedAlpha: n,
-        antialias: e.antialias,
-        stencil: !0,
-        preserveDrawingBuffer: e.preserveDrawingBuffer,
-        powerPreference: e.powerPreference
-      });
-    }
+  get realHeight() {
+    return Math.round(this.height * this.resolution);
   }
   /**
-   * Initializes the context.
-   * @protected
-   * @param {WebGLRenderingContext} gl - WebGL context
+   * Mipmap mode of the texture, affects downscaled images
+   * @default PIXI.MIPMAP_MODES.POW2
    */
-  initFromContext(e) {
-    this.gl = e, this.validateContext(e), this.renderer.gl = e, this.renderer.CONTEXT_UID = o++, this.renderer.runners.contextChange.emit(e);
-    const t = this.renderer.view;
-    t.addEventListener !== void 0 && (t.addEventListener("webglcontextlost", this.handleContextLost, !1), t.addEventListener("webglcontextrestored", this.handleContextRestored, !1));
+  get mipmap() {
+    return this._mipmap;
+  }
+  set mipmap(t) {
+    this._mipmap !== t && (this._mipmap = t, this.dirtyStyleId++);
   }
   /**
-   * Initialize from context options
-   * @protected
-   * @see https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/getContext
-   * @param {object} options - context attributes
+   * The scale mode to apply when scaling this texture
+   * @default PIXI.SCALE_MODES.LINEAR
    */
-  initFromOptions(e) {
-    const t = this.createContext(this.renderer.view, e);
-    this.initFromContext(t);
+  get scaleMode() {
+    return this._scaleMode;
+  }
+  set scaleMode(t) {
+    this._scaleMode !== t && (this._scaleMode = t, this.dirtyStyleId++);
   }
   /**
-   * Helper class to create a WebGL Context
-   * @param canvas - the canvas element that we will get the context from
-   * @param options - An options object that gets passed in to the canvas element containing the
-   *    context attributes
-   * @see https://developer.mozilla.org/en/docs/Web/API/HTMLCanvasElement/getContext
-   * @returns {WebGLRenderingContext} the WebGL context
+   * How the texture wraps
+   * @default PIXI.WRAP_MODES.CLAMP
    */
-  createContext(e, t) {
-    let n;
-    if (a.PREFER_ENV >= i.WEBGL2 && (n = e.getContext("webgl2", t)), n)
-      this.webGLVersion = 2;
-    else if (this.webGLVersion = 1, n = e.getContext("webgl", t) || e.getContext("experimental-webgl", t), !n)
-      throw new Error("This browser does not support WebGL. Try using the canvas renderer");
-    return this.gl = n, this.getExtensions(), this.gl;
+  get wrapMode() {
+    return this._wrapMode;
   }
-  /** Auto-populate the {@link PIXI.ContextSystem.extensions extensions}. */
-  getExtensions() {
-    const { gl: e } = this, t = {
-      loseContext: e.getExtension("WEBGL_lose_context"),
-      anisotropicFiltering: e.getExtension("EXT_texture_filter_anisotropic"),
-      floatTextureLinear: e.getExtension("OES_texture_float_linear"),
-      s3tc: e.getExtension("WEBGL_compressed_texture_s3tc"),
-      s3tc_sRGB: e.getExtension("WEBGL_compressed_texture_s3tc_srgb"),
-      // eslint-disable-line camelcase
-      etc: e.getExtension("WEBGL_compressed_texture_etc"),
-      etc1: e.getExtension("WEBGL_compressed_texture_etc1"),
-      pvrtc: e.getExtension("WEBGL_compressed_texture_pvrtc") || e.getExtension("WEBKIT_WEBGL_compressed_texture_pvrtc"),
-      atc: e.getExtension("WEBGL_compressed_texture_atc"),
-      astc: e.getExtension("WEBGL_compressed_texture_astc"),
-      bptc: e.getExtension("EXT_texture_compression_bptc")
-    };
-    this.webGLVersion === 1 ? Object.assign(this.extensions, t, {
-      drawBuffers: e.getExtension("WEBGL_draw_buffers"),
-      depthTexture: e.getExtension("WEBGL_depth_texture"),
-      vertexArrayObject: e.getExtension("OES_vertex_array_object") || e.getExtension("MOZ_OES_vertex_array_object") || e.getExtension("WEBKIT_OES_vertex_array_object"),
-      uint32ElementIndex: e.getExtension("OES_element_index_uint"),
-      // Floats and half-floats
-      floatTexture: e.getExtension("OES_texture_float"),
-      floatTextureLinear: e.getExtension("OES_texture_float_linear"),
-      textureHalfFloat: e.getExtension("OES_texture_half_float"),
-      textureHalfFloatLinear: e.getExtension("OES_texture_half_float_linear")
-    }) : this.webGLVersion === 2 && Object.assign(this.extensions, t, {
-      // Floats and half-floats
-      colorBufferFloat: e.getExtension("EXT_color_buffer_float")
-    });
+  set wrapMode(t) {
+    this._wrapMode !== t && (this._wrapMode = t, this.dirtyStyleId++);
   }
   /**
-   * Handles a lost webgl context
-   * @param {WebGLContextEvent} event - The context lost event.
+   * Changes style options of BaseTexture
+   * @param scaleMode - Pixi scalemode
+   * @param mipmap - enable mipmaps
+   * @returns - this
    */
-  handleContextLost(e) {
-    e.preventDefault(), setTimeout(() => {
-      this.gl.isContextLost() && this.extensions.loseContext && this.extensions.loseContext.restoreContext();
-    }, 0);
+  setStyle(t, e) {
+    let i;
+    return t !== void 0 && t !== this.scaleMode && (this.scaleMode = t, i = !0), e !== void 0 && e !== this.mipmap && (this.mipmap = e, i = !0), i && this.dirtyStyleId++, this;
   }
-  /** Handles a restored webgl context. */
-  handleContextRestored() {
-    this.renderer.runners.contextChange.emit(this.gl);
+  /**
+   * Changes w/h/resolution. Texture becomes valid if width and height are greater than zero.
+   * @param desiredWidth - Desired visual width
+   * @param desiredHeight - Desired visual height
+   * @param resolution - Optionally set resolution
+   * @returns - this
+   */
+  setSize(t, e, i) {
+    return i = i || this.resolution, this.setRealSize(t * i, e * i, i);
   }
+  /**
+   * Sets real size of baseTexture, preserves current resolution.
+   * @param realWidth - Full rendered width
+   * @param realHeight - Full rendered height
+   * @param resolution - Optionally set resolution
+   * @returns - this
+   */
+  setRealSize(t, e, i) {
+    return this.resolution = i || this.resolution, this.width = Math.round(t) / this.resolution, this.height = Math.round(e) / this.resolution, this._refreshPOT(), this.update(), this;
+  }
+  /**
+   * Refresh check for isPowerOfTwo texture based on size
+   * @private
+   */
+  _refreshPOT() {
+    this.isPowerOfTwo = m(this.realWidth) && m(this.realHeight);
+  }
+  /**
+   * Changes resolution
+   * @param resolution - res
+   * @returns - this
+   */
+  setResolution(t) {
+    const e = this.resolution;
+    return e === t ? this : (this.resolution = t, this.valid && (this.width = Math.round(this.width * e) / t, this.height = Math.round(this.height * e) / t, this.emit("update", this)), this._refreshPOT(), this);
+  }
+  /**
+   * Sets the resource if it wasn't set. Throws error if resource already present
+   * @param resource - that is managing this BaseTexture
+   * @returns - this
+   */
+  setResource(t) {
+    if (this.resource === t)
+      return this;
+    if (this.resource)
+      throw new Error("Resource can be set only once");
+    return t.bind(this), this.resource = t, this;
+  }
+  /** Invalidates the object. Texture becomes valid if width and height are greater than zero. */
+  update() {
+    this.valid ? (this.dirtyId++, this.dirtyStyleId++, this.emit("update", this)) : this.width > 0 && this.height > 0 && (this.valid = !0, this.emit("loaded", this), this.emit("update", this));
+  }
+  /**
+   * Handle errors with resources.
+   * @private
+   * @param event - Error event emitted.
+   */
+  onError(t) {
+    this.emit("error", this, t);
+  }
+  /**
+   * Destroys this base texture.
+   * The method stops if resource doesn't want this texture to be destroyed.
+   * Removes texture from all caches.
+   * @fires PIXI.BaseTexture#destroyed
+   */
   destroy() {
-    const e = this.renderer.view;
-    this.renderer = null, e.removeEventListener !== void 0 && (e.removeEventListener("webglcontextlost", this.handleContextLost), e.removeEventListener("webglcontextrestored", this.handleContextRestored)), this.gl.useProgram(null), this.extensions.loseContext && this.extensions.loseContext.loseContext();
-  }
-  /** Handle the post-render runner event. */
-  postrender() {
-    this.renderer.objectRenderer.renderingToScreen && this.gl.flush();
+    this.resource && (this.resource.unbind(this), this.resource.internal && this.resource.destroy(), this.resource = null), this.cacheId && (delete a[this.cacheId], delete C[this.cacheId], this.cacheId = null), this.valid = !1, this.dispose(), l.removeFromCache(this), this.textureCacheIds = null, this.destroyed = !0, this.emit("destroyed", this), this.removeAllListeners();
   }
   /**
-   * Validate context.
-   * @param {WebGLRenderingContext} gl - Render context.
+   * Frees the texture from WebGL memory without destroying this texture object.
+   * This means you can still use the texture later which will upload it to GPU
+   * memory again.
+   * @fires PIXI.BaseTexture#dispose
    */
-  validateContext(e) {
-    const t = e.getContextAttributes(), n = "WebGL2RenderingContext" in globalThis && e instanceof globalThis.WebGL2RenderingContext;
-    n && (this.webGLVersion = 2), t && !t.stencil && console.warn("Provided WebGL context does not have a stencil buffer, masks may not render correctly");
-    const s = n || !!e.getExtension("OES_element_index_uint");
-    this.supports.uint32Indices = s, s || console.warn("Provided WebGL context does not support 32 index buffer, complex graphics may not render correctly");
+  dispose() {
+    this.emit("dispose", this);
   }
-}
-r.defaultOptions = {
+  /** Utility function for BaseTexture|Texture cast. */
+  castToBaseTexture() {
+    return this;
+  }
   /**
-   * {@link PIXI.IRendererOptions.context}
-   * @default null
-   * @memberof PIXI.settings.RENDER_OPTIONS
+   * Helper function that creates a base texture based on the source you provide.
+   * The source can be - image url, image element, canvas element. If the
+   * source is an image url or an image element and not in the base texture
+   * cache, it will be created and loaded.
+   * @static
+   * @param {PIXI.ImageSource|string|string[]} source - The
+   *        source to create base texture from.
+   * @param options - See {@link PIXI.BaseTexture}'s constructor for options.
+   * @param {string} [options.pixiIdPrefix=pixiid] - If a source has no id, this is the prefix of the generated id
+   * @param {boolean} [strict] - Enforce strict-mode, see {@link PIXI.settings.STRICT_TEXTURE_CACHE}.
+   * @returns {PIXI.BaseTexture} The new base texture.
    */
-  context: null,
+  static from(t, e, i = p.STRICT_TEXTURE_CACHE) {
+    const o = typeof t == "string";
+    let r = null;
+    if (o)
+      r = t;
+    else {
+      if (!t._pixiId) {
+        const h = (e == null ? void 0 : e.pixiIdPrefix) || "pixiid";
+        t._pixiId = `${h}_${I()}`;
+      }
+      r = t._pixiId;
+    }
+    let s = a[r];
+    if (o && i && !s)
+      throw new Error(`The cacheId "${r}" does not exist in BaseTextureCache.`);
+    return s || (s = new l(t, e), s.cacheId = r, l.addToCache(s, r)), s;
+  }
   /**
-   * {@link PIXI.IRendererOptions.antialias}
-   * @default false
-   * @memberof PIXI.settings.RENDER_OPTIONS
+   * Create a new Texture with a BufferResource from a typed array.
+   * @param buffer - The optional array to use. If no data is provided, a new Float32Array is created.
+   * @param width - Width of the resource
+   * @param height - Height of the resource
+   * @param options - See {@link PIXI.BaseTexture}'s constructor for options.
+   *        Default properties are different from the constructor's defaults.
+   * @param {PIXI.FORMATS} [options.format] - The format is not given, the type is inferred from the
+   *        type of the buffer: `RGBA` if Float32Array, Int8Array, Uint8Array, or Uint8ClampedArray,
+   *        otherwise `RGBA_INTEGER`.
+   * @param {PIXI.TYPES} [options.type] - The type is not given, the type is inferred from the
+   *        type of the buffer. Maps Float32Array to `FLOAT`, Int32Array to `INT`, Uint32Array to
+   *        `UNSIGNED_INT`, Int16Array to `SHORT`, Uint16Array to `UNSIGNED_SHORT`, Int8Array to `BYTE`,
+   *        Uint8Array/Uint8ClampedArray to `UNSIGNED_BYTE`.
+   * @param {PIXI.ALPHA_MODES} [options.alphaMode=PIXI.ALPHA_MODES.NPM]
+   * @param {PIXI.SCALE_MODES} [options.scaleMode=PIXI.SCALE_MODES.NEAREST]
+   * @returns - The resulting new BaseTexture
    */
-  antialias: !1,
+  static fromBuffer(t, e, i, o) {
+    t = t || new Float32Array(e * i * 4);
+    const r = new x(t, { width: e, height: i, ...o == null ? void 0 : o.resourceOptions });
+    let s, h;
+    return t instanceof Float32Array ? (s = d.RGBA, h = n.FLOAT) : t instanceof Int32Array ? (s = d.RGBA_INTEGER, h = n.INT) : t instanceof Uint32Array ? (s = d.RGBA_INTEGER, h = n.UNSIGNED_INT) : t instanceof Int16Array ? (s = d.RGBA_INTEGER, h = n.SHORT) : t instanceof Uint16Array ? (s = d.RGBA_INTEGER, h = n.UNSIGNED_SHORT) : t instanceof Int8Array ? (s = d.RGBA, h = n.BYTE) : (s = d.RGBA, h = n.UNSIGNED_BYTE), r.internal = !0, new l(r, Object.assign({}, G, { type: h, format: s }, o));
+  }
   /**
-   * {@link PIXI.IRendererOptions.premultipliedAlpha}
-   * @default true
-   * @memberof PIXI.settings.RENDER_OPTIONS
+   * Adds a BaseTexture to the global BaseTextureCache. This cache is shared across the whole PIXI object.
+   * @param {PIXI.BaseTexture} baseTexture - The BaseTexture to add to the cache.
+   * @param {string} id - The id that the BaseTexture will be stored against.
    */
-  premultipliedAlpha: !0,
+  static addToCache(t, e) {
+    e && (t.textureCacheIds.includes(e) || t.textureCacheIds.push(e), a[e] && a[e] !== t && console.warn(`BaseTexture added to the cache with an id [${e}] that already had an entry`), a[e] = t);
+  }
   /**
-   * {@link PIXI.IRendererOptions.preserveDrawingBuffer}
-   * @default false
-   * @memberof PIXI.settings.RENDER_OPTIONS
+   * Remove a BaseTexture from the global BaseTextureCache.
+   * @param {string|PIXI.BaseTexture} baseTexture - id of a BaseTexture to be removed, or a BaseTexture instance itself.
+   * @returns {PIXI.BaseTexture|null} The BaseTexture that was removed.
    */
-  preserveDrawingBuffer: !1,
-  /**
-   * {@link PIXI.IRendererOptions.powerPreference}
-   * @default default
-   * @memberof PIXI.settings.RENDER_OPTIONS
-   */
-  powerPreference: "default"
-}, /** @ignore */
-r.extension = {
-  type: x.RendererSystem,
-  name: "context"
+  static removeFromCache(t) {
+    if (typeof t == "string") {
+      const e = a[t];
+      if (e) {
+        const i = e.textureCacheIds.indexOf(t);
+        return i > -1 && e.textureCacheIds.splice(i, 1), delete a[t], e;
+      }
+    } else if (t != null && t.textureCacheIds) {
+      for (let e = 0; e < t.textureCacheIds.length; ++e)
+        delete a[t.textureCacheIds[e]];
+      return t.textureCacheIds.length = 0, t;
+    }
+    return null;
+  }
 };
-l.add(r);
+c.defaultOptions = {
+  /**
+   * If mipmapping is enabled for texture.
+   * @type {PIXI.MIPMAP_MODES}
+   * @default PIXI.MIPMAP_MODES.POW2
+   */
+  mipmap: w.POW2,
+  /** Anisotropic filtering level of texture */
+  anisotropicLevel: 0,
+  /**
+   * Default scale mode, linear, nearest.
+   * @type {PIXI.SCALE_MODES}
+   * @default PIXI.SCALE_MODES.LINEAR
+   */
+  scaleMode: y.LINEAR,
+  /**
+   * Wrap mode for textures.
+   * @type {PIXI.WRAP_MODES}
+   * @default PIXI.WRAP_MODES.CLAMP
+   */
+  wrapMode: S.CLAMP,
+  /**
+   * Pre multiply the image alpha
+   * @type {PIXI.ALPHA_MODES}
+   * @default PIXI.ALPHA_MODES.UNPACK
+   */
+  alphaMode: M.UNPACK,
+  /**
+   * GL texture target
+   * @type {PIXI.TARGETS}
+   * @default PIXI.TARGETS.TEXTURE_2D
+   */
+  target: g.TEXTURE_2D,
+  /**
+   * GL format type
+   * @type {PIXI.FORMATS}
+   * @default PIXI.FORMATS.RGBA
+   */
+  format: d.RGBA,
+  /**
+   * GL data type
+   * @type {PIXI.TYPES}
+   * @default PIXI.TYPES.UNSIGNED_BYTE
+   */
+  type: n.UNSIGNED_BYTE
+}, /** Global number of the texture batch, used by multi-texture renderers. */
+c._globalBatch = 0;
+let J = c;
 export {
-  r as ContextSystem
+  J as BaseTexture
 };
 //# sourceMappingURL=index51.js.map

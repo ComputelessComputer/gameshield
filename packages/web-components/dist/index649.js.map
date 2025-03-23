@@ -1,0 +1,1 @@
+{"version":3,"file":"index649.js","sources":["../../../node_modules/.pnpm/math-intrinsics@1.1.0/node_modules/math-intrinsics/min.js"],"sourcesContent":["'use strict';\n\n/** @type {import('./min')} */\nmodule.exports = Math.min;\n"],"names":["min"],"mappings":"IAGAA,IAAiB,KAAK;","x_google_ignoreList":[0]}

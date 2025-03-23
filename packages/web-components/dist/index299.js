@@ -1,40 +1,38 @@
-const a = `(function() {
-  "use strict";
-  async function loadImageBitmap(url) {
-    const response = await fetch(url);
-    if (!response.ok)
-      throw new Error(\`[WorkerManager.loadImageBitmap] Failed to fetch \${url}: \${response.status} \${response.statusText}\`);
-    const imageBlob = await response.blob();
-    return await createImageBitmap(imageBlob);
-  }
-  self.onmessage = async (event) => {
-    try {
-      const imageBitmap = await loadImageBitmap(event.data.data[0]);
-      self.postMessage({
-        data: imageBitmap,
-        uuid: event.data.uuid,
-        id: event.data.id
-      }, [imageBitmap]);
-    } catch (e) {
-      self.postMessage({
-        error: e,
-        uuid: event.data.uuid,
-        id: event.data.id
-      });
-    }
-  };
-})();
-`;
-let e = null;
-class t {
-  constructor() {
-    e || (e = URL.createObjectURL(new Blob([a], { type: "application/javascript" }))), this.worker = new Worker(e);
-  }
+var e = `#version 100
+#ifdef GL_EXT_shader_texture_lod
+    #extension GL_EXT_shader_texture_lod : enable
+#endif
+#define SHADER_NAME Tiling-Sprite-100
+
+precision lowp float;
+
+varying vec2 vTextureCoord;
+
+uniform sampler2D uSampler;
+uniform vec4 uColor;
+uniform mat3 uMapCoord;
+uniform vec4 uClampFrame;
+uniform vec2 uClampOffset;
+
+void main(void)
+{
+    vec2 coord = vTextureCoord + ceil(uClampOffset - vTextureCoord);
+    coord = (uMapCoord * vec3(coord, 1.0)).xy;
+    vec2 unclamped = coord;
+    coord = clamp(coord, uClampFrame.xy, uClampFrame.zw);
+
+    #ifdef GL_EXT_shader_texture_lod
+        vec4 texSample = unclamped == coord
+            ? texture2D(uSampler, coord) 
+            : texture2DLodEXT(uSampler, coord, 0);
+    #else
+        vec4 texSample = texture2D(uSampler, coord);
+    #endif
+
+    gl_FragColor = texSample * uColor;
 }
-t.revokeObjectURL = function() {
-  e && (URL.revokeObjectURL(e), e = null);
-};
+`;
 export {
-  t as default
+  e as default
 };
 //# sourceMappingURL=index299.js.map

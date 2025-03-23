@@ -1,77 +1,81 @@
-import { PRECISION as c } from "./index164.js";
-import "./index40.js";
-import { isMobile as g } from "./index36.js";
-import "./index41.js";
-import "./index42.js";
-import "./index43.js";
-import "./index24.js";
-import "./index44.js";
-import "./index45.js";
-import { ProgramCache as f } from "./index208.js";
-import h from "./index209.js";
-import l from "./index210.js";
-import { getMaxFragmentPrecision as p } from "./index211.js";
-import { setPrecision as n } from "./index212.js";
-let S = 0;
-const o = {}, a = class t {
+import { MSAA_QUALITY as s } from "./index164.js";
+import { Program as a } from "./index46.js";
+import { Shader as u } from "./index204.js";
+import { State as n } from "./index69.js";
+import d from "./index206.js";
+import m from "./index207.js";
+const i = class e extends u {
   /**
    * @param vertexSrc - The source of the vertex shader.
    * @param fragmentSrc - The source of the fragment shader.
-   * @param name - Name for shader
-   * @param extra - Extra data for shader
+   * @param uniforms - Custom uniforms to use to augment the built-in ones.
    */
-  constructor(e, i, r = "pixi-shader", s = {}) {
-    this.extra = {}, this.id = S++, this.vertexSrc = e || t.defaultVertexSrc, this.fragmentSrc = i || t.defaultFragmentSrc, this.vertexSrc = this.vertexSrc.trim(), this.fragmentSrc = this.fragmentSrc.trim(), this.extra = s, this.vertexSrc.substring(0, 8) !== "#version" && (r = r.replace(/\s+/g, "-"), o[r] ? (o[r]++, r += `-${o[r]}`) : o[r] = 1, this.vertexSrc = `#define SHADER_NAME ${r}
-${this.vertexSrc}`, this.fragmentSrc = `#define SHADER_NAME ${r}
-${this.fragmentSrc}`, this.vertexSrc = n(
-      this.vertexSrc,
-      t.defaultVertexPrecision,
-      c.HIGH
-    ), this.fragmentSrc = n(
-      this.fragmentSrc,
-      t.defaultFragmentPrecision,
-      p()
-    )), this.glPrograms = {}, this.syncUniforms = null;
+  constructor(t, r, o) {
+    const l = a.from(
+      t || e.defaultVertexSrc,
+      r || e.defaultFragmentSrc
+    );
+    super(l, o), this.padding = 0, this.resolution = e.defaultResolution, this.multisample = e.defaultMultisample, this.enabled = !0, this.autoFit = !0, this.state = new n();
   }
   /**
-   * The default vertex shader source.
+   * Applies the filter
+   * @param {PIXI.FilterSystem} filterManager - The renderer to retrieve the filter from
+   * @param {PIXI.RenderTexture} input - The input render target.
+   * @param {PIXI.RenderTexture} output - The target to output to.
+   * @param {PIXI.CLEAR_MODES} [clearMode] - Should the output be cleared before rendering to it.
+   * @param {object} [_currentState] - It's current state of filter.
+   *        There are some useful properties in the currentState :
+   *        target, filters, sourceFrame, destinationFrame, renderTarget, resolution
+   */
+  apply(t, r, o, l, f) {
+    t.applyFilter(this, r, o, l);
+  }
+  /**
+   * Sets the blend mode of the filter.
+   * @default PIXI.BLEND_MODES.NORMAL
+   */
+  get blendMode() {
+    return this.state.blendMode;
+  }
+  set blendMode(t) {
+    this.state.blendMode = t;
+  }
+  /**
+   * The resolution of the filter. Setting this to be lower will lower the quality but
+   * increase the performance of the filter.
+   * If set to `null` or `0`, the resolution of the current render target is used.
+   * @default PIXI.Filter.defaultResolution
+   */
+  get resolution() {
+    return this._resolution;
+  }
+  set resolution(t) {
+    this._resolution = t;
+  }
+  /**
+   * The default vertex shader source
    * @readonly
    */
   static get defaultVertexSrc() {
-    return l;
+    return m;
   }
   /**
-   * The default fragment shader source.
+   * The default fragment shader source
    * @readonly
    */
   static get defaultFragmentSrc() {
-    return h;
-  }
-  /**
-   * A short hand function to create a program based of a vertex and fragment shader.
-   *
-   * This method will also check to see if there is a cached program.
-   * @param vertexSrc - The source of the vertex shader.
-   * @param fragmentSrc - The source of the fragment shader.
-   * @param name - Name for shader
-   * @returns A shiny new PixiJS shader program!
-   */
-  static from(e, i, r) {
-    const s = e + i;
-    let m = f[s];
-    return m || (f[s] = m = new t(e, i, r)), m;
+    return d;
   }
 };
-a.defaultVertexPrecision = c.HIGH, /**
-* Default specify float precision in fragment shader.
-* iOS is best set at highp due to https://github.com/pixijs/pixijs/issues/3742
+i.defaultResolution = 1, /**
+* Default filter samples for any filter.
 * @static
-* @type {PIXI.PRECISION}
-* @default PIXI.PRECISION.MEDIUM
+* @type {PIXI.MSAA_QUALITY|null}
+* @default PIXI.MSAA_QUALITY.NONE
 */
-a.defaultFragmentPrecision = g.apple.device ? c.HIGH : c.MEDIUM;
-let C = a;
+i.defaultMultisample = s.NONE;
+let M = i;
 export {
-  C as Program
+  M as Filter
 };
 //# sourceMappingURL=index49.js.map

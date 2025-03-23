@@ -1,81 +1,78 @@
-import { TARGETS as l } from "./index164.js";
-import { AbstractMultiResource as a } from "./index238.js";
-const n = class h extends a {
-  /**
-   * @param {Array<string|PIXI.Resource>} [source] - Collection of URLs or resources
-   *        to use as the sides of the cube.
-   * @param options - ImageResource options
-   * @param {number} [options.width] - Width of resource
-   * @param {number} [options.height] - Height of resource
-   * @param {number} [options.autoLoad=true] - Whether to auto-load resources
-   * @param {number} [options.linkBaseTexture=true] - In case BaseTextures are supplied,
-   *   whether to copy them or use
-   */
-  constructor(t, r) {
-    const { width: i, height: o, autoLoad: e, linkBaseTexture: s } = r || {};
-    if (t && t.length !== h.SIDES)
-      throw new Error(`Invalid length. Got ${t.length}, expected 6`);
-    super(6, { width: i, height: o });
-    for (let d = 0; d < h.SIDES; d++)
-      this.items[d].target = l.TEXTURE_CUBE_MAP_POSITIVE_X + d;
-    this.linkBaseTexture = s !== !1, t && this.initFromArray(t, r), e !== !1 && this.load();
-  }
-  /**
-   * Add binding.
-   * @param baseTexture - parent base texture
-   */
-  bind(t) {
-    super.bind(t), t.target = l.TEXTURE_CUBE_MAP;
-  }
-  addBaseTextureAt(t, r, i) {
-    if (i === void 0 && (i = this.linkBaseTexture), !this.items[r])
-      throw new Error(`Index ${r} is out of bounds`);
-    if (!this.linkBaseTexture || t.parentTextureArray || Object.keys(t._glTextures).length > 0)
-      if (t.resource)
-        this.addResourceAt(t.resource, r);
-      else
-        throw new Error("CubeResource does not support copying of renderTexture.");
-    else
-      t.target = l.TEXTURE_CUBE_MAP_POSITIVE_X + r, t.parentTextureArray = this.baseTexture, this.items[r] = t;
-    return t.valid && !this.valid && this.resize(t.realWidth, t.realHeight), this.items[r] = t, this;
-  }
-  /**
-   * Upload the resource
-   * @param renderer
-   * @param _baseTexture
-   * @param glTexture
-   * @returns {boolean} true is success
-   */
-  upload(t, r, i) {
-    const o = this.itemDirtyIds;
-    for (let e = 0; e < h.SIDES; e++) {
-      const s = this.items[e];
-      (o[e] < s.dirtyId || i.dirtyId < r.dirtyId) && (s.valid && s.resource ? (s.resource.upload(t, s, i), o[e] = s.dirtyId) : o[e] < -1 && (t.gl.texImage2D(
-        s.target,
-        0,
-        i.internalFormat,
-        r.realWidth,
-        r.realHeight,
-        0,
-        r.format,
-        i.type,
-        null
-      ), o[e] = -1));
-    }
-    return !0;
-  }
-  /**
-   * Used to auto-detect the type of resource.
-   * @param {*} source - The source object
-   * @returns {boolean} `true` if source is an array of 6 elements
-   */
-  static test(t) {
-    return Array.isArray(t) && t.length === h.SIDES;
+import "./index20.js";
+import "./index21.js";
+import { ExtensionType as e, extensions as a } from "./index158.js";
+import "./index22.js";
+import "./index23.js";
+import "./index24.js";
+import "./index25.js";
+import "./index26.js";
+import "./index27.js";
+import "./index28.js";
+import "./index29.js";
+import "./index30.js";
+import "./index31.js";
+import "./index32.js";
+import "./index33.js";
+import "./index34.js";
+import "./index35.js";
+import "./index36.js";
+import "./index37.js";
+import "./index38.js";
+import "./index39.js";
+import "./index40.js";
+import "./index41.js";
+import "./index42.js";
+import "./index43.js";
+import "./index44.js";
+import "./index45.js";
+import "./index46.js";
+import "./index47.js";
+import "./index48.js";
+import "./index49.js";
+import "./index50.js";
+import "./index51.js";
+import "./index52.js";
+import "./index53.js";
+import "./index54.js";
+import "./index55.js";
+import "./index56.js";
+import "./index57.js";
+import "./index58.js";
+import "./index59.js";
+import "./index60.js";
+import "./index61.js";
+import "./index62.js";
+import "./index63.js";
+import { Texture as n } from "./index135.js";
+import "./index65.js";
+import "./index66.js";
+import "./index67.js";
+import "./index68.js";
+import "./index69.js";
+import "./index70.js";
+import "./index71.js";
+import "./index72.js";
+import "./index73.js";
+import "./index74.js";
+import "./index75.js";
+import "./index64.js";
+import "./index76.js";
+import "./index77.js";
+import "./index78.js";
+const s = {
+  extension: e.CacheParser,
+  test: (r) => Array.isArray(r) && r.every((t) => t instanceof n),
+  getCacheableAssets: (r, t) => {
+    const o = {};
+    return r.forEach((m) => {
+      t.forEach((p, i) => {
+        o[m + (i === 0 ? "" : i + 1)] = p;
+      });
+    }), o;
   }
 };
-n.SIDES = 6;
-let I = n;
+a.add(s);
 export {
-  I as CubeResource
+  s as cacheTextureArray
 };
 //# sourceMappingURL=index79.js.map

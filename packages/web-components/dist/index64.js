@@ -1,35 +1,38 @@
-import { ExtensionType as m, extensions as u } from "./index140.js";
-class c {
-  // renderers scene graph!
-  constructor(r) {
-    this.renderer = r;
+import "./index22.js";
+import "./index23.js";
+import "./index24.js";
+import "./index25.js";
+import "./index26.js";
+import { groupD8 as h } from "./index27.js";
+import "./index28.js";
+import "./index29.js";
+import "./index30.js";
+import "./index31.js";
+class l {
+  constructor() {
+    this.x0 = 0, this.y0 = 0, this.x1 = 1, this.y1 = 0, this.x2 = 1, this.y2 = 1, this.x3 = 0, this.y3 = 1, this.uvsFloat32 = new Float32Array(8);
   }
   /**
-   * Renders the object to its WebGL view.
-   * @param displayObject - The object to be rendered.
-   * @param options - the options to be passed to the renderer
+   * Sets the texture Uvs based on the given frame information.
+   * @protected
+   * @param frame - The frame of the texture
+   * @param baseFrame - The base frame of the texture
+   * @param rotate - Rotation of frame, see {@link PIXI.groupD8}
    */
-  render(r, n) {
-    const e = this.renderer;
-    let t, d, s, a;
-    if (n && (t = n.renderTexture, d = n.clear, s = n.transform, a = n.skipUpdateTransform), this.renderingToScreen = !t, e.runners.prerender.emit(), e.emit("prerender"), e.projection.transform = s, !e.context.isLost) {
-      if (t || (this.lastObjectRendered = r), !a) {
-        const o = r.enableTempParent();
-        r.updateTransform(), r.disableTempParent(o);
-      }
-      e.renderTexture.bind(t), e.batch.currentRenderer.start(), (d ?? e.background.clearBeforeRender) && e.renderTexture.clear(), r.render(e), e.batch.currentRenderer.flush(), t && (n.blit && e.framebuffer.blit(), t.baseTexture.update()), e.runners.postrender.emit(), e.projection.transform = null, e.emit("postrender");
-    }
-  }
-  destroy() {
-    this.renderer = null, this.lastObjectRendered = null;
+  set(s, d, i) {
+    const t = d.width, x = d.height;
+    if (i) {
+      const y = s.width / 2 / t, u = s.height / 2 / x, o = s.x / t + y, p = s.y / x + u;
+      i = h.add(i, h.NW), this.x0 = o + y * h.uX(i), this.y0 = p + u * h.uY(i), i = h.add(i, 2), this.x1 = o + y * h.uX(i), this.y1 = p + u * h.uY(i), i = h.add(i, 2), this.x2 = o + y * h.uX(i), this.y2 = p + u * h.uY(i), i = h.add(i, 2), this.x3 = o + y * h.uX(i), this.y3 = p + u * h.uY(i);
+    } else
+      this.x0 = s.x / t, this.y0 = s.y / x, this.x1 = (s.x + s.width) / t, this.y1 = s.y / x, this.x2 = (s.x + s.width) / t, this.y2 = (s.y + s.height) / x, this.x3 = s.x / t, this.y3 = (s.y + s.height) / x;
+    this.uvsFloat32[0] = this.x0, this.uvsFloat32[1] = this.y0, this.uvsFloat32[2] = this.x1, this.uvsFloat32[3] = this.y1, this.uvsFloat32[4] = this.x2, this.uvsFloat32[5] = this.y2, this.uvsFloat32[6] = this.x3, this.uvsFloat32[7] = this.y3;
   }
 }
-c.extension = {
-  type: m.RendererSystem,
-  name: "objectRenderer"
+l.prototype.toString = function() {
+  return `[@pixi/core:TextureUvs x0=${this.x0} y0=${this.y0} x1=${this.x1} y1=${this.y1} x2=${this.x2} y2=${this.y2} x3=${this.x3} y3=${this.y3}]`;
 };
-u.add(c);
 export {
-  c as ObjectRendererSystem
+  l as TextureUvs
 };
 //# sourceMappingURL=index64.js.map

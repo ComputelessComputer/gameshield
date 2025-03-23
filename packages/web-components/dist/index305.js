@@ -1,5 +1,9 @@
-var e = { exports: {} };
+class i {
+  constructor() {
+    this.info = [], this.common = [], this.page = [], this.char = [], this.kerning = [], this.distanceField = [];
+  }
+}
 export {
-  e as __module
+  i as BitmapFontData
 };
 //# sourceMappingURL=index305.js.map

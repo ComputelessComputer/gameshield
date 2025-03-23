@@ -1,25 +1,20 @@
-var r = `#version 100
-#define SHADER_NAME Tiling-Sprite-100
-
-precision lowp float;
-
-attribute vec2 aVertexPosition;
-attribute vec2 aTextureCoord;
-
-uniform mat3 projectionMatrix;
-uniform mat3 translationMatrix;
-uniform mat3 uTransform;
-
-varying vec2 vTextureCoord;
-
-void main(void)
-{
-    gl_Position = vec4((projectionMatrix * translationMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);
-
-    vTextureCoord = (uTransform * vec3(aTextureCoord, 1.0)).xy;
-}
-`;
+var n = /* @__PURE__ */ ((e) => (e.MITER = "miter", e.BEVEL = "bevel", e.ROUND = "round", e))(n || {}), i = /* @__PURE__ */ ((e) => (e.BUTT = "butt", e.ROUND = "round", e.SQUARE = "square", e))(i || {});
+const m = {
+  adaptive: !0,
+  maxLength: 10,
+  minSegments: 8,
+  maxSegments: 2048,
+  epsilon: 1e-4,
+  _segmentsCount(e, s = 20) {
+    if (!this.adaptive || !e || isNaN(e))
+      return s;
+    let t = Math.ceil(e / this.maxLength);
+    return t < this.minSegments ? t = this.minSegments : t > this.maxSegments && (t = this.maxSegments), t;
+  }
+};
 export {
-  r as default
+  i as LINE_CAP,
+  n as LINE_JOIN,
+  m as curves
 };
 //# sourceMappingURL=index282.js.map

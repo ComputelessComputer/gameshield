@@ -18,7 +18,9 @@
     "prepublish": "npm run build"
   },
   "dependencies": {
-    "@gameshield/game-core": "^0.1.0",
+    "@gameshield/game-core": "workspace:*",
+    "@gameshield/security-utils": "workspace:*",
+    "@gameshield/behavior-analyzer": "workspace:*",
     "lit": "^2.8.0",
     "pixi.js": "^7.3.2"
   },

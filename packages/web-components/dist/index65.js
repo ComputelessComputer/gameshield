@@ -1,278 +1,124 @@
-import { RENDERER_TYPE as u } from "./index164.js";
-import { ExtensionType as i, extensions as o } from "./index140.js";
-import "./index25.js";
-import "./index26.js";
-import "./index27.js";
-import "./index28.js";
-import "./index29.js";
-import "./index30.js";
-import { Matrix as d } from "./index31.js";
-import "./index32.js";
+import { MSAA_QUALITY as s } from "./index164.js";
+import "./index37.js";
 import "./index33.js";
-import "./index34.js";
-import { settings as p } from "./index153.js";
-import "./index36.js";
+import "./index38.js";
+import "./index39.js";
 import "./index40.js";
+import "./index21.js";
 import "./index41.js";
+import { nextPow2 as h } from "./index195.js";
 import "./index42.js";
-import "./index43.js";
-import { deprecation as r } from "./index133.js";
-import { isWebGLSupported as l } from "./index204.js";
-import "./index24.js";
-import "./index44.js";
-import "./index45.js";
-import { UniformGroup as h } from "./index183.js";
-import { SystemManager as c } from "./index205.js";
-const n = class s extends c {
+import { BaseRenderTexture as x } from "./index228.js";
+import { RenderTexture as u } from "./index134.js";
+class n {
   /**
-   * @param {PIXI.IRendererOptions} [options] - See {@link PIXI.settings.RENDER_OPTIONS} for defaults.
+   * @param textureOptions - options that will be passed to BaseRenderTexture constructor
+   * @param {PIXI.SCALE_MODES} [textureOptions.scaleMode] - See {@link PIXI.SCALE_MODES} for possible values.
    */
-  constructor(e) {
-    super(), this.type = u.WEBGL, e = Object.assign({}, p.RENDER_OPTIONS, e), this.gl = null, this.CONTEXT_UID = 0, this.globalUniforms = new h({
-      projectionMatrix: new d()
-    }, !0);
-    const t = {
-      runners: [
-        "init",
-        "destroy",
-        "contextChange",
-        "resolutionChange",
-        "reset",
-        "update",
-        "postrender",
-        "prerender",
-        "resize"
-      ],
-      systems: s.__systems,
-      priority: [
-        "_view",
-        "textureGenerator",
-        "background",
-        "_plugin",
-        "startup",
-        // low level WebGL systems
-        "context",
-        "state",
-        "texture",
-        "buffer",
-        "geometry",
-        "framebuffer",
-        "transformFeedback",
-        // high level pixi specific rendering
-        "mask",
-        "scissor",
-        "stencil",
-        "projection",
-        "textureGC",
-        "filter",
-        "renderTexture",
-        "batch",
-        "objectRenderer",
-        "_multisample"
-      ]
-    };
-    this.setup(t), "useContextAlpha" in e && (r("7.0.0", "options.useContextAlpha is deprecated, use options.premultipliedAlpha and options.backgroundAlpha instead"), e.premultipliedAlpha = e.useContextAlpha && e.useContextAlpha !== "notMultiplied", e.backgroundAlpha = e.useContextAlpha === !1 ? 1 : e.backgroundAlpha), this._plugin.rendererPlugins = s.__plugins, this.options = e, this.startup.run(this.options);
+  constructor(t) {
+    this.texturePool = {}, this.textureOptions = t || {}, this.enableFullScreen = !1, this._pixelsWidth = 0, this._pixelsHeight = 0;
   }
   /**
-   * Create renderer if WebGL is available. Overrideable
-   * by the **@pixi/canvas-renderer** package to allow fallback.
-   * throws error if WebGL is not available.
-   * @param options
-   * @private
+   * Creates texture with params that were specified in pool constructor.
+   * @param realWidth - Width of texture in pixels.
+   * @param realHeight - Height of texture in pixels.
+   * @param multisample - Number of samples of the framebuffer.
    */
-  static test(e) {
-    return e != null && e.forceCanvas ? !1 : l();
+  createTexture(t, e, o = s.NONE) {
+    const r = new x(Object.assign({
+      width: t,
+      height: e,
+      resolution: 1,
+      multisample: o
+    }, this.textureOptions));
+    return new u(r);
   }
   /**
-   * Renders the object to its WebGL view.
-   * @param displayObject - The object to be rendered.
-   * @param {object} [options] - Object to use for render options.
-   * @param {PIXI.RenderTexture} [options.renderTexture] - The render texture to render to.
-   * @param {boolean} [options.clear=true] - Should the canvas be cleared before the new render.
-   * @param {PIXI.Matrix} [options.transform] - A transform to apply to the render texture before rendering.
-   * @param {boolean} [options.skipUpdateTransform=false] - Should we skip the update transform pass?
+   * Gets a Power-of-Two render texture or fullScreen texture
+   * @param minWidth - The minimum width of the render texture.
+   * @param minHeight - The minimum height of the render texture.
+   * @param resolution - The resolution of the render texture.
+   * @param multisample - Number of samples of the render texture.
+   * @returns The new render texture.
    */
-  render(e, t) {
-    this.objectRenderer.render(e, t);
+  getOptimalTexture(t, e, o = 1, r = s.NONE) {
+    let i;
+    t = Math.max(Math.ceil(t * o - 1e-6), 1), e = Math.max(Math.ceil(e * o - 1e-6), 1), !this.enableFullScreen || t !== this._pixelsWidth || e !== this._pixelsHeight ? (t = h(t), e = h(e), i = ((t & 65535) << 16 | e & 65535) >>> 0, r > 1 && (i += r * 4294967296)) : i = r > 1 ? -r : -1, this.texturePool[i] || (this.texturePool[i] = []);
+    let l = this.texturePool[i].pop();
+    return l || (l = this.createTexture(t, e, r)), l.filterPoolKey = i, l.setResolution(o), l;
   }
   /**
-   * Resizes the WebGL view to the specified width and height.
-   * @param desiredScreenWidth - The desired width of the screen.
-   * @param desiredScreenHeight - The desired height of the screen.
-   */
-  resize(e, t) {
-    this._view.resizeView(e, t);
-  }
-  /**
-   * Resets the WebGL state so you can render things however you fancy!
-   * @returns Returns itself.
-   */
-  reset() {
-    return this.runners.reset.emit(), this;
-  }
-  /** Clear the frame buffer. */
-  clear() {
-    this.renderTexture.bind(), this.renderTexture.clear();
-  }
-  /**
-   * Removes everything from the renderer (event listeners, spritebatch, etc...)
-   * @param [removeView=false] - Removes the Canvas element from the DOM.
-   *  See: https://github.com/pixijs/pixijs/issues/2233
-   */
-  destroy(e = !1) {
-    this.runners.destroy.items.reverse(), this.emitWithCustomOptions(this.runners.destroy, {
-      _view: e
-    }), super.destroy();
-  }
-  /** Collection of plugins */
-  get plugins() {
-    return this._plugin.plugins;
-  }
-  /** The number of msaa samples of the canvas. */
-  get multisample() {
-    return this._multisample.multisample;
-  }
-  /**
-   * Same as view.width, actual number of pixels in the canvas by horizontal.
-   * @member {number}
-   * @readonly
-   * @default 800
-   */
-  get width() {
-    return this._view.element.width;
-  }
-  /**
-   * Same as view.height, actual number of pixels in the canvas by vertical.
-   * @default 600
-   */
-  get height() {
-    return this._view.element.height;
-  }
-  /** The resolution / device pixel ratio of the renderer. */
-  get resolution() {
-    return this._view.resolution;
-  }
-  set resolution(e) {
-    this._view.resolution = e, this.runners.resolutionChange.emit(e);
-  }
-  /** Whether CSS dimensions of canvas view should be resized to screen dimensions automatically. */
-  get autoDensity() {
-    return this._view.autoDensity;
-  }
-  /** The canvas element that everything is drawn to.*/
-  get view() {
-    return this._view.element;
-  }
-  /**
-   * Measurements of the screen. (0, 0, screenWidth, screenHeight).
+   * Gets extra texture of the same size as input renderTexture
    *
-   * Its safe to use as filterArea or hitArea for the whole stage.
-   * @member {PIXI.Rectangle}
+   * `getFilterTexture(input, 0.5)` or `getFilterTexture(0.5, input)`
+   * @param input - renderTexture from which size and resolution will be copied
+   * @param resolution - override resolution of the renderTexture
+   *  It overrides, it does not multiply
+   * @param multisample - number of samples of the renderTexture
    */
-  get screen() {
-    return this._view.screen;
-  }
-  /** the last object rendered by the renderer. Useful for other plugins like interaction managers */
-  get lastObjectRendered() {
-    return this.objectRenderer.lastObjectRendered;
-  }
-  /** Flag if we are rendering to the screen vs renderTexture */
-  get renderingToScreen() {
-    return this.objectRenderer.renderingToScreen;
-  }
-  /** When logging Pixi to the console, this is the name we will show */
-  get rendererLogId() {
-    return `WebGL ${this.context.webGLVersion}`;
+  getFilterTexture(t, e, o) {
+    const r = this.getOptimalTexture(
+      t.width,
+      t.height,
+      e || t.resolution,
+      o || s.NONE
+    );
+    return r.filterFrame = t.filterFrame, r;
   }
   /**
-   * This sets weather the screen is totally cleared between each frame withthe background color and alpha
-   * @deprecated since 7.0.0
+   * Place a render texture back into the pool.
+   * @param renderTexture - The renderTexture to free
    */
-  get clearBeforeRender() {
-    return r("7.0.0", "renderer.clearBeforeRender has been deprecated, please use renderer.background.clearBeforeRender instead."), this.background.clearBeforeRender;
+  returnTexture(t) {
+    const e = t.filterPoolKey;
+    t.filterFrame = null, this.texturePool[e].push(t);
   }
   /**
-   * Pass-thru setting for the canvas' context `alpha` property. This is typically
-   * not something you need to fiddle with. If you want transparency, use `backgroundAlpha`.
-   * @deprecated since 7.0.0
-   * @member {boolean}
+   * Alias for returnTexture, to be compliant with FilterSystem interface.
+   * @param renderTexture - The renderTexture to free
    */
-  get useContextAlpha() {
-    return r("7.0.0", "renderer.useContextAlpha has been deprecated, please use renderer.context.premultipliedAlpha instead."), this.context.useContextAlpha;
+  returnFilterTexture(t) {
+    this.returnTexture(t);
   }
   /**
-   * readonly drawing buffer preservation
-   * we can only know this if Pixi created the context
-   * @deprecated since 7.0.0
+   * Clears the pool.
+   * @param destroyTextures - Destroy all stored textures.
    */
-  get preserveDrawingBuffer() {
-    return r("7.0.0", "renderer.preserveDrawingBuffer has been deprecated, we cannot truly know this unless pixi created the context"), this.context.preserveDrawingBuffer;
+  clear(t) {
+    if (t = t !== !1, t)
+      for (const e in this.texturePool) {
+        const o = this.texturePool[e];
+        if (o)
+          for (let r = 0; r < o.length; r++)
+            o[r].destroy(!0);
+      }
+    this.texturePool = {};
   }
   /**
-   * The background color to fill if not transparent
-   * @member {number}
-   * @deprecated since 7.0.0
+   * If screen size was changed, drops all screen-sized textures,
+   * sets new screen size, sets `enableFullScreen` to true
+   *
+   * Size is measured in pixels, `renderer.view` can be passed here, not `renderer.screen`
+   * @param size - Initial size of screen.
    */
-  get backgroundColor() {
-    return r("7.0.0", "renderer.backgroundColor has been deprecated, use renderer.background.color instead."), this.background.color;
+  setScreenSize(t) {
+    if (!(t.width === this._pixelsWidth && t.height === this._pixelsHeight)) {
+      this.enableFullScreen = t.width > 0 && t.height > 0;
+      for (const e in this.texturePool) {
+        if (!(Number(e) < 0))
+          continue;
+        const o = this.texturePool[e];
+        if (o)
+          for (let r = 0; r < o.length; r++)
+            o[r].destroy(!0);
+        this.texturePool[e] = [];
+      }
+      this._pixelsWidth = t.width, this._pixelsHeight = t.height;
+    }
   }
-  set backgroundColor(e) {
-    r("7.0.0", "renderer.backgroundColor has been deprecated, use renderer.background.color instead."), this.background.color = e;
-  }
-  /**
-   * The background color alpha. Setting this to 0 will make the canvas transparent.
-   * @member {number}
-   * @deprecated since 7.0.0
-   */
-  get backgroundAlpha() {
-    return r("7.0.0", "renderer.backgroundAlpha has been deprecated, use renderer.background.alpha instead."), this.background.alpha;
-  }
-  /**
-   * @deprecated since 7.0.0
-   */
-  set backgroundAlpha(e) {
-    r("7.0.0", "renderer.backgroundAlpha has been deprecated, use renderer.background.alpha instead."), this.background.alpha = e;
-  }
-  /**
-   * @deprecated since 7.0.0
-   */
-  get powerPreference() {
-    return r("7.0.0", "renderer.powerPreference has been deprecated, we can only know this if pixi creates the context"), this.context.powerPreference;
-  }
-  /**
-   * Useful function that returns a texture of the display object that can then be used to create sprites
-   * This can be quite useful if your displayObject is complicated and needs to be reused multiple times.
-   * @param displayObject - The displayObject the object will be generated from.
-   * @param {IGenerateTextureOptions} options - Generate texture options.
-   * @param {PIXI.Rectangle} options.region - The region of the displayObject, that shall be rendered,
-   *        if no region is specified, defaults to the local bounds of the displayObject.
-   * @param {number} [options.resolution] - If not given, the renderer's resolution is used.
-   * @param {PIXI.MSAA_QUALITY} [options.multisample] - If not given, the renderer's multisample is used.
-   * @returns A texture of the graphics object.
-   */
-  generateTexture(e, t) {
-    return this.textureGenerator.generateTexture(e, t);
-  }
-};
-n.extension = {
-  type: i.Renderer,
-  priority: 1
-}, /**
-* Collection of installed plugins. These are included by default in PIXI, but can be excluded
-* by creating a custom build. Consult the README for more information about creating custom
-* builds and excluding plugins.
-* @private
-*/
-n.__plugins = {}, /**
-* The collection of installed systems.
-* @private
-*/
-n.__systems = {};
-let a = n;
-o.handleByMap(i.RendererPlugin, a.__plugins);
-o.handleByMap(i.RendererSystem, a.__systems);
-o.add(a);
+}
+n.SCREEN_KEY = -1;
 export {
-  a as Renderer
+  n as RenderTexturePool
 };
 //# sourceMappingURL=index65.js.map

@@ -1,79 +1,104 @@
-class i {
+class n {
   /**
-   * Creates a new `ObservablePoint`
-   * @param cb - callback function triggered when `x` and/or `y` are changed
-   * @param scope - owner of callback
-   * @param {number} [x=0] - position of the point on the x axis
-   * @param {number} [y=0] - position of the point on the y axis
+   * @param {string} name - The function name that will be executed on the listeners added to this Runner.
    */
-  constructor(t, s, h = 0, e = 0) {
-    this._x = h, this._y = e, this.cb = t, this.scope = s;
+  constructor(t) {
+    this.items = [], this._name = t, this._aliasCount = 0;
   }
+  /* eslint-disable jsdoc/require-param, jsdoc/check-param-names */
   /**
-   * Creates a clone of this point.
-   * The callback and scope params can be overridden otherwise they will default
-   * to the clone object's values.
-   * @override
-   * @param cb - The callback function triggered when `x` and/or `y` are changed
-   * @param scope - The owner of the callback
-   * @returns a copy of this observable point
+   * Dispatch/Broadcast Runner to all listeners added to the queue.
+   * @param {...any} params - (optional) parameters to pass to each listener
    */
-  clone(t = this.cb, s = this.scope) {
-    return new i(t, s, this._x, this._y);
+  /*  eslint-enable jsdoc/require-param, jsdoc/check-param-names */
+  emit(t, e, h, r, m, a, o, l) {
+    if (arguments.length > 8)
+      throw new Error("max arguments reached");
+    const { name: u, items: s } = this;
+    this._aliasCount++;
+    for (let i = 0, d = s.length; i < d; i++)
+      s[i][u](t, e, h, r, m, a, o, l);
+    return s === this.items && this._aliasCount--, this;
   }
-  /**
-   * Sets the point to a new `x` and `y` position.
-   * If `y` is omitted, both `x` and `y` will be set to `x`.
-   * @param {number} [x=0] - position of the point on the x axis
-   * @param {number} [y=x] - position of the point on the y axis
-   * @returns The observable point instance itself
-   */
-  set(t = 0, s = t) {
-    return (this._x !== t || this._y !== s) && (this._x = t, this._y = s, this.cb.call(this.scope)), this;
+  ensureNonAliasedItems() {
+    this._aliasCount > 0 && this.items.length > 1 && (this._aliasCount = 0, this.items = this.items.slice(0));
   }
   /**
-   * Copies x and y from the given point (`p`)
-   * @param p - The point to copy from. Can be any of type that is or extends `IPointData`
-   * @returns The observable point instance itself
+   * Add a listener to the Runner
+   *
+   * Runners do not need to have scope or functions passed to them.
+   * All that is required is to pass the listening object and ensure that it has contains a function that has the same name
+   * as the name provided to the Runner when it was created.
+   *
+   * E.g. A listener passed to this Runner will require a 'complete' function.
+   *
+   * ```js
+   * import { Runner } from '@pixi/runner';
+   *
+   * const complete = new Runner('complete');
+   * ```
+   *
+   * The scope used will be the object itself.
+   * @param {any} item - The object that will be listening.
    */
-  copyFrom(t) {
-    return (this._x !== t.x || this._y !== t.y) && (this._x = t.x, this._y = t.y, this.cb.call(this.scope)), this;
+  add(t) {
+    return t[this._name] && (this.ensureNonAliasedItems(), this.remove(t), this.items.push(t)), this;
   }
   /**
-   * Copies this point's x and y into that of the given point (`p`)
-   * @param p - The point to copy to. Can be any of type that is or extends `IPointData`
-   * @returns The point (`p`) with values updated
+   * Remove a single listener from the dispatch queue.
+   * @param {any} item - The listener that you would like to remove.
    */
-  copyTo(t) {
-    return t.set(this._x, this._y), t;
+  remove(t) {
+    const e = this.items.indexOf(t);
+    return e !== -1 && (this.ensureNonAliasedItems(), this.items.splice(e, 1)), this;
   }
   /**
-   * Accepts another point (`p`) and returns `true` if the given point is equal to this point
-   * @param p - The point to check
-   * @returns Returns `true` if both `x` and `y` are equal
+   * Check to see if the listener is already in the Runner
+   * @param {any} item - The listener that you would like to check.
    */
-  equals(t) {
-    return t.x === this._x && t.y === this._y;
+  contains(t) {
+    return this.items.includes(t);
   }
-  /** Position of the observable point on the x axis. */
-  get x() {
-    return this._x;
+  /** Remove all listeners from the Runner */
+  removeAll() {
+    return this.ensureNonAliasedItems(), this.items.length = 0, this;
   }
-  set x(t) {
-    this._x !== t && (this._x = t, this.cb.call(this.scope));
+  /** Remove all references, don't use after this. */
+  destroy() {
+    this.removeAll(), this.items.length = 0, this._name = "";
   }
-  /** Position of the observable point on the y axis. */
-  get y() {
-    return this._y;
+  /**
+   * `true` if there are no this Runner contains no listeners
+   * @readonly
+   */
+  get empty() {
+    return this.items.length === 0;
   }
-  set y(t) {
-    this._y !== t && (this._y = t, this.cb.call(this.scope));
+  /**
+   * The name of the runner.
+   * @type {string}
+   */
+  get name() {
+    return this._name;
   }
 }
-i.prototype.toString = function() {
-  return `[@pixi/math:ObservablePoint x=${this.x} y=${this.y} scope=${this.scope}]`;
-};
+Object.defineProperties(n.prototype, {
+  /**
+   * Alias for `emit`
+   * @memberof PIXI.Runner#
+   * @method dispatch
+   * @see PIXI.Runner#emit
+   */
+  dispatch: { value: n.prototype.emit },
+  /**
+   * Alias for `emit`
+   * @memberof PIXI.Runner#
+   * @method run
+   * @see PIXI.Runner#emit
+   */
+  run: { value: n.prototype.emit }
+});
 export {
-  i as ObservablePoint
+  n as Runner
 };
 //# sourceMappingURL=index32.js.map

@@ -1,130 +1,86 @@
-import "./index23.js";
-import "./index24.js";
-import "./index25.js";
-import "./index26.js";
-import "./index27.js";
-import "./index28.js";
-import "./index29.js";
-import "./index30.js";
-import "./index31.js";
-import "./index32.js";
-import "./index33.js";
-import "./index34.js";
-import { SHAPES as C } from "./index240.js";
-import "./index35.js";
-import "./index36.js";
-import "./index37.js";
-import "./index38.js";
-import "./index39.js";
-import "./index40.js";
-import "./index41.js";
-import "./index42.js";
-import "./index43.js";
-import "./index44.js";
-import "./index45.js";
-import "./index46.js";
-import "./index47.js";
-import "./index48.js";
-import "./index49.js";
-import "./index50.js";
-import "./index51.js";
-import "./index52.js";
-import "./index53.js";
-import "./index54.js";
-import "./index55.js";
-import "./index56.js";
-import "./index57.js";
-import "./index58.js";
-import "./index59.js";
-import "./index60.js";
-import "./index61.js";
-import "./index62.js";
-import "./index63.js";
-import "./index64.js";
-import "./index65.js";
-import "./index66.js";
-import "./index67.js";
-import "./index68.js";
-import "./index69.js";
-import "./index70.js";
-import "./index71.js";
-import "./index72.js";
-import "./index73.js";
-import "./index74.js";
-import "./index75.js";
-import "./index76.js";
-import "./index77.js";
-import "./index78.js";
-import "./index79.js";
-import "./index80.js";
-import "./index81.js";
-const qt = {
-  build(n) {
-    const t = n.points;
-    let r, p, e, m, l, s;
-    if (n.type === C.CIRC) {
-      const i = n.shape;
-      r = i.x, p = i.y, l = s = i.radius, e = m = 0;
-    } else if (n.type === C.ELIP) {
-      const i = n.shape;
-      r = i.x, p = i.y, l = i.width, s = i.height, e = m = 0;
-    } else {
-      const i = n.shape, h = i.width / 2, x = i.height / 2;
-      r = i.x + h, p = i.y + x, l = s = Math.max(0, Math.min(i.radius, Math.min(h, x))), e = h - l, m = x - s;
+import { BaseTexture as l } from "./index51.js";
+import { autoDetectResource as a } from "./index248.js";
+import { Resource as r } from "./index249.js";
+class p extends r {
+  /**
+   * @param length
+   * @param options - Options to for Resource constructor
+   * @param {number} [options.width] - Width of the resource
+   * @param {number} [options.height] - Height of the resource
+   */
+  constructor(t, i) {
+    const { width: e, height: h } = i || {};
+    super(e, h), this.items = [], this.itemDirtyIds = [];
+    for (let s = 0; s < t; s++) {
+      const o = new l();
+      this.items.push(o), this.itemDirtyIds.push(-2);
     }
-    if (!(l >= 0 && s >= 0 && e >= 0 && m >= 0)) {
-      t.length = 0;
-      return;
-    }
-    const y = Math.ceil(2.3 * Math.sqrt(l + s)), d = y * 8 + (e ? 4 : 0) + (m ? 4 : 0);
-    if (t.length = d, d === 0)
-      return;
-    if (y === 0) {
-      t.length = 8, t[0] = t[6] = r + e, t[1] = t[3] = p + m, t[2] = t[4] = r - e, t[5] = t[7] = p - m;
-      return;
-    }
-    let o = 0, R = y * 4 + (e ? 2 : 0) + 2, j = R, c = d;
-    {
-      const i = e + l, h = m, x = r + i, u = r - i, f = p + h;
-      if (t[o++] = x, t[o++] = f, t[--R] = f, t[--R] = u, m) {
-        const M = p - h;
-        t[j++] = u, t[j++] = M, t[--c] = M, t[--c] = x;
-      }
-    }
-    for (let i = 1; i < y; i++) {
-      const h = Math.PI / 2 * (i / y), x = e + Math.cos(h) * l, u = m + Math.sin(h) * s, f = r + x, M = r - x, P = p + u, b = p - u;
-      t[o++] = f, t[o++] = P, t[--R] = P, t[--R] = M, t[j++] = M, t[j++] = b, t[--c] = b, t[--c] = f;
-    }
-    {
-      const i = e, h = m + s, x = r + i, u = r - i, f = p + h, M = p - h;
-      t[o++] = x, t[o++] = f, t[--c] = M, t[--c] = x, e && (t[o++] = u, t[o++] = f, t[--c] = M, t[--c] = u);
-    }
-  },
-  triangulate(n, t) {
-    const r = n.points, p = t.points, e = t.indices;
-    if (r.length === 0)
-      return;
-    let m = p.length / 2;
-    const l = m;
-    let s, y;
-    if (n.type !== C.RREC) {
-      const o = n.shape;
-      s = o.x, y = o.y;
-    } else {
-      const o = n.shape;
-      s = o.x + o.width / 2, y = o.y + o.height / 2;
-    }
-    const d = n.matrix;
-    p.push(
-      n.matrix ? d.a * s + d.c * y + d.tx : s,
-      n.matrix ? d.b * s + d.d * y + d.ty : y
-    ), m++, p.push(r[0], r[1]);
-    for (let o = 2; o < r.length; o += 2)
-      p.push(r[o], r[o + 1]), e.push(m++, l, m);
-    e.push(l + 1, l, m);
+    this.length = t, this._load = null, this.baseTexture = null;
   }
-};
+  /**
+   * Used from ArrayResource and CubeResource constructors.
+   * @param resources - Can be resources, image elements, canvas, etc. ,
+   *  length should be same as constructor length
+   * @param options - Detect options for resources
+   */
+  initFromArray(t, i) {
+    for (let e = 0; e < this.length; e++)
+      t[e] && (t[e].castToBaseTexture ? this.addBaseTextureAt(t[e].castToBaseTexture(), e) : t[e] instanceof r ? this.addResourceAt(t[e], e) : this.addResourceAt(a(t[e], i), e));
+  }
+  /** Destroy this BaseImageResource. */
+  dispose() {
+    for (let t = 0, i = this.length; t < i; t++)
+      this.items[t].destroy();
+    this.items = null, this.itemDirtyIds = null, this._load = null;
+  }
+  /**
+   * Set a resource by ID
+   * @param resource
+   * @param index - Zero-based index of resource to set
+   * @returns - Instance for chaining
+   */
+  addResourceAt(t, i) {
+    if (!this.items[i])
+      throw new Error(`Index ${i} is out of bounds`);
+    return t.valid && !this.valid && this.resize(t.width, t.height), this.items[i].setResource(t), this;
+  }
+  /**
+   * Set the parent base texture.
+   * @param baseTexture
+   */
+  bind(t) {
+    if (this.baseTexture !== null)
+      throw new Error("Only one base texture per TextureArray is allowed");
+    super.bind(t);
+    for (let i = 0; i < this.length; i++)
+      this.items[i].parentTextureArray = t, this.items[i].on("update", t.update, t);
+  }
+  /**
+   * Unset the parent base texture.
+   * @param baseTexture
+   */
+  unbind(t) {
+    super.unbind(t);
+    for (let i = 0; i < this.length; i++)
+      this.items[i].parentTextureArray = null, this.items[i].off("update", t.update, t);
+  }
+  /**
+   * Load all the resources simultaneously
+   * @returns - When load is resolved
+   */
+  load() {
+    if (this._load)
+      return this._load;
+    const t = this.items.map((i) => i.resource).filter((i) => i).map((i) => i.load());
+    return this._load = Promise.all(t).then(
+      () => {
+        const { realWidth: i, realHeight: e } = this.items[0];
+        return this.resize(i, e), this.update(), Promise.resolve(this);
+      }
+    ), this._load;
+  }
+}
 export {
-  qt as buildCircle
+  p as AbstractMultiResource
 };
 //# sourceMappingURL=index260.js.map

@@ -1,82 +1,87 @@
-import { ExtensionType as n, extensions as o } from "./index140.js";
-import "./index25.js";
-import "./index26.js";
-import "./index27.js";
-import { Rectangle as m } from "./index28.js";
-import "./index29.js";
-import "./index30.js";
-import "./index31.js";
-import "./index32.js";
+import { settings as n } from "./index163.js";
 import "./index33.js";
-import "./index34.js";
-import { settings as h } from "./index153.js";
-import "./index36.js";
-class r {
-  constructor(e) {
-    this.renderer = e;
+import "./index37.js";
+import "./index38.js";
+import "./index39.js";
+import "./index40.js";
+import "./index21.js";
+import "./index41.js";
+import { uid as g } from "./index133.js";
+import "./index42.js";
+import { BaseImageResource as d } from "./index258.js";
+const a = class o extends d {
+  /**
+   * @param sourceBase64 - Base64 encoded SVG element or URL for SVG file.
+   * @param {object} [options] - Options to use
+   * @param {number} [options.scale=1] - Scale to apply to SVG. Overridden by...
+   * @param {number} [options.width] - Rasterize SVG this wide. Aspect ratio preserved if height not specified.
+   * @param {number} [options.height] - Rasterize SVG this high. Aspect ratio preserved if width not specified.
+   * @param {boolean} [options.autoLoad=true] - Start loading right away.
+   */
+  constructor(s, t) {
+    t = t || {}, super(n.ADAPTER.createCanvas()), this._width = 0, this._height = 0, this.svg = s, this.scale = t.scale || 1, this._overrideWidth = t.width, this._overrideHeight = t.height, this._resolve = null, this._crossorigin = t.crossorigin, this._load = null, t.autoLoad !== !1 && this.load();
+  }
+  load() {
+    return this._load ? this._load : (this._load = new Promise((s) => {
+      if (this._resolve = () => {
+        this.update(), s(this);
+      }, o.SVG_XML.test(this.svg.trim())) {
+        if (!btoa)
+          throw new Error("Your browser doesn't support base64 conversions.");
+        this.svg = `data:image/svg+xml;base64,${btoa(unescape(encodeURIComponent(this.svg)))}`;
+      }
+      this._loadSvg();
+    }), this._load);
+  }
+  /** Loads an SVG image from `imageUrl` or `data URL`. */
+  _loadSvg() {
+    const s = new Image();
+    d.crossOrigin(s, this.svg, this._crossorigin), s.src = this.svg, s.onerror = (t) => {
+      this._resolve && (s.onerror = null, this.onError.emit(t));
+    }, s.onload = () => {
+      if (!this._resolve)
+        return;
+      const t = s.width, e = s.height;
+      if (!t || !e)
+        throw new Error("The SVG image must have width and height defined (in pixels), canvas API needs them.");
+      let i = t * this.scale, r = e * this.scale;
+      (this._overrideWidth || this._overrideHeight) && (i = this._overrideWidth || this._overrideHeight / e * t, r = this._overrideHeight || this._overrideWidth / t * e), i = Math.round(i), r = Math.round(r);
+      const h = this.source;
+      h.width = i, h.height = r, h._pixiId = `canvas_${g()}`, h.getContext("2d").drawImage(s, 0, 0, t, e, 0, 0, i, r), this._resolve(), this._resolve = null;
+    };
   }
   /**
-   * initiates the view system
-   * @param {PIXI.ViewOptions} options - the options for the view
+   * Get size from an svg string using a regular expression.
+   * @param svgString - a serialized svg element
+   * @returns - image extension
    */
-  init(e) {
-    this.screen = new m(0, 0, e.width, e.height), this.element = e.view || h.ADAPTER.createCanvas(), this.resolution = e.resolution || h.RESOLUTION, this.autoDensity = !!e.autoDensity;
+  static getSize(s) {
+    const t = o.SVG_SIZE.exec(s), e = {};
+    return t && (e[t[1]] = Math.round(parseFloat(t[3])), e[t[5]] = Math.round(parseFloat(t[7]))), e;
+  }
+  /** Destroys this texture. */
+  dispose() {
+    super.dispose(), this._resolve = null, this._crossorigin = null;
   }
   /**
-   * Resizes the screen and canvas to the specified dimensions.
-   * @param desiredScreenWidth - The new width of the screen.
-   * @param desiredScreenHeight - The new height of the screen.
+   * Used to auto-detect the type of resource.
+   * @param {*} source - The source object
+   * @param {string} extension - The extension of source, if set
+   * @returns {boolean} - If the source is a SVG source or data file
    */
-  resizeView(e, t) {
-    this.element.width = Math.round(e * this.resolution), this.element.height = Math.round(t * this.resolution);
-    const i = this.element.width / this.resolution, s = this.element.height / this.resolution;
-    this.screen.width = i, this.screen.height = s, this.autoDensity && (this.element.style.width = `${i}px`, this.element.style.height = `${s}px`), this.renderer.emit("resize", i, s), this.renderer.runners.resize.emit(this.screen.width, this.screen.height);
+  static test(s, t) {
+    return t === "svg" || typeof s == "string" && s.startsWith("data:image/svg+xml") || typeof s == "string" && o.SVG_XML.test(s);
   }
-  /**
-   * Destroys this System and optionally removes the canvas from the dom.
-   * @param {boolean} [removeView=false] - Whether to remove the canvas from the DOM.
-   */
-  destroy(e) {
-    var t;
-    e && ((t = this.element.parentNode) == null || t.removeChild(this.element)), this.renderer = null, this.element = null, this.screen = null;
-  }
-}
-r.defaultOptions = {
-  /**
-   * {@link PIXI.IRendererOptions.width}
-   * @default 800
-   * @memberof PIXI.settings.RENDER_OPTIONS
-   */
-  width: 800,
-  /**
-   * {@link PIXI.IRendererOptions.height}
-   * @default 600
-   * @memberof PIXI.settings.RENDER_OPTIONS
-   */
-  height: 600,
-  /**
-   * {@link PIXI.IRendererOptions.resolution}
-   * @type {number}
-   * @default PIXI.settings.RESOLUTION
-   * @memberof PIXI.settings.RENDER_OPTIONS
-   */
-  resolution: void 0,
-  /**
-   * {@link PIXI.IRendererOptions.autoDensity}
-   * @default false
-   * @memberof PIXI.settings.RENDER_OPTIONS
-   */
-  autoDensity: !1
-}, /** @ignore */
-r.extension = {
-  type: [
-    n.RendererSystem,
-    n.CanvasRendererSystem
-  ],
-  name: "_view"
+  // eslint-disable-line max-len
 };
-o.add(r);
+a.SVG_XML = /^(<\?xml[^?]+\?>)?\s*(<!--[^(-->)]*-->)?\s*\<svg/m, /**
+* Regular expression for SVG size.
+* @example &lt;svg width="100" height="100"&gt;&lt;/svg&gt;
+* @readonly
+*/
+a.SVG_SIZE = /<svg[^>]*(?:\s(width|height)=('|")(\d*(?:\.\d+)?)(?:px)?('|"))[^>]*(?:\s(width|height)=('|")(\d*(?:\.\d+)?)(?:px)?('|"))[^>]*>/i;
+let G = a;
 export {
-  r as ViewSystem
+  G as SVGResource
 };
 //# sourceMappingURL=index77.js.map

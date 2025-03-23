@@ -1,31 +1,21 @@
-var u = typeof globalThis < "u" ? globalThis : typeof window < "u" ? window : typeof global < "u" ? global : typeof self < "u" ? self : {};
-function f(e) {
-  return e && e.__esModule && Object.prototype.hasOwnProperty.call(e, "default") ? e.default : e;
-}
-function l(e) {
-  if (e.__esModule)
-    return e;
-  var r = e.default;
-  if (typeof r == "function") {
-    var t = function o() {
-      return this instanceof o ? Reflect.construct(r, arguments, this.constructor) : r.apply(this, arguments);
-    };
-    t.prototype = r.prototype;
-  } else
-    t = {};
-  return Object.defineProperty(t, "__esModule", { value: !0 }), Object.keys(e).forEach(function(o) {
-    var n = Object.getOwnPropertyDescriptor(e, o);
-    Object.defineProperty(t, o, n.get ? n : {
-      enumerable: !0,
-      get: function() {
-        return e[o];
-      }
-    });
-  }), t;
+import { getCanvasBoundingBox as r } from "./index606.js";
+function l(n) {
+  const t = r(n), { width: o, height: e } = t;
+  let i = null;
+  if (!t.isEmpty()) {
+    const a = n.getContext("2d");
+    if (a === null)
+      throw new TypeError("Failed to get canvas 2D context");
+    i = a.getImageData(
+      t.left,
+      t.top,
+      o,
+      e
+    );
+  }
+  return { width: o, height: e, data: i };
 }
 export {
-  u as commonjsGlobal,
-  l as getAugmentedNamespace,
-  f as getDefaultExportFromCjs
+  l as trimCanvas
 };
 //# sourceMappingURL=index303.js.map

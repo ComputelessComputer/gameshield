@@ -1,112 +1,108 @@
-import { ExtensionType as d, extensions as f } from "./index140.js";
-import { GLBuffer as B } from "./index199.js";
-class r {
+import { ExtensionType as p, extensions as l } from "./index158.js";
+import "./index22.js";
+import "./index23.js";
+import "./index24.js";
+import { Rectangle as u } from "./index25.js";
+import "./index26.js";
+import "./index27.js";
+import { Matrix as S } from "./index28.js";
+import "./index29.js";
+import "./index30.js";
+import "./index31.js";
+import { settings as R } from "./index163.js";
+import "./index33.js";
+import { AbstractMaskSystem as x } from "./index225.js";
+const h = new S(), n = [], d = class o extends x {
   /**
    * @param {PIXI.Renderer} renderer - The renderer this System works for.
    */
-  constructor(e) {
-    this.renderer = e, this.managedBuffers = {}, this.boundBufferBases = {};
+  constructor(t) {
+    super(t), this.glConst = R.ADAPTER.getWebGLRenderingContext().SCISSOR_TEST;
+  }
+  getStackLength() {
+    const t = this.maskStack[this.maskStack.length - 1];
+    return t ? t._scissorCounter : 0;
   }
   /**
-   * @ignore
+   * evaluates _boundsTransformed, _scissorRect for MaskData
+   * @param maskData
    */
-  destroy() {
-    this.renderer = null;
-  }
-  /** Sets up the renderer context and necessary buffers. */
-  contextChange() {
-    this.disposeAll(!0), this.gl = this.renderer.gl, this.CONTEXT_UID = this.renderer.CONTEXT_UID;
-  }
-  /**
-   * This binds specified buffer. On first run, it will create the webGL buffers for the context too
-   * @param buffer - the buffer to bind to the renderer
-   */
-  bind(e) {
-    const { gl: t, CONTEXT_UID: s } = this, i = e._glBuffers[s] || this.createGLBuffer(e);
-    t.bindBuffer(e.type, i.buffer);
-  }
-  unbind(e) {
-    const { gl: t } = this;
-    t.bindBuffer(e, null);
-  }
-  /**
-   * Binds an uniform buffer to at the given index.
-   *
-   * A cache is used so a buffer will not be bound again if already bound.
-   * @param buffer - the buffer to bind
-   * @param index - the base index to bind it to.
-   */
-  bindBufferBase(e, t) {
-    const { gl: s, CONTEXT_UID: i } = this;
-    if (this.boundBufferBases[t] !== e) {
-      const n = e._glBuffers[i] || this.createGLBuffer(e);
-      this.boundBufferBases[t] = e, s.bindBufferBase(s.UNIFORM_BUFFER, t, n.buffer);
-    }
-  }
-  /**
-   * Binds a buffer whilst also binding its range.
-   * This will make the buffer start from the offset supplied rather than 0 when it is read.
-   * @param buffer - the buffer to bind
-   * @param index - the base index to bind at, defaults to 0
-   * @param offset - the offset to bind at (this is blocks of 256). 0 = 0, 1 = 256, 2 = 512 etc
-   */
-  bindBufferRange(e, t, s) {
-    const { gl: i, CONTEXT_UID: n } = this;
-    s = s || 0;
-    const a = e._glBuffers[n] || this.createGLBuffer(e);
-    i.bindBufferRange(i.UNIFORM_BUFFER, t || 0, a.buffer, s * 256, 256);
-  }
-  /**
-   * Will ensure the data in the buffer is uploaded to the GPU.
-   * @param {PIXI.Buffer} buffer - the buffer to update
-   */
-  update(e) {
-    const { gl: t, CONTEXT_UID: s } = this, i = e._glBuffers[s] || this.createGLBuffer(e);
-    if (e._updateID !== i.updateID)
-      if (i.updateID = e._updateID, t.bindBuffer(e.type, i.buffer), i.byteLength >= e.data.byteLength)
-        t.bufferSubData(e.type, 0, e.data);
-      else {
-        const n = e.static ? t.STATIC_DRAW : t.DYNAMIC_DRAW;
-        i.byteLength = e.data.byteLength, t.bufferData(e.type, e.data, n);
-      }
-  }
-  /**
-   * Disposes buffer
-   * @param {PIXI.Buffer} buffer - buffer with data
-   * @param {boolean} [contextLost=false] - If context was lost, we suppress deleteVertexArray
-   */
-  dispose(e, t) {
-    if (!this.managedBuffers[e.id])
+  calcScissorRect(t) {
+    if (t._scissorRectLocal)
       return;
-    delete this.managedBuffers[e.id];
-    const s = e._glBuffers[this.CONTEXT_UID], i = this.gl;
-    e.disposeRunner.remove(this), s && (t || i.deleteBuffer(s.buffer), delete e._glBuffers[this.CONTEXT_UID]);
+    const e = t._scissorRect, { maskObject: r } = t, { renderer: c } = this, s = c.renderTexture, i = r.getBounds(!0, n.pop() ?? new u());
+    this.roundFrameToPixels(
+      i,
+      s.current ? s.current.resolution : c.resolution,
+      s.sourceFrame,
+      s.destinationFrame,
+      c.projection.transform
+    ), e && i.fit(e), t._scissorRectLocal = i;
+  }
+  static isMatrixRotated(t) {
+    if (!t)
+      return !1;
+    const { a: e, b: r, c, d: s } = t;
+    return (Math.abs(r) > 1e-4 || Math.abs(c) > 1e-4) && (Math.abs(e) > 1e-4 || Math.abs(s) > 1e-4);
   }
   /**
-   * dispose all WebGL resources of all managed buffers
-   * @param {boolean} [contextLost=false] - If context was lost, we suppress `gl.delete` calls
+   * Test, whether the object can be scissor mask with current renderer projection.
+   * Calls "calcScissorRect()" if its true.
+   * @param maskData - mask data
+   * @returns whether Whether the object can be scissor mask
    */
-  disposeAll(e) {
-    const t = Object.keys(this.managedBuffers);
-    for (let s = 0; s < t.length; s++)
-      this.dispose(this.managedBuffers[t[s]], e);
+  testScissor(t) {
+    const { maskObject: e } = t;
+    if (!e.isFastRect || !e.isFastRect() || o.isMatrixRotated(e.worldTransform) || o.isMatrixRotated(this.renderer.projection.transform))
+      return !1;
+    this.calcScissorRect(t);
+    const r = t._scissorRectLocal;
+    return r.width > 0 && r.height > 0;
+  }
+  roundFrameToPixels(t, e, r, c, s) {
+    o.isMatrixRotated(s) || (s = s ? h.copyFrom(s) : h.identity(), s.translate(-r.x, -r.y).scale(
+      c.width / r.width,
+      c.height / r.height
+    ).translate(c.x, c.y), this.renderer.filter.transformAABB(s, t), t.fit(c), t.x = Math.round(t.x * e), t.y = Math.round(t.y * e), t.width = Math.round(t.width * e), t.height = Math.round(t.height * e));
   }
   /**
-   * creates and attaches a GLBuffer object tied to the current context.
-   * @param buffer
-   * @protected
+   * Applies the Mask and adds it to the current stencil stack.
+   * @author alvin
+   * @param maskData - The mask data.
    */
-  createGLBuffer(e) {
-    const { CONTEXT_UID: t, gl: s } = this;
-    return e._glBuffers[t] = new B(s.createBuffer()), this.managedBuffers[e.id] = e, e.disposeRunner.add(this), e._glBuffers[t];
+  push(t) {
+    t._scissorRectLocal || this.calcScissorRect(t);
+    const { gl: e } = this.renderer;
+    t._scissorRect || e.enable(e.SCISSOR_TEST), t._scissorCounter++, t._scissorRect = t._scissorRectLocal, this._useCurrent();
   }
-}
-r.extension = {
-  type: d.RendererSystem,
-  name: "buffer"
+  /**
+   * This should be called after a mask is popped off the mask stack. It will rebind the scissor box to be latest with the
+   * last mask in the stack.
+   *
+   * This can also be called when you directly modify the scissor box and want to restore PixiJS state.
+   * @param maskData - The mask data.
+   */
+  pop(t) {
+    const { gl: e } = this.renderer;
+    t && n.push(t._scissorRectLocal), this.getStackLength() > 0 ? this._useCurrent() : e.disable(e.SCISSOR_TEST);
+  }
+  /**
+   * Setup renderer to use the current scissor data.
+   * @private
+   */
+  _useCurrent() {
+    const t = this.maskStack[this.maskStack.length - 1]._scissorRect;
+    let e;
+    this.renderer.renderTexture.current ? e = t.y : e = this.renderer.height - t.height - t.y, this.renderer.gl.scissor(t.x, e, t.width, t.height);
+  }
 };
-f.add(r);
+d.extension = {
+  type: p.RendererSystem,
+  name: "scissor"
+};
+let y = d;
+l.add(y);
 export {
-  r as BufferSystem
+  y as ScissorSystem
 };
 //# sourceMappingURL=index57.js.map

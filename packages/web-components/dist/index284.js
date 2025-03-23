@@ -1,5 +1,20 @@
-var A = /* @__PURE__ */ ((L) => (L[L.LINEAR_VERTICAL = 0] = "LINEAR_VERTICAL", L[L.LINEAR_HORIZONTAL = 1] = "LINEAR_HORIZONTAL", L))(A || {});
+import { LINE_CAP as i, LINE_JOIN as s } from "./index282.js";
+import { FillStyle as h } from "./index283.js";
+class e extends h {
+  constructor() {
+    super(...arguments), this.width = 0, this.alignment = 0.5, this.native = !1, this.cap = i.BUTT, this.join = s.MITER, this.miterLimit = 10;
+  }
+  /** Clones the object. */
+  clone() {
+    const t = new e();
+    return t.color = this.color, t.alpha = this.alpha, t.texture = this.texture, t.matrix = this.matrix, t.visible = this.visible, t.width = this.width, t.alignment = this.alignment, t.native = this.native, t.cap = this.cap, t.join = this.join, t.miterLimit = this.miterLimit, t;
+  }
+  /** Reset the line style to default. */
+  reset() {
+    super.reset(), this.color = 0, this.alignment = 0.5, this.width = 0, this.native = !1, this.cap = i.BUTT, this.join = s.MITER, this.miterLimit = 10;
+  }
+}
 export {
-  A as TEXT_GRADIENT
+  e as LineStyle
 };
 //# sourceMappingURL=index284.js.map

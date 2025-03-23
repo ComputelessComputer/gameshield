@@ -1,6 +1,8 @@
+import "./index20.js";
+import "./index21.js";
+import "./index22.js";
 import "./index23.js";
 import "./index24.js";
-import { ExtensionType as s, extensions as n } from "./index140.js";
 import "./index25.js";
 import "./index26.js";
 import "./index27.js";
@@ -9,19 +11,19 @@ import "./index29.js";
 import "./index30.js";
 import "./index31.js";
 import "./index32.js";
+import { settings as i } from "./index163.js";
 import "./index33.js";
 import "./index34.js";
 import "./index35.js";
-import { settings as e } from "./index153.js";
 import "./index36.js";
 import "./index37.js";
 import "./index38.js";
 import "./index39.js";
 import "./index40.js";
+import { deprecation as o } from "./index137.js";
 import "./index41.js";
 import "./index42.js";
 import "./index43.js";
-import { path as c } from "./index156.js";
 import "./index44.js";
 import "./index45.js";
 import "./index46.js";
@@ -57,36 +59,27 @@ import "./index75.js";
 import "./index76.js";
 import "./index77.js";
 import "./index78.js";
-import "./index79.js";
-import "./index80.js";
-import "./index81.js";
-const a = ["s3tc", "s3tc_sRGB", "etc", "etc1", "pvrtc", "atc", "astc", "bptc"], x = {
-  extension: s.ResolveParser,
-  test: (t) => {
-    const r = c.extname(t).slice(1);
-    return ["basis", "ktx", "dds"].includes(r);
-  },
-  parse: (t) => {
-    var i, p;
-    const r = t.split("."), o = r.pop();
-    if (["ktx", "dds"].includes(o)) {
-      const m = r.pop();
-      if (a.includes(m))
-        return {
-          resolution: parseFloat(((i = e.RETINA_PREFIX.exec(t)) == null ? void 0 : i[1]) ?? "1"),
-          format: m,
-          src: t
-        };
+import { Container as t } from "./index100.js";
+Object.defineProperties(i, {
+  /**
+   * Sets the default value for the container property 'sortableChildren'.
+   * @static
+   * @name SORTABLE_CHILDREN
+   * @memberof PIXI.settings
+   * @deprecated since 7.1.0
+   * @type {boolean}
+   * @see PIXI.Container.defaultSortableChildren
+   */
+  SORTABLE_CHILDREN: {
+    get() {
+      return t.defaultSortableChildren;
+    },
+    set(r) {
+      o("7.1.0", "settings.SORTABLE_CHILDREN is deprecated, use Container.defaultSortableChildren"), t.defaultSortableChildren = r;
     }
-    return {
-      resolution: parseFloat(((p = e.RETINA_PREFIX.exec(t)) == null ? void 0 : p[1]) ?? "1"),
-      format: o,
-      src: t
-    };
   }
-};
-n.add(x);
+});
 export {
-  x as resolveCompressedTextureUrl
+  i as settings
 };
 //# sourceMappingURL=index99.js.map

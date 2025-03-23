@@ -1,314 +1,204 @@
-import { ENV as R, BUFFER_BITS as T, MSAA_QUALITY as u } from "./index164.js";
-import { ExtensionType as c, extensions as p } from "./index140.js";
-import "./index25.js";
-import "./index26.js";
-import "./index27.js";
-import { Rectangle as E } from "./index28.js";
-import "./index29.js";
-import "./index30.js";
-import "./index31.js";
-import "./index32.js";
+import { ENV as g, BUFFER_TYPE as y } from "./index164.js";
+import { ExtensionType as V, extensions as v } from "./index158.js";
+import { settings as I } from "./index163.js";
 import "./index33.js";
-import "./index34.js";
-import { settings as g } from "./index153.js";
-import "./index36.js";
-import { Framebuffer as a } from "./index196.js";
-import { GLFramebuffer as m } from "./index197.js";
-const N = new E();
-class F {
-  /**
-   * @param renderer - The renderer this System works for.
-   */
-  constructor(t) {
-    this.renderer = t, this.managedFramebuffers = [], this.unknownFramebuffer = new a(10, 10), this.msaaSamples = null;
+const x = { 5126: 4, 5123: 2, 5121: 1 };
+class A {
+  /** @param renderer - The renderer this System works for. */
+  constructor(e) {
+    this.renderer = e, this._activeGeometry = null, this._activeVao = null, this.hasVao = !0, this.hasInstance = !0, this.canUseUInt32ElementIndex = !1, this.managedGeometries = {};
   }
   /** Sets up the renderer context and necessary buffers. */
   contextChange() {
     this.disposeAll(!0);
-    const t = this.gl = this.renderer.gl;
-    if (this.CONTEXT_UID = this.renderer.CONTEXT_UID, this.current = this.unknownFramebuffer, this.viewport = new E(), this.hasMRT = !0, this.writeDepthTexture = !0, this.renderer.context.webGLVersion === 1) {
-      let r = this.renderer.context.extensions.drawBuffers, e = this.renderer.context.extensions.depthTexture;
-      g.PREFER_ENV === R.WEBGL_LEGACY && (r = null, e = null), r ? t.drawBuffers = (i) => r.drawBuffersWEBGL(i) : (this.hasMRT = !1, t.drawBuffers = () => {
-      }), e || (this.writeDepthTexture = !1);
-    } else
-      this.msaaSamples = t.getInternalformatParameter(t.RENDERBUFFER, t.RGBA8, t.SAMPLES);
-  }
-  /**
-   * Bind a framebuffer.
-   * @param framebuffer
-   * @param frame - frame, default is framebuffer size
-   * @param mipLevel - optional mip level to set on the framebuffer - defaults to 0
-   */
-  bind(t, r, e = 0) {
-    const { gl: i } = this;
-    if (t) {
-      const n = t.glFramebuffers[this.CONTEXT_UID] || this.initFramebuffer(t);
-      this.current !== t && (this.current = t, i.bindFramebuffer(i.FRAMEBUFFER, n.framebuffer)), n.mipLevel !== e && (t.dirtyId++, t.dirtyFormat++, n.mipLevel = e), n.dirtyId !== t.dirtyId && (n.dirtyId = t.dirtyId, n.dirtyFormat !== t.dirtyFormat ? (n.dirtyFormat = t.dirtyFormat, n.dirtySize = t.dirtySize, this.updateFramebuffer(t, e)) : n.dirtySize !== t.dirtySize && (n.dirtySize = t.dirtySize, this.resizeFramebuffer(t)));
-      for (let s = 0; s < t.colorTextures.length; s++) {
-        const d = t.colorTextures[s];
-        this.renderer.texture.unbind(d.parentTextureArray || d);
-      }
-      if (t.depthTexture && this.renderer.texture.unbind(t.depthTexture), r) {
-        const s = r.width >> e, d = r.height >> e, h = s / r.width;
-        this.setViewport(
-          r.x * h,
-          r.y * h,
-          s,
-          d
-        );
-      } else {
-        const s = t.width >> e, d = t.height >> e;
-        this.setViewport(0, 0, s, d);
-      }
-    } else
-      this.current && (this.current = null, i.bindFramebuffer(i.FRAMEBUFFER, null)), r ? this.setViewport(r.x, r.y, r.width, r.height) : this.setViewport(0, 0, this.renderer.width, this.renderer.height);
-  }
-  /**
-   * Set the WebGLRenderingContext's viewport.
-   * @param x - X position of viewport
-   * @param y - Y position of viewport
-   * @param width - Width of viewport
-   * @param height - Height of viewport
-   */
-  setViewport(t, r, e, i) {
-    const n = this.viewport;
-    t = Math.round(t), r = Math.round(r), e = Math.round(e), i = Math.round(i), (n.width !== e || n.height !== i || n.x !== t || n.y !== r) && (n.x = t, n.y = r, n.width = e, n.height = i, this.gl.viewport(t, r, e, i));
-  }
-  /**
-   * Get the size of the current width and height. Returns object with `width` and `height` values.
-   * @readonly
-   */
-  get size() {
-    return this.current ? { x: 0, y: 0, width: this.current.width, height: this.current.height } : { x: 0, y: 0, width: this.renderer.width, height: this.renderer.height };
-  }
-  /**
-   * Clear the color of the context
-   * @param r - Red value from 0 to 1
-   * @param g - Green value from 0 to 1
-   * @param b - Blue value from 0 to 1
-   * @param a - Alpha value from 0 to 1
-   * @param {PIXI.BUFFER_BITS} [mask=BUFFER_BITS.COLOR | BUFFER_BITS.DEPTH] - Bitwise OR of masks
-   *  that indicate the buffers to be cleared, by default COLOR and DEPTH buffers.
-   */
-  clear(t, r, e, i, n = T.COLOR | T.DEPTH) {
-    const { gl: s } = this;
-    s.clearColor(t, r, e, i), s.clear(n);
-  }
-  /**
-   * Initialize framebuffer for this context
-   * @protected
-   * @param framebuffer
-   * @returns - created GLFramebuffer
-   */
-  initFramebuffer(t) {
-    const { gl: r } = this, e = new m(r.createFramebuffer());
-    return e.multisample = this.detectSamples(t.multisample), t.glFramebuffers[this.CONTEXT_UID] = e, this.managedFramebuffers.push(t), t.disposeRunner.add(this), e;
-  }
-  /**
-   * Resize the framebuffer
-   * @param framebuffer
-   * @protected
-   */
-  resizeFramebuffer(t) {
-    const { gl: r } = this, e = t.glFramebuffers[this.CONTEXT_UID];
-    if (e.stencil) {
-      r.bindRenderbuffer(r.RENDERBUFFER, e.stencil);
-      let s;
-      this.renderer.context.webGLVersion === 1 ? s = r.DEPTH_STENCIL : t.depth && t.stencil ? s = r.DEPTH24_STENCIL8 : t.depth ? s = r.DEPTH_COMPONENT24 : s = r.STENCIL_INDEX8, e.msaaBuffer ? r.renderbufferStorageMultisample(
-        r.RENDERBUFFER,
-        e.multisample,
-        s,
-        t.width,
-        t.height
-      ) : r.renderbufferStorage(r.RENDERBUFFER, s, t.width, t.height);
+    const e = this.gl = this.renderer.gl, r = this.renderer.context;
+    if (this.CONTEXT_UID = this.renderer.CONTEXT_UID, r.webGLVersion !== 2) {
+      let t = this.renderer.context.extensions.vertexArrayObject;
+      I.PREFER_ENV === g.WEBGL_LEGACY && (t = null), t ? (e.createVertexArray = () => t.createVertexArrayOES(), e.bindVertexArray = (i) => t.bindVertexArrayOES(i), e.deleteVertexArray = (i) => t.deleteVertexArrayOES(i)) : (this.hasVao = !1, e.createVertexArray = () => null, e.bindVertexArray = () => null, e.deleteVertexArray = () => null);
     }
-    const i = t.colorTextures;
-    let n = i.length;
-    r.drawBuffers || (n = Math.min(n, 1));
-    for (let s = 0; s < n; s++) {
-      const d = i[s], h = d.parentTextureArray || d;
-      this.renderer.texture.bind(h, 0), s === 0 && e.msaaBuffer && (r.bindRenderbuffer(r.RENDERBUFFER, e.msaaBuffer), r.renderbufferStorageMultisample(
-        r.RENDERBUFFER,
-        e.multisample,
-        h._glTextures[this.CONTEXT_UID].internalFormat,
-        t.width,
-        t.height
-      ));
+    if (r.webGLVersion !== 2) {
+      const t = e.getExtension("ANGLE_instanced_arrays");
+      t ? (e.vertexAttribDivisor = (i, s) => t.vertexAttribDivisorANGLE(i, s), e.drawElementsInstanced = (i, s, n, a, o) => t.drawElementsInstancedANGLE(i, s, n, a, o), e.drawArraysInstanced = (i, s, n, a) => t.drawArraysInstancedANGLE(i, s, n, a)) : this.hasInstance = !1;
     }
-    t.depthTexture && this.writeDepthTexture && this.renderer.texture.bind(t.depthTexture, 0);
+    this.canUseUInt32ElementIndex = r.webGLVersion === 2 || !!r.extensions.uint32ElementIndex;
   }
   /**
-   * Update the framebuffer
-   * @param framebuffer
-   * @param mipLevel
-   * @protected
+   * Binds geometry so that is can be drawn. Creating a Vao if required
+   * @param geometry - Instance of geometry to bind.
+   * @param shader - Instance of shader to use vao for.
    */
-  updateFramebuffer(t, r) {
-    const { gl: e } = this, i = t.glFramebuffers[this.CONTEXT_UID], n = t.colorTextures;
-    let s = n.length;
-    e.drawBuffers || (s = Math.min(s, 1)), i.multisample > 1 && this.canMultisampleFramebuffer(t) ? i.msaaBuffer = i.msaaBuffer || e.createRenderbuffer() : i.msaaBuffer && (e.deleteRenderbuffer(i.msaaBuffer), i.msaaBuffer = null, i.blitFramebuffer && (i.blitFramebuffer.dispose(), i.blitFramebuffer = null));
-    const d = [];
-    for (let h = 0; h < s; h++) {
-      const o = n[h], l = o.parentTextureArray || o;
-      this.renderer.texture.bind(l, 0), h === 0 && i.msaaBuffer ? (e.bindRenderbuffer(e.RENDERBUFFER, i.msaaBuffer), e.renderbufferStorageMultisample(
-        e.RENDERBUFFER,
-        i.multisample,
-        l._glTextures[this.CONTEXT_UID].internalFormat,
-        t.width,
-        t.height
-      ), e.framebufferRenderbuffer(e.FRAMEBUFFER, e.COLOR_ATTACHMENT0, e.RENDERBUFFER, i.msaaBuffer)) : (e.framebufferTexture2D(
-        e.FRAMEBUFFER,
-        e.COLOR_ATTACHMENT0 + h,
-        o.target,
-        l._glTextures[this.CONTEXT_UID].texture,
-        r
-      ), d.push(e.COLOR_ATTACHMENT0 + h));
-    }
-    if (d.length > 1 && e.drawBuffers(d), t.depthTexture && this.writeDepthTexture) {
-      const h = t.depthTexture;
-      this.renderer.texture.bind(h, 0), e.framebufferTexture2D(
-        e.FRAMEBUFFER,
-        e.DEPTH_ATTACHMENT,
-        e.TEXTURE_2D,
-        h._glTextures[this.CONTEXT_UID].texture,
-        r
-      );
-    }
-    if ((t.stencil || t.depth) && !(t.depthTexture && this.writeDepthTexture)) {
-      i.stencil = i.stencil || e.createRenderbuffer();
-      let h, o;
-      this.renderer.context.webGLVersion === 1 ? (h = e.DEPTH_STENCIL_ATTACHMENT, o = e.DEPTH_STENCIL) : t.depth && t.stencil ? (h = e.DEPTH_STENCIL_ATTACHMENT, o = e.DEPTH24_STENCIL8) : t.depth ? (h = e.DEPTH_ATTACHMENT, o = e.DEPTH_COMPONENT24) : (h = e.STENCIL_ATTACHMENT, o = e.STENCIL_INDEX8), e.bindRenderbuffer(e.RENDERBUFFER, i.stencil), i.msaaBuffer ? e.renderbufferStorageMultisample(
-        e.RENDERBUFFER,
-        i.multisample,
-        o,
-        t.width,
-        t.height
-      ) : e.renderbufferStorage(e.RENDERBUFFER, o, t.width, t.height), e.framebufferRenderbuffer(e.FRAMEBUFFER, h, e.RENDERBUFFER, i.stencil);
-    } else
-      i.stencil && (e.deleteRenderbuffer(i.stencil), i.stencil = null);
+  bind(e, r) {
+    r = r || this.renderer.shader.shader;
+    const { gl: t } = this;
+    let i = e.glVertexArrayObjects[this.CONTEXT_UID], s = !1;
+    i || (this.managedGeometries[e.id] = e, e.disposeRunner.add(this), e.glVertexArrayObjects[this.CONTEXT_UID] = i = {}, s = !0);
+    const n = i[r.program.id] || this.initGeometryVao(e, r, s);
+    this._activeGeometry = e, this._activeVao !== n && (this._activeVao = n, this.hasVao ? t.bindVertexArray(n) : this.activateVao(e, r.program)), this.updateBuffers();
   }
-  /**
-   * Returns true if the frame buffer can be multisampled.
-   * @param framebuffer
-   */
-  canMultisampleFramebuffer(t) {
-    return this.renderer.context.webGLVersion !== 1 && t.colorTextures.length <= 1 && !t.depthTexture;
-  }
-  /**
-   * Detects number of samples that is not more than a param but as close to it as possible
-   * @param samples - number of samples
-   * @returns - recommended number of samples
-   */
-  detectSamples(t) {
-    const { msaaSamples: r } = this;
-    let e = u.NONE;
-    if (t <= 1 || r === null)
-      return e;
-    for (let i = 0; i < r.length; i++)
-      if (r[i] <= t) {
-        e = r[i];
-        break;
-      }
-    return e === 1 && (e = u.NONE), e;
-  }
-  /**
-   * Only works with WebGL2
-   *
-   * blits framebuffer to another of the same or bigger size
-   * after that target framebuffer is bound
-   *
-   * Fails with WebGL warning if blits multisample framebuffer to different size
-   * @param framebuffer - by default it blits "into itself", from renderBuffer to texture.
-   * @param sourcePixels - source rectangle in pixels
-   * @param destPixels - dest rectangle in pixels, assumed to be the same as sourcePixels
-   */
-  blit(t, r, e) {
-    const { current: i, renderer: n, gl: s, CONTEXT_UID: d } = this;
-    if (n.context.webGLVersion !== 2 || !i)
-      return;
-    const h = i.glFramebuffers[d];
-    if (!h)
-      return;
-    if (!t) {
-      if (!h.msaaBuffer)
-        return;
-      const l = i.colorTextures[0];
-      if (!l)
-        return;
-      h.blitFramebuffer || (h.blitFramebuffer = new a(i.width, i.height), h.blitFramebuffer.addColorTexture(0, l)), t = h.blitFramebuffer, t.colorTextures[0] !== l && (t.colorTextures[0] = l, t.dirtyId++, t.dirtyFormat++), (t.width !== i.width || t.height !== i.height) && (t.width = i.width, t.height = i.height, t.dirtyId++, t.dirtySize++);
-    }
-    r || (r = N, r.width = i.width, r.height = i.height), e || (e = r);
-    const o = r.width === e.width && r.height === e.height;
-    this.bind(t), s.bindFramebuffer(s.READ_FRAMEBUFFER, h.framebuffer), s.blitFramebuffer(
-      r.left,
-      r.top,
-      r.right,
-      r.bottom,
-      e.left,
-      e.top,
-      e.right,
-      e.bottom,
-      s.COLOR_BUFFER_BIT,
-      o ? s.NEAREST : s.LINEAR
-    ), s.bindFramebuffer(s.READ_FRAMEBUFFER, t.glFramebuffers[this.CONTEXT_UID].framebuffer);
-  }
-  /**
-   * Disposes framebuffer.
-   * @param framebuffer - framebuffer that has to be disposed of
-   * @param contextLost - If context was lost, we suppress all delete function calls
-   */
-  disposeFramebuffer(t, r) {
-    const e = t.glFramebuffers[this.CONTEXT_UID], i = this.gl;
-    if (!e)
-      return;
-    delete t.glFramebuffers[this.CONTEXT_UID];
-    const n = this.managedFramebuffers.indexOf(t);
-    n >= 0 && this.managedFramebuffers.splice(n, 1), t.disposeRunner.remove(this), r || (i.deleteFramebuffer(e.framebuffer), e.msaaBuffer && i.deleteRenderbuffer(e.msaaBuffer), e.stencil && i.deleteRenderbuffer(e.stencil)), e.blitFramebuffer && this.disposeFramebuffer(e.blitFramebuffer, r);
-  }
-  /**
-   * Disposes all framebuffers, but not textures bound to them.
-   * @param [contextLost=false] - If context was lost, we suppress all delete function calls
-   */
-  disposeAll(t) {
-    const r = this.managedFramebuffers;
-    this.managedFramebuffers = [];
-    for (let e = 0; e < r.length; e++)
-      this.disposeFramebuffer(r[e], t);
-  }
-  /**
-   * Forcing creation of stencil buffer for current framebuffer, if it wasn't done before.
-   * Used by MaskSystem, when its time to use stencil mask for Graphics element.
-   *
-   * Its an alternative for public lazy `framebuffer.enableStencil`, in case we need stencil without rebind.
-   * @private
-   */
-  forceStencil() {
-    const t = this.current;
-    if (!t)
-      return;
-    const r = t.glFramebuffers[this.CONTEXT_UID];
-    if (!r || r.stencil && t.stencil)
-      return;
-    t.stencil = !0;
-    const e = t.width, i = t.height, n = this.gl, s = r.stencil = n.createRenderbuffer();
-    n.bindRenderbuffer(n.RENDERBUFFER, s);
-    let d, h;
-    this.renderer.context.webGLVersion === 1 ? (d = n.DEPTH_STENCIL_ATTACHMENT, h = n.DEPTH_STENCIL) : t.depth ? (d = n.DEPTH_STENCIL_ATTACHMENT, h = n.DEPTH24_STENCIL8) : (d = n.STENCIL_ATTACHMENT, h = n.STENCIL_INDEX8), r.msaaBuffer ? n.renderbufferStorageMultisample(n.RENDERBUFFER, r.multisample, h, e, i) : n.renderbufferStorage(n.RENDERBUFFER, h, e, i), n.framebufferRenderbuffer(n.FRAMEBUFFER, d, n.RENDERBUFFER, s);
-  }
-  /** Resets framebuffer stored state, binds screen framebuffer. Should be called before renderTexture reset(). */
+  /** Reset and unbind any active VAO and geometry. */
   reset() {
-    this.current = this.unknownFramebuffer, this.viewport = new E();
+    this.unbind();
+  }
+  /** Update buffers of the currently bound geometry. */
+  updateBuffers() {
+    const e = this._activeGeometry, r = this.renderer.buffer;
+    for (let t = 0; t < e.buffers.length; t++) {
+      const i = e.buffers[t];
+      r.update(i);
+    }
+  }
+  /**
+   * Check compatibility between a geometry and a program
+   * @param geometry - Geometry instance.
+   * @param program - Program instance.
+   */
+  checkCompatibility(e, r) {
+    const t = e.attributes, i = r.attributeData;
+    for (const s in i)
+      if (!t[s])
+        throw new Error(`shader and geometry incompatible, geometry missing the "${s}" attribute`);
+  }
+  /**
+   * Takes a geometry and program and generates a unique signature for them.
+   * @param geometry - To get signature from.
+   * @param program - To test geometry against.
+   * @returns - Unique signature of the geometry and program
+   */
+  getSignature(e, r) {
+    const t = e.attributes, i = r.attributeData, s = ["g", e.id];
+    for (const n in t)
+      i[n] && s.push(n, i[n].location);
+    return s.join("-");
+  }
+  /**
+   * Creates or gets Vao with the same structure as the geometry and stores it on the geometry.
+   * If vao is created, it is bound automatically. We use a shader to infer what and how to set up the
+   * attribute locations.
+   * @param geometry - Instance of geometry to to generate Vao for.
+   * @param shader - Instance of the shader.
+   * @param incRefCount - Increment refCount of all geometry buffers.
+   */
+  initGeometryVao(e, r, t = !0) {
+    const i = this.gl, s = this.CONTEXT_UID, n = this.renderer.buffer, a = r.program;
+    a.glPrograms[s] || this.renderer.shader.generateProgram(r), this.checkCompatibility(e, a);
+    const o = this.getSignature(e, a), u = e.glVertexArrayObjects[this.CONTEXT_UID];
+    let f = u[o];
+    if (f)
+      return u[a.id] = f, f;
+    const b = e.buffers, h = e.attributes, c = {}, E = {};
+    for (const d in b)
+      c[d] = 0, E[d] = 0;
+    for (const d in h)
+      !h[d].size && a.attributeData[d] ? h[d].size = a.attributeData[d].size : h[d].size || console.warn(`PIXI Geometry attribute '${d}' size cannot be determined (likely the bound shader does not have the attribute)`), c[h[d].buffer] += h[d].size * x[h[d].type];
+    for (const d in h) {
+      const l = h[d], m = l.size;
+      l.stride === void 0 && (c[l.buffer] === m * x[l.type] ? l.stride = 0 : l.stride = c[l.buffer]), l.start === void 0 && (l.start = E[l.buffer], E[l.buffer] += m * x[l.type]);
+    }
+    f = i.createVertexArray(), i.bindVertexArray(f);
+    for (let d = 0; d < b.length; d++) {
+      const l = b[d];
+      n.bind(l), t && l._glBuffers[s].refCount++;
+    }
+    return this.activateVao(e, a), u[a.id] = f, u[o] = f, i.bindVertexArray(null), n.unbind(y.ARRAY_BUFFER), f;
+  }
+  /**
+   * Disposes geometry.
+   * @param geometry - Geometry with buffers. Only VAO will be disposed
+   * @param [contextLost=false] - If context was lost, we suppress deleteVertexArray
+   */
+  disposeGeometry(e, r) {
+    var a;
+    if (!this.managedGeometries[e.id])
+      return;
+    delete this.managedGeometries[e.id];
+    const t = e.glVertexArrayObjects[this.CONTEXT_UID], i = this.gl, s = e.buffers, n = (a = this.renderer) == null ? void 0 : a.buffer;
+    if (e.disposeRunner.remove(this), !!t) {
+      if (n)
+        for (let o = 0; o < s.length; o++) {
+          const u = s[o]._glBuffers[this.CONTEXT_UID];
+          u && (u.refCount--, u.refCount === 0 && !r && n.dispose(s[o], r));
+        }
+      if (!r) {
+        for (const o in t)
+          if (o[0] === "g") {
+            const u = t[o];
+            this._activeVao === u && this.unbind(), i.deleteVertexArray(u);
+          }
+      }
+      delete e.glVertexArrayObjects[this.CONTEXT_UID];
+    }
+  }
+  /**
+   * Dispose all WebGL resources of all managed geometries.
+   * @param [contextLost=false] - If context was lost, we suppress `gl.delete` calls
+   */
+  disposeAll(e) {
+    const r = Object.keys(this.managedGeometries);
+    for (let t = 0; t < r.length; t++)
+      this.disposeGeometry(this.managedGeometries[r[t]], e);
+  }
+  /**
+   * Activate vertex array object.
+   * @param geometry - Geometry instance.
+   * @param program - Shader program instance.
+   */
+  activateVao(e, r) {
+    const t = this.gl, i = this.CONTEXT_UID, s = this.renderer.buffer, n = e.buffers, a = e.attributes;
+    e.indexBuffer && s.bind(e.indexBuffer);
+    let o = null;
+    for (const u in a) {
+      const f = a[u], b = n[f.buffer], h = b._glBuffers[i];
+      if (r.attributeData[u]) {
+        o !== h && (s.bind(b), o = h);
+        const c = r.attributeData[u].location;
+        if (t.enableVertexAttribArray(c), t.vertexAttribPointer(
+          c,
+          f.size,
+          f.type || t.FLOAT,
+          f.normalized,
+          f.stride,
+          f.start
+        ), f.instance)
+          if (this.hasInstance)
+            t.vertexAttribDivisor(c, f.divisor);
+          else
+            throw new Error("geometry error, GPU Instancing is not supported on this device");
+      }
+    }
+  }
+  /**
+   * Draws the currently bound geometry.
+   * @param type - The type primitive to render.
+   * @param size - The number of elements to be rendered. If not specified, all vertices after the
+   *  starting vertex will be drawn.
+   * @param start - The starting vertex in the geometry to start drawing from. If not specified,
+   *  drawing will start from the first vertex.
+   * @param instanceCount - The number of instances of the set of elements to execute. If not specified,
+   *  all instances will be drawn.
+   */
+  draw(e, r, t, i) {
+    const { gl: s } = this, n = this._activeGeometry;
+    if (n.indexBuffer) {
+      const a = n.indexBuffer.data.BYTES_PER_ELEMENT, o = a === 2 ? s.UNSIGNED_SHORT : s.UNSIGNED_INT;
+      a === 2 || a === 4 && this.canUseUInt32ElementIndex ? n.instanced ? s.drawElementsInstanced(e, r || n.indexBuffer.data.length, o, (t || 0) * a, i || 1) : s.drawElements(e, r || n.indexBuffer.data.length, o, (t || 0) * a) : console.warn("unsupported index buffer type: uint32");
+    } else
+      n.instanced ? s.drawArraysInstanced(e, t, r || n.getSize(), i || 1) : s.drawArrays(e, t, r || n.getSize());
+    return this;
+  }
+  /** Unbind/reset everything. */
+  unbind() {
+    this.gl.bindVertexArray(null), this._activeVao = null, this._activeGeometry = null;
   }
   destroy() {
     this.renderer = null;
   }
 }
-F.extension = {
-  type: c.RendererSystem,
-  name: "framebuffer"
+A.extension = {
+  type: V.RendererSystem,
+  name: "geometry"
 };
-p.add(F);
+v.add(A);
 export {
-  F as FramebufferSystem
+  A as GeometrySystem
 };
 //# sourceMappingURL=index55.js.map

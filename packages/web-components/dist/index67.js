@@ -1,38 +1,166 @@
-import "./index25.js";
-import "./index26.js";
-import "./index27.js";
-import "./index28.js";
-import "./index29.js";
-import { groupD8 as h } from "./index30.js";
-import "./index31.js";
-import "./index32.js";
+import { ExtensionType as u, extensions as d } from "./index158.js";
+import { generateUniformsSync as f } from "./index235.js";
 import "./index33.js";
-import "./index34.js";
-class l {
-  constructor() {
-    this.x0 = 0, this.y0 = 0, this.x1 = 1, this.y1 = 0, this.x2 = 1, this.y2 = 1, this.x3 = 0, this.y3 = 1, this.uvsFloat32 = new Float32Array(8);
+import { unsafeEvalSupported as c } from "./index236.js";
+import { generateProgram as l } from "./index237.js";
+import { generateUniformBufferSync as g } from "./index238.js";
+let y = 0;
+const a = { textureCount: 0, uboCount: 0 };
+class h {
+  /** @param renderer - The renderer this System works for. */
+  constructor(r) {
+    this.destroyed = !1, this.renderer = r, this.systemCheck(), this.gl = null, this.shader = null, this.program = null, this.cache = {}, this._uboCache = {}, this.id = y++;
   }
   /**
-   * Sets the texture Uvs based on the given frame information.
-   * @protected
-   * @param frame - The frame of the texture
-   * @param baseFrame - The base frame of the texture
-   * @param rotate - Rotation of frame, see {@link PIXI.groupD8}
+   * Overrideable function by `@pixi/unsafe-eval` to silence
+   * throwing an error if platform doesn't support unsafe-evals.
+   * @private
    */
-  set(s, d, i) {
-    const t = d.width, x = d.height;
-    if (i) {
-      const y = s.width / 2 / t, u = s.height / 2 / x, o = s.x / t + y, p = s.y / x + u;
-      i = h.add(i, h.NW), this.x0 = o + y * h.uX(i), this.y0 = p + u * h.uY(i), i = h.add(i, 2), this.x1 = o + y * h.uX(i), this.y1 = p + u * h.uY(i), i = h.add(i, 2), this.x2 = o + y * h.uX(i), this.y2 = p + u * h.uY(i), i = h.add(i, 2), this.x3 = o + y * h.uX(i), this.y3 = p + u * h.uY(i);
-    } else
-      this.x0 = s.x / t, this.y0 = s.y / x, this.x1 = (s.x + s.width) / t, this.y1 = s.y / x, this.x2 = (s.x + s.width) / t, this.y2 = (s.y + s.height) / x, this.x3 = s.x / t, this.y3 = (s.y + s.height) / x;
-    this.uvsFloat32[0] = this.x0, this.uvsFloat32[1] = this.y0, this.uvsFloat32[2] = this.x1, this.uvsFloat32[3] = this.y1, this.uvsFloat32[4] = this.x2, this.uvsFloat32[5] = this.y2, this.uvsFloat32[6] = this.x3, this.uvsFloat32[7] = this.y3;
+  systemCheck() {
+    if (!c())
+      throw new Error("Current environment does not allow unsafe-eval, please use @pixi/unsafe-eval module to enable support.");
+  }
+  contextChange(r) {
+    this.gl = r, this.reset();
+  }
+  /**
+   * Changes the current shader to the one given in parameter.
+   * @param shader - the new shader
+   * @param dontSync - false if the shader should automatically sync its uniforms.
+   * @returns the glProgram that belongs to the shader.
+   */
+  bind(r, e) {
+    r.disposeRunner.add(this), r.uniforms.globals = this.renderer.globalUniforms;
+    const t = r.program, s = t.glPrograms[this.renderer.CONTEXT_UID] || this.generateProgram(r);
+    return this.shader = r, this.program !== t && (this.program = t, this.gl.useProgram(s.program)), e || (a.textureCount = 0, a.uboCount = 0, this.syncUniformGroup(r.uniformGroup, a)), s;
+  }
+  /**
+   * Uploads the uniforms values to the currently bound shader.
+   * @param uniforms - the uniforms values that be applied to the current shader
+   */
+  setUniforms(r) {
+    const e = this.shader.program, t = e.glPrograms[this.renderer.CONTEXT_UID];
+    e.syncUniforms(t.uniformData, r, this.renderer);
+  }
+  /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+  /**
+   * Syncs uniforms on the group
+   * @param group - the uniform group to sync
+   * @param syncData - this is data that is passed to the sync function and any nested sync functions
+   */
+  syncUniformGroup(r, e) {
+    const t = this.getGlProgram();
+    (!r.static || r.dirtyId !== t.uniformDirtyGroups[r.id]) && (t.uniformDirtyGroups[r.id] = r.dirtyId, this.syncUniforms(r, t, e));
+  }
+  /**
+   * Overrideable by the @pixi/unsafe-eval package to use static syncUniforms instead.
+   * @param group
+   * @param glProgram
+   * @param syncData
+   */
+  syncUniforms(r, e, t) {
+    (r.syncUniforms[this.shader.program.id] || this.createSyncGroups(r))(e.uniformData, r.uniforms, this.renderer, t);
+  }
+  createSyncGroups(r) {
+    const e = this.getSignature(r, this.shader.program.uniformData, "u");
+    return this.cache[e] || (this.cache[e] = f(r, this.shader.program.uniformData)), r.syncUniforms[this.shader.program.id] = this.cache[e], r.syncUniforms[this.shader.program.id];
+  }
+  /**
+   * Syncs uniform buffers
+   * @param group - the uniform buffer group to sync
+   * @param name - the name of the uniform buffer
+   */
+  syncUniformBufferGroup(r, e) {
+    const t = this.getGlProgram();
+    if (!r.static || r.dirtyId !== 0 || !t.uniformGroups[r.id]) {
+      r.dirtyId = 0;
+      const s = t.uniformGroups[r.id] || this.createSyncBufferGroup(r, t, e);
+      r.buffer.update(), s(
+        t.uniformData,
+        r.uniforms,
+        this.renderer,
+        a,
+        r.buffer
+      );
+    }
+    this.renderer.buffer.bindBufferBase(r.buffer, t.uniformBufferBindings[e]);
+  }
+  /**
+   * Will create a function that uploads a uniform buffer using the STD140 standard.
+   * The upload function will then be cached for future calls
+   * If a group is manually managed, then a simple upload function is generated
+   * @param group - the uniform buffer group to sync
+   * @param glProgram - the gl program to attach the uniform bindings to
+   * @param name - the name of the uniform buffer (must exist on the shader)
+   */
+  createSyncBufferGroup(r, e, t) {
+    const { gl: s } = this.renderer;
+    this.renderer.buffer.bind(r.buffer);
+    const n = this.gl.getUniformBlockIndex(e.program, t);
+    e.uniformBufferBindings[t] = this.shader.uniformBindCount, s.uniformBlockBinding(e.program, n, this.shader.uniformBindCount), this.shader.uniformBindCount++;
+    const i = this.getSignature(r, this.shader.program.uniformData, "ubo");
+    let o = this._uboCache[i];
+    if (o || (o = this._uboCache[i] = g(r, this.shader.program.uniformData)), r.autoManage) {
+      const m = new Float32Array(o.size / 4);
+      r.buffer.update(m);
+    }
+    return e.uniformGroups[r.id] = o.syncFunc, e.uniformGroups[r.id];
+  }
+  /**
+   * Takes a uniform group and data and generates a unique signature for them.
+   * @param group - The uniform group to get signature of
+   * @param group.uniforms
+   * @param uniformData - Uniform information generated by the shader
+   * @param preFix
+   * @returns Unique signature of the uniform group
+   */
+  getSignature(r, e, t) {
+    const s = r.uniforms, n = [`${t}-`];
+    for (const i in s)
+      n.push(i), e[i] && n.push(e[i].type);
+    return n.join("-");
+  }
+  /**
+   * Returns the underlying GLShade rof the currently bound shader.
+   *
+   * This can be handy for when you to have a little more control over the setting of your uniforms.
+   * @returns The glProgram for the currently bound Shader for this context
+   */
+  getGlProgram() {
+    return this.shader ? this.shader.program.glPrograms[this.renderer.CONTEXT_UID] : null;
+  }
+  /**
+   * Generates a glProgram version of the Shader provided.
+   * @param shader - The shader that the glProgram will be based on.
+   * @returns A shiny new glProgram!
+   */
+  generateProgram(r) {
+    const e = this.gl, t = r.program, s = l(e, t);
+    return t.glPrograms[this.renderer.CONTEXT_UID] = s, s;
+  }
+  /** Resets ShaderSystem state, does not affect WebGL state. */
+  reset() {
+    this.program = null, this.shader = null;
+  }
+  /**
+   * Disposes shader.
+   * If disposing one equals with current shader, set current as null.
+   * @param shader - Shader object
+   */
+  disposeShader(r) {
+    this.shader === r && (this.shader = null);
+  }
+  /** Destroys this System and removes all its textures. */
+  destroy() {
+    this.renderer = null, this.destroyed = !0;
   }
 }
-l.prototype.toString = function() {
-  return `[@pixi/core:TextureUvs x0=${this.x0} y0=${this.y0} x1=${this.x1} y1=${this.y1} x2=${this.x2} y2=${this.y2} x3=${this.x3} y3=${this.y3}]`;
+h.extension = {
+  type: u.RendererSystem,
+  name: "shader"
 };
+d.add(h);
 export {
-  l as TextureUvs
+  h as ShaderSystem
 };
 //# sourceMappingURL=index67.js.map

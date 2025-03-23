@@ -1,31 +1,25 @@
-const t = `(function() {
-  "use strict";
-  const WHITE_PNG = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII=";
-  async function checkImageBitmap() {
-    try {
-      if (typeof createImageBitmap != "function")
-        return !1;
-      const imageBlob = await (await fetch(WHITE_PNG)).blob(), imageBitmap = await createImageBitmap(imageBlob);
-      return imageBitmap.width === 1 && imageBitmap.height === 1;
-    } catch {
-      return !1;
-    }
-  }
-  checkImageBitmap().then((result) => {
-    self.postMessage(result);
-  });
-})();
-`;
-let e = null;
-class a {
-  constructor() {
-    e || (e = URL.createObjectURL(new Blob([t], { type: "application/javascript" }))), this.worker = new Worker(e);
-  }
+var o = `#version 300 es
+#define SHADER_NAME Tiling-Sprite-300
+
+precision lowp float;
+
+in vec2 aVertexPosition;
+in vec2 aTextureCoord;
+
+uniform mat3 projectionMatrix;
+uniform mat3 translationMatrix;
+uniform mat3 uTransform;
+
+out vec2 vTextureCoord;
+
+void main(void)
+{
+    gl_Position = vec4((projectionMatrix * translationMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);
+
+    vTextureCoord = (uTransform * vec3(aTextureCoord, 1.0)).xy;
 }
-a.revokeObjectURL = function() {
-  e && (URL.revokeObjectURL(e), e = null);
-};
+`;
 export {
-  a as default
+  o as default
 };
 //# sourceMappingURL=index298.js.map

@@ -1,75 +1,99 @@
-import { Color as w } from "./index24.js";
-import { ExtensionType as g, extensions as f } from "./index140.js";
-import "./index25.js";
-import "./index26.js";
-import "./index27.js";
-import { Rectangle as d } from "./index28.js";
-import "./index29.js";
-import "./index30.js";
-import "./index31.js";
-import "./index32.js";
-import "./index33.js";
-import "./index34.js";
-const l = new d(), a = new d();
-class m {
-  /**
-   * @param renderer - The renderer this System works for.
-   */
-  constructor(e) {
-    this.renderer = e, this.defaultMaskStack = [], this.current = null, this.sourceFrame = new d(), this.destinationFrame = new d(), this.viewportFrame = new d();
-  }
-  contextChange() {
-    var t;
-    const e = (t = this.renderer) == null ? void 0 : t.gl.getContextAttributes();
-    this._rendererPremultipliedAlpha = !!(e && e.alpha && e.premultipliedAlpha);
+import { BLEND_MODES as h } from "./index164.js";
+const e = 0, s = 1, a = 2, i = 3, d = 4, o = 5;
+class n {
+  constructor() {
+    this.data = 0, this.blendMode = h.NORMAL, this.polygonOffset = 0, this.blend = !0, this.depthMask = !0;
   }
   /**
-   * Bind the current render texture.
-   * @param renderTexture - RenderTexture to bind, by default its `null` - the screen.
-   * @param sourceFrame - Part of world that is mapped to the renderTexture.
-   * @param destinationFrame - Part of renderTexture, by default it has the same size as sourceFrame.
+   * Activates blending of the computed fragment color values.
+   * @default true
    */
-  bind(e = null, t, r) {
-    const h = this.renderer;
-    this.current = e;
-    let n, o, s;
-    e ? (n = e.baseTexture, s = n.resolution, t || (l.width = e.frame.width, l.height = e.frame.height, t = l), r || (a.x = e.frame.x, a.y = e.frame.y, a.width = t.width, a.height = t.height, r = a), o = n.framebuffer) : (s = h.resolution, t || (l.width = h._view.screen.width, l.height = h._view.screen.height, t = l), r || (r = l, r.width = t.width, r.height = t.height));
-    const i = this.viewportFrame;
-    i.x = r.x * s, i.y = r.y * s, i.width = r.width * s, i.height = r.height * s, e || (i.y = h.view.height - (i.y + i.height)), i.ceil(), this.renderer.framebuffer.bind(o, i), this.renderer.projection.update(r, t, s, !o), e ? this.renderer.mask.setMaskStack(n.maskStack) : this.renderer.mask.setMaskStack(this.defaultMaskStack), this.sourceFrame.copyFrom(t), this.destinationFrame.copyFrom(r);
+  get blend() {
+    return !!(this.data & 1 << e);
+  }
+  set blend(t) {
+    !!(this.data & 1 << e) !== t && (this.data ^= 1 << e);
   }
   /**
-   * Erases the render texture and fills the drawing area with a colour.
-   * @param clearColor - The color as rgba, default to use the renderer backgroundColor
-   * @param [mask=BUFFER_BITS.COLOR | BUFFER_BITS.DEPTH] - Bitwise OR of masks
-   *  that indicate the buffers to be cleared, by default COLOR and DEPTH buffers.
+   * Activates adding an offset to depth values of polygon's fragments
+   * @default false
    */
-  clear(e, t) {
-    const r = this.current ? this.current.baseTexture.clear : this.renderer.background.backgroundColor, h = w.shared.setValue(e || r);
-    (this.current && this.current.baseTexture.alphaMode > 0 || !this.current && this._rendererPremultipliedAlpha) && h.premultiply(h.alpha);
-    const n = this.destinationFrame, o = this.current ? this.current.baseTexture : this.renderer._view.screen, s = n.width !== o.width || n.height !== o.height;
-    if (s) {
-      let { x: i, y: p, width: c, height: u } = this.viewportFrame;
-      i = Math.round(i), p = Math.round(p), c = Math.round(c), u = Math.round(u), this.renderer.gl.enable(this.renderer.gl.SCISSOR_TEST), this.renderer.gl.scissor(i, p, c, u);
-    }
-    this.renderer.framebuffer.clear(h.red, h.green, h.blue, h.alpha, t), s && this.renderer.scissor.pop();
+  get offsets() {
+    return !!(this.data & 1 << s);
   }
-  resize() {
-    this.bind(null);
+  set offsets(t) {
+    !!(this.data & 1 << s) !== t && (this.data ^= 1 << s);
   }
-  /** Resets render-texture state. */
-  reset() {
-    this.bind(null);
+  /**
+   * Activates culling of polygons.
+   * @default false
+   */
+  get culling() {
+    return !!(this.data & 1 << a);
   }
-  destroy() {
-    this.renderer = null;
+  set culling(t) {
+    !!(this.data & 1 << a) !== t && (this.data ^= 1 << a);
+  }
+  /**
+   * Activates depth comparisons and updates to the depth buffer.
+   * @default false
+   */
+  get depthTest() {
+    return !!(this.data & 1 << i);
+  }
+  set depthTest(t) {
+    !!(this.data & 1 << i) !== t && (this.data ^= 1 << i);
+  }
+  /**
+   * Enables or disables writing to the depth buffer.
+   * @default true
+   */
+  get depthMask() {
+    return !!(this.data & 1 << o);
+  }
+  set depthMask(t) {
+    !!(this.data & 1 << o) !== t && (this.data ^= 1 << o);
+  }
+  /**
+   * Specifies whether or not front or back-facing polygons can be culled.
+   * @default false
+   */
+  get clockwiseFrontFace() {
+    return !!(this.data & 1 << d);
+  }
+  set clockwiseFrontFace(t) {
+    !!(this.data & 1 << d) !== t && (this.data ^= 1 << d);
+  }
+  /**
+   * The blend mode to be applied when this state is set. Apply a value of `PIXI.BLEND_MODES.NORMAL` to reset the blend mode.
+   * Setting this mode to anything other than NO_BLEND will automatically switch blending on.
+   * @default PIXI.BLEND_MODES.NORMAL
+   */
+  get blendMode() {
+    return this._blendMode;
+  }
+  set blendMode(t) {
+    this.blend = t !== h.NONE, this._blendMode = t;
+  }
+  /**
+   * The polygon offset. Setting this property to anything other than 0 will automatically enable polygon offset fill.
+   * @default 0
+   */
+  get polygonOffset() {
+    return this._polygonOffset;
+  }
+  set polygonOffset(t) {
+    this.offsets = !!t, this._polygonOffset = t;
+  }
+  static for2d() {
+    const t = new n();
+    return t.depthTest = !1, t.blend = !0, t;
   }
 }
-m.extension = {
-  type: g.RendererSystem,
-  name: "renderTexture"
+n.prototype.toString = function() {
+  return `[@pixi/core:State blendMode=${this.blendMode} clockwiseFrontFace=${this.clockwiseFrontFace} culling=${this.culling} depthMask=${this.depthMask} polygonOffset=${this.polygonOffset}]`;
 };
-f.add(m);
 export {
-  m as RenderTextureSystem
+  n as State
 };
 //# sourceMappingURL=index69.js.map

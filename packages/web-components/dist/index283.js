@@ -1,20 +1,82 @@
-var e = `#version 100
-#define SHADER_NAME Tiling-Sprite-Simple-100
-
-precision lowp float;
-
-varying vec2 vTextureCoord;
-
-uniform sampler2D uSampler;
-uniform vec4 uColor;
-
-void main(void)
-{
-    vec4 texSample = texture2D(uSampler, vTextureCoord);
-    gl_FragColor = texSample * uColor;
+import "./index20.js";
+import "./index21.js";
+import "./index22.js";
+import "./index23.js";
+import "./index24.js";
+import "./index25.js";
+import "./index26.js";
+import "./index27.js";
+import "./index28.js";
+import "./index29.js";
+import "./index30.js";
+import "./index31.js";
+import "./index32.js";
+import "./index33.js";
+import "./index34.js";
+import "./index35.js";
+import "./index36.js";
+import "./index37.js";
+import "./index38.js";
+import "./index39.js";
+import "./index40.js";
+import "./index41.js";
+import "./index42.js";
+import "./index43.js";
+import "./index44.js";
+import "./index45.js";
+import "./index46.js";
+import "./index47.js";
+import "./index48.js";
+import "./index49.js";
+import "./index50.js";
+import "./index51.js";
+import "./index52.js";
+import "./index53.js";
+import "./index54.js";
+import "./index55.js";
+import "./index56.js";
+import "./index57.js";
+import "./index58.js";
+import "./index59.js";
+import "./index60.js";
+import "./index61.js";
+import "./index62.js";
+import "./index63.js";
+import { Texture as i } from "./index135.js";
+import "./index65.js";
+import "./index66.js";
+import "./index67.js";
+import "./index68.js";
+import "./index69.js";
+import "./index70.js";
+import "./index71.js";
+import "./index72.js";
+import "./index73.js";
+import "./index74.js";
+import "./index75.js";
+import "./index64.js";
+import "./index76.js";
+import "./index77.js";
+import "./index78.js";
+class r {
+  constructor() {
+    this.color = 16777215, this.alpha = 1, this.texture = i.WHITE, this.matrix = null, this.visible = !1, this.reset();
+  }
+  /** Clones the object */
+  clone() {
+    const t = new r();
+    return t.color = this.color, t.alpha = this.alpha, t.texture = this.texture, t.matrix = this.matrix, t.visible = this.visible, t;
+  }
+  /** Reset */
+  reset() {
+    this.color = 16777215, this.alpha = 1, this.texture = i.WHITE, this.matrix = null, this.visible = !1;
+  }
+  /** Destroy and don't use after this. */
+  destroy() {
+    this.texture = null, this.matrix = null;
+  }
 }
-`;
 export {
-  e as default
+  r as FillStyle
 };
 //# sourceMappingURL=index283.js.map

@@ -1,20 +1,11 @@
-var t = `attribute vec2 aVertexPosition;
-attribute vec2 aTextureCoord;
-
-uniform mat3 projectionMatrix;
-uniform mat3 translationMatrix;
-uniform mat3 uTextureMatrix;
-
-varying vec2 vTextureCoord;
-
-void main(void)
-{
-    gl_Position = vec4((projectionMatrix * translationMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);
-
-    vTextureCoord = (uTextureMatrix * vec3(aTextureCoord, 1.0)).xy;
+function r(n, o = globalThis.location) {
+  if (n.startsWith("data:"))
+    return "";
+  o = o || globalThis.location;
+  const t = new URL(n, document.baseURI);
+  return t.hostname !== o.hostname || t.port !== o.port || t.protocol !== o.protocol ? "anonymous" : "";
 }
-`;
 export {
-  t as default
+  r as determineCrossOrigin
 };
 //# sourceMappingURL=index259.js.map

@@ -1,69 +1,56 @@
-import { ExtensionType as a, extensions as m } from "./index140.js";
-import "./index25.js";
+import { ExtensionType as m, extensions as x } from "./index158.js";
+import "./index22.js";
+import "./index23.js";
+import "./index24.js";
+import { Rectangle as u } from "./index25.js";
 import "./index26.js";
 import "./index27.js";
-import "./index28.js";
+import { Matrix as d } from "./index28.js";
 import "./index29.js";
 import "./index30.js";
-import { Matrix as h } from "./index31.js";
-import "./index32.js";
-import "./index33.js";
-import "./index34.js";
-class n {
-  /** @param renderer - The renderer this System works for. */
-  constructor(r) {
-    this.renderer = r, this.destinationFrame = null, this.sourceFrame = null, this.defaultFrame = null, this.projectionMatrix = new h(), this.transform = null;
+import { Transform as f } from "./index31.js";
+import { RenderTexture as T } from "./index134.js";
+const g = new f(), s = new u();
+class a {
+  constructor(t) {
+    this.renderer = t, this._tempMatrix = new d();
   }
   /**
-   * Updates the projection-matrix based on the sourceFrame → destinationFrame mapping provided.
-   *
-   * NOTE: It is expected you call `renderer.framebuffer.setViewport(destinationFrame)` after this. This is because
-   * the framebuffer viewport converts shader vertex output in normalized device coordinates to window coordinates.
-   *
-   * NOTE-2: {@link PIXI.RenderTextureSystem#bind} updates the projection-matrix when you bind a render-texture.
-   * It is expected
-   * that you dirty the current bindings when calling this manually.
-   * @param destinationFrame - The rectangle in the render-target to render the contents into. If rendering to the canvas,
-   *  the origin is on the top-left; if rendering to a render-texture, the origin is on the bottom-left.
-   * @param sourceFrame - The rectangle in world space that contains the contents being rendered.
-   * @param resolution - The resolution of the render-target, which is the ratio of
-   *  world-space (or CSS) pixels to physical pixels.
-   * @param root - Whether the render-target is the screen. This is required because rendering to textures
-   *  is y-flipped (i.e. upside down relative to the screen).
+   * A Useful function that returns a texture of the display object that can then be used to create sprites
+   * This can be quite useful if your displayObject is complicated and needs to be reused multiple times.
+   * @param displayObject - The displayObject the object will be generated from.
+   * @param {IGenerateTextureOptions} options - Generate texture options.
+   * @param {PIXI.Rectangle} options.region - The region of the displayObject, that shall be rendered,
+   *        if no region is specified, defaults to the local bounds of the displayObject.
+   * @param {number} [options.resolution] - If not given, the renderer's resolution is used.
+   * @param {PIXI.MSAA_QUALITY} [options.multisample] - If not given, the renderer's multisample is used.
+   * @returns a shiny new texture of the display object passed in
    */
-  update(r, i, o, e) {
-    this.destinationFrame = r || this.destinationFrame || this.defaultFrame, this.sourceFrame = i || this.sourceFrame || r, this.calculateProjection(this.destinationFrame, this.sourceFrame, o, e), this.transform && this.projectionMatrix.append(this.transform);
-    const t = this.renderer;
-    t.globalUniforms.uniforms.projectionMatrix = this.projectionMatrix, t.globalUniforms.update(), t.shader.shader && t.shader.syncUniformGroup(t.shader.shader.uniforms.globals);
-  }
-  /**
-   * Calculates the `projectionMatrix` to map points inside `sourceFrame` to inside `destinationFrame`.
-   * @param _destinationFrame - The destination frame in the render-target.
-   * @param sourceFrame - The source frame in world space.
-   * @param _resolution - The render-target's resolution, i.e. ratio of CSS to physical pixels.
-   * @param root - Whether rendering into the screen. Otherwise, if rendering to a framebuffer, the projection
-   *  is y-flipped.
-   */
-  calculateProjection(r, i, o, e) {
-    const t = this.projectionMatrix, s = e ? -1 : 1;
-    t.identity(), t.a = 1 / i.width * 2, t.d = s * (1 / i.height * 2), t.tx = -1 - i.x * t.a, t.ty = -s - i.y * t.d;
-  }
-  /**
-   * Sets the transform of the active render target to the given matrix.
-   * @param _matrix - The transformation matrix
-   */
-  setTransform(r) {
+  generateTexture(t, p) {
+    const { region: o, ...e } = p || {}, r = (o == null ? void 0 : o.copyTo(s)) || t.getLocalBounds(s, !0), n = e.resolution || this.renderer.resolution;
+    r.width = Math.max(r.width, 1 / n), r.height = Math.max(r.height, 1 / n), e.width = r.width, e.height = r.height, e.resolution = n, e.multisample ?? (e.multisample = this.renderer.multisample);
+    const i = T.create(e);
+    this._tempMatrix.tx = -r.x, this._tempMatrix.ty = -r.y;
+    const h = t.transform;
+    return t.transform = g, this.renderer.render(t, {
+      renderTexture: i,
+      transform: this._tempMatrix,
+      skipUpdateTransform: !!t.parent,
+      blit: !0
+    }), t.transform = h, i;
   }
   destroy() {
-    this.renderer = null;
   }
 }
-n.extension = {
-  type: a.RendererSystem,
-  name: "projection"
+a.extension = {
+  type: [
+    m.RendererSystem,
+    m.CanvasRendererSystem
+  ],
+  name: "textureGenerator"
 };
-m.add(n);
+x.add(a);
 export {
-  n as ProjectionSystem
+  a as GenerateTextureSystem
 };
 //# sourceMappingURL=index63.js.map

@@ -1,66 +1,35 @@
-import { ExtensionType as c, extensions as l } from "./index140.js";
-import { settings as i } from "./index153.js";
-import "./index36.js";
-import { AbstractMaskSystem as a } from "./index203.js";
-class o extends a {
-  /**
-   * @param renderer - The renderer this System works for.
-   */
-  constructor(e) {
-    super(e), this.glConst = i.ADAPTER.getWebGLRenderingContext().STENCIL_TEST;
-  }
-  getStackLength() {
-    const e = this.maskStack[this.maskStack.length - 1];
-    return e ? e._stencilCounter : 0;
+import { ExtensionType as m, extensions as u } from "./index158.js";
+class c {
+  // renderers scene graph!
+  constructor(r) {
+    this.renderer = r;
   }
   /**
-   * Applies the Mask and adds it to the current stencil stack.
-   * @param maskData - The mask data
+   * Renders the object to its WebGL view.
+   * @param displayObject - The object to be rendered.
+   * @param options - the options to be passed to the renderer
    */
-  push(e) {
-    const r = e.maskObject, { gl: t } = this.renderer, s = e._stencilCounter;
-    s === 0 && (this.renderer.framebuffer.forceStencil(), t.clearStencil(0), t.clear(t.STENCIL_BUFFER_BIT), t.enable(t.STENCIL_TEST)), e._stencilCounter++;
-    const n = e._colorMask;
-    n !== 0 && (e._colorMask = 0, t.colorMask(!1, !1, !1, !1)), t.stencilFunc(t.EQUAL, s, 4294967295), t.stencilOp(t.KEEP, t.KEEP, t.INCR), r.renderable = !0, r.render(this.renderer), this.renderer.batch.flush(), r.renderable = !1, n !== 0 && (e._colorMask = n, t.colorMask(
-      (n & 1) !== 0,
-      (n & 2) !== 0,
-      (n & 4) !== 0,
-      (n & 8) !== 0
-    )), this._useCurrent();
-  }
-  /**
-   * Pops stencil mask. MaskData is already removed from stack
-   * @param {PIXI.DisplayObject} maskObject - object of popped mask data
-   */
-  pop(e) {
-    const r = this.renderer.gl;
-    if (this.getStackLength() === 0)
-      r.disable(r.STENCIL_TEST);
-    else {
-      const t = this.maskStack.length !== 0 ? this.maskStack[this.maskStack.length - 1] : null, s = t ? t._colorMask : 15;
-      s !== 0 && (t._colorMask = 0, r.colorMask(!1, !1, !1, !1)), r.stencilOp(r.KEEP, r.KEEP, r.DECR), e.renderable = !0, e.render(this.renderer), this.renderer.batch.flush(), e.renderable = !1, s !== 0 && (t._colorMask = s, r.colorMask(
-        (s & 1) !== 0,
-        (s & 2) !== 0,
-        (s & 4) !== 0,
-        (s & 8) !== 0
-      )), this._useCurrent();
+  render(r, n) {
+    const e = this.renderer;
+    let t, d, s, a;
+    if (n && (t = n.renderTexture, d = n.clear, s = n.transform, a = n.skipUpdateTransform), this.renderingToScreen = !t, e.runners.prerender.emit(), e.emit("prerender"), e.projection.transform = s, !e.context.isLost) {
+      if (t || (this.lastObjectRendered = r), !a) {
+        const o = r.enableTempParent();
+        r.updateTransform(), r.disableTempParent(o);
+      }
+      e.renderTexture.bind(t), e.batch.currentRenderer.start(), (d ?? e.background.clearBeforeRender) && e.renderTexture.clear(), r.render(e), e.batch.currentRenderer.flush(), t && (n.blit && e.framebuffer.blit(), t.baseTexture.update()), e.runners.postrender.emit(), e.projection.transform = null, e.emit("postrender");
     }
   }
-  /**
-   * Setup renderer to use the current stencil data.
-   * @private
-   */
-  _useCurrent() {
-    const e = this.renderer.gl;
-    e.stencilFunc(e.EQUAL, this.getStackLength(), 4294967295), e.stencilOp(e.KEEP, e.KEEP, e.KEEP);
+  destroy() {
+    this.renderer = null, this.lastObjectRendered = null;
   }
 }
-o.extension = {
-  type: c.RendererSystem,
-  name: "stencil"
+c.extension = {
+  type: m.RendererSystem,
+  name: "objectRenderer"
 };
-l.add(o);
+u.add(c);
 export {
-  o as StencilSystem
+  c as ObjectRendererSystem
 };
 //# sourceMappingURL=index61.js.map

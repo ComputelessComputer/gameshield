@@ -1,6 +1,9 @@
+import "./index20.js";
+import "./index21.js";
+import { ExtensionType as t, extensions as r } from "./index158.js";
+import "./index22.js";
 import "./index23.js";
 import "./index24.js";
-import { ExtensionType as r, extensions as i } from "./index140.js";
 import "./index25.js";
 import "./index26.js";
 import "./index27.js";
@@ -9,6 +12,7 @@ import "./index29.js";
 import "./index30.js";
 import "./index31.js";
 import "./index32.js";
+import { settings as i } from "./index163.js";
 import "./index33.js";
 import "./index34.js";
 import "./index35.js";
@@ -55,21 +59,24 @@ import "./index75.js";
 import "./index76.js";
 import "./index77.js";
 import "./index78.js";
-import "./index79.js";
-import "./index80.js";
-import "./index81.js";
-import { testVideoFormat as m } from "./index151.js";
-const p = {
+import { checkDataUrl as m } from "./index182.js";
+import { checkExtension as p } from "./index166.js";
+import { LoaderParserPriority as n } from "./index167.js";
+const e = ".json", a = "application/json", s = {
   extension: {
-    type: r.DetectionParser,
-    priority: 0
+    type: t.LoadParser,
+    priority: n.Low
   },
-  test: async () => m("video/webm"),
-  add: async (t) => [...t, "webm"],
-  remove: async (t) => t.filter((o) => o !== "webm")
+  name: "loadJson",
+  test(o) {
+    return m(o, a) || p(o, e);
+  },
+  async load(o) {
+    return await (await i.ADAPTER.fetch(o)).json();
+  }
 };
-i.add(p);
+r.add(s);
 export {
-  p as detectWebm
+  s as loadJson
 };
 //# sourceMappingURL=index86.js.map

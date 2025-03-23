@@ -1,36 +1,69 @@
-import { ExtensionType as s, extensions as n } from "./index140.js";
-class r {
-  constructor(t) {
-    this.renderer = t;
+import { GC_MODES as h } from "./index164.js";
+import { ExtensionType as d, extensions as i } from "./index158.js";
+const s = class u {
+  /** @param renderer - The renderer this System works for. */
+  constructor(r) {
+    this.renderer = r, this.count = 0, this.checkCount = 0, this.maxIdle = u.defaultMaxIdle, this.checkCountMax = u.defaultCheckCountMax, this.mode = u.defaultMode;
   }
   /**
-   * It all starts here! This initiates every system, passing in the options for any system by name.
-   * @param options - the config for the renderer and all its systems
+   * Checks to see when the last time a texture was used.
+   * If the texture has not been used for a specified amount of time, it will be removed from the GPU.
    */
-  run(t) {
-    const { renderer: e } = this;
-    e.runners.init.emit(e.options), t.hello && console.log(`PixiJS 7.4.3 - ${e.rendererLogId} - https://pixijs.com`), e.resize(e.screen.width, e.screen.height);
+  postrender() {
+    this.renderer.objectRenderer.renderingToScreen && (this.count++, this.mode !== h.MANUAL && (this.checkCount++, this.checkCount > this.checkCountMax && (this.checkCount = 0, this.run())));
+  }
+  /**
+   * Checks to see when the last time a texture was used.
+   * If the texture has not been used for a specified amount of time, it will be removed from the GPU.
+   */
+  run() {
+    const r = this.renderer.texture, t = r.managedTextures;
+    let o = !1;
+    for (let e = 0; e < t.length; e++) {
+      const n = t[e];
+      n.resource && this.count - n.touched > this.maxIdle && (r.destroyTexture(n, !0), t[e] = null, o = !0);
+    }
+    if (o) {
+      let e = 0;
+      for (let n = 0; n < t.length; n++)
+        t[n] !== null && (t[e++] = t[n]);
+      t.length = e;
+    }
+  }
+  /**
+   * Removes all the textures within the specified displayObject and its children from the GPU.
+   * @param {PIXI.DisplayObject} displayObject - the displayObject to remove the textures from.
+   */
+  unload(r) {
+    const t = this.renderer.texture, o = r._texture;
+    o && !o.framebuffer && t.destroyTexture(o);
+    for (let e = r.children.length - 1; e >= 0; e--)
+      this.unload(r.children[e]);
   }
   destroy() {
+    this.renderer = null;
   }
-}
-r.defaultOptions = {
-  /**
-   * {@link PIXI.IRendererOptions.hello}
-   * @default false
-   * @memberof PIXI.settings.RENDER_OPTIONS
-   */
-  hello: !1
-}, /** @ignore */
-r.extension = {
-  type: [
-    s.RendererSystem,
-    s.CanvasRendererSystem
-  ],
-  name: "startup"
 };
-n.add(r);
+s.defaultMode = h.AUTO, /**
+* Default maximum idle frames before a texture is destroyed by garbage collection.
+* @static
+* @default 3600
+* @see PIXI.TextureGCSystem#maxIdle
+*/
+s.defaultMaxIdle = 60 * 60, /**
+* Default frames between two garbage collections.
+* @static
+* @default 600
+* @see PIXI.TextureGCSystem#checkCountMax
+*/
+s.defaultCheckCountMax = 60 * 10, /** @ignore */
+s.extension = {
+  type: d.RendererSystem,
+  name: "textureGC"
+};
+let l = s;
+i.add(l);
 export {
-  r as StartupSystem
+  l as TextureGCSystem
 };
 //# sourceMappingURL=index71.js.map

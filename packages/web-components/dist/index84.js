@@ -1,6 +1,9 @@
+import "./index20.js";
+import "./index21.js";
+import { ExtensionType as r, extensions as i } from "./index158.js";
+import "./index22.js";
 import "./index23.js";
 import "./index24.js";
-import { ExtensionType as r, extensions as i } from "./index140.js";
 import "./index25.js";
 import "./index26.js";
 import "./index27.js";
@@ -55,23 +58,18 @@ import "./index75.js";
 import "./index76.js";
 import "./index77.js";
 import "./index78.js";
-import "./index79.js";
-import "./index80.js";
-import "./index81.js";
-import { testImageFormat as p } from "./index150.js";
-const m = {
+import { testVideoFormat as m } from "./index181.js";
+const p = {
   extension: {
     type: r.DetectionParser,
     priority: 0
   },
-  test: async () => p(
-    "data:image/webp;base64,UklGRh4AAABXRUJQVlA4TBEAAAAvAAAAAAfQ//73v/+BiOh/AAA="
-  ),
-  add: async (t) => [...t, "webp"],
-  remove: async (t) => t.filter((o) => o !== "webp")
+  test: async () => m("video/mp4"),
+  add: async (t) => [...t, "mp4", "m4v"],
+  remove: async (t) => t.filter((o) => o !== "mp4" && o !== "m4v")
 };
-i.add(m);
+i.add(p);
 export {
-  m as detectWebp
+  p as detectMp4
 };
 //# sourceMappingURL=index84.js.map

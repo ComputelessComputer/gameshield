@@ -1,143 +1,211 @@
-import { SHAPES as C } from "./index240.js";
-import { Point as d } from "./index33.js";
-const g = [new d(), new d(), new d(), new d()];
-class b {
+import { PI_2 as u } from "./index262.js";
+import { Point as a } from "./index30.js";
+class n {
   /**
-   * @param x - The X coordinate of the upper-left corner of the rectangle
-   * @param y - The Y coordinate of the upper-left corner of the rectangle
-   * @param width - The overall width of the rectangle
-   * @param height - The overall height of the rectangle
+   * @param a - x scale
+   * @param b - y skew
+   * @param c - x skew
+   * @param d - y scale
+   * @param tx - x translation
+   * @param ty - y translation
    */
-  constructor(t = 0, h = 0, x = 0, i = 0) {
-    this.x = Number(t), this.y = Number(h), this.width = Number(x), this.height = Number(i), this.type = C.RECT;
-  }
-  /** Returns the left edge of the rectangle. */
-  get left() {
-    return this.x;
-  }
-  /** Returns the right edge of the rectangle. */
-  get right() {
-    return this.x + this.width;
-  }
-  /** Returns the top edge of the rectangle. */
-  get top() {
-    return this.y;
-  }
-  /** Returns the bottom edge of the rectangle. */
-  get bottom() {
-    return this.y + this.height;
-  }
-  /** A constant empty rectangle. */
-  static get EMPTY() {
-    return new b(0, 0, 0, 0);
+  constructor(t = 1, h = 0, s = 0, i = 1, c = 0, y = 0) {
+    this.array = null, this.a = t, this.b = h, this.c = s, this.d = i, this.tx = c, this.ty = y;
   }
   /**
-   * Creates a clone of this Rectangle
-   * @returns a copy of the rectangle
+   * Creates a Matrix object based on the given array. The Element to Matrix mapping order is as follows:
+   *
+   * a = array[0]
+   * b = array[1]
+   * c = array[3]
+   * d = array[4]
+   * tx = array[2]
+   * ty = array[5]
+   * @param array - The array that the matrix will be populated from.
+   */
+  fromArray(t) {
+    this.a = t[0], this.b = t[1], this.c = t[3], this.d = t[4], this.tx = t[2], this.ty = t[5];
+  }
+  /**
+   * Sets the matrix properties.
+   * @param a - Matrix component
+   * @param b - Matrix component
+   * @param c - Matrix component
+   * @param d - Matrix component
+   * @param tx - Matrix component
+   * @param ty - Matrix component
+   * @returns This matrix. Good for chaining method calls.
+   */
+  set(t, h, s, i, c, y) {
+    return this.a = t, this.b = h, this.c = s, this.d = i, this.tx = c, this.ty = y, this;
+  }
+  /**
+   * Creates an array from the current Matrix object.
+   * @param transpose - Whether we need to transpose the matrix or not
+   * @param [out=new Float32Array(9)] - If provided the array will be assigned to out
+   * @returns The newly created array which contains the matrix
+   */
+  toArray(t, h) {
+    this.array || (this.array = new Float32Array(9));
+    const s = h || this.array;
+    return t ? (s[0] = this.a, s[1] = this.b, s[2] = 0, s[3] = this.c, s[4] = this.d, s[5] = 0, s[6] = this.tx, s[7] = this.ty, s[8] = 1) : (s[0] = this.a, s[1] = this.c, s[2] = this.tx, s[3] = this.b, s[4] = this.d, s[5] = this.ty, s[6] = 0, s[7] = 0, s[8] = 1), s;
+  }
+  /**
+   * Get a new position with the current transformation applied.
+   * Can be used to go from a child's coordinate space to the world coordinate space. (e.g. rendering)
+   * @param pos - The origin
+   * @param {PIXI.Point} [newPos] - The point that the new position is assigned to (allowed to be same as input)
+   * @returns {PIXI.Point} The new point, transformed through this matrix
+   */
+  apply(t, h) {
+    h = h || new a();
+    const s = t.x, i = t.y;
+    return h.x = this.a * s + this.c * i + this.tx, h.y = this.b * s + this.d * i + this.ty, h;
+  }
+  /**
+   * Get a new position with the inverse of the current transformation applied.
+   * Can be used to go from the world coordinate space to a child's coordinate space. (e.g. input)
+   * @param pos - The origin
+   * @param {PIXI.Point} [newPos] - The point that the new position is assigned to (allowed to be same as input)
+   * @returns {PIXI.Point} The new point, inverse-transformed through this matrix
+   */
+  applyInverse(t, h) {
+    h = h || new a();
+    const s = 1 / (this.a * this.d + this.c * -this.b), i = t.x, c = t.y;
+    return h.x = this.d * s * i + -this.c * s * c + (this.ty * this.c - this.tx * this.d) * s, h.y = this.a * s * c + -this.b * s * i + (-this.ty * this.a + this.tx * this.b) * s, h;
+  }
+  /**
+   * Translates the matrix on the x and y.
+   * @param x - How much to translate x by
+   * @param y - How much to translate y by
+   * @returns This matrix. Good for chaining method calls.
+   */
+  translate(t, h) {
+    return this.tx += t, this.ty += h, this;
+  }
+  /**
+   * Applies a scale transformation to the matrix.
+   * @param x - The amount to scale horizontally
+   * @param y - The amount to scale vertically
+   * @returns This matrix. Good for chaining method calls.
+   */
+  scale(t, h) {
+    return this.a *= t, this.d *= h, this.c *= t, this.b *= h, this.tx *= t, this.ty *= h, this;
+  }
+  /**
+   * Applies a rotation transformation to the matrix.
+   * @param angle - The angle in radians.
+   * @returns This matrix. Good for chaining method calls.
+   */
+  rotate(t) {
+    const h = Math.cos(t), s = Math.sin(t), i = this.a, c = this.c, y = this.tx;
+    return this.a = i * h - this.b * s, this.b = i * s + this.b * h, this.c = c * h - this.d * s, this.d = c * s + this.d * h, this.tx = y * h - this.ty * s, this.ty = y * s + this.ty * h, this;
+  }
+  /**
+   * Appends the given Matrix to this Matrix.
+   * @param matrix - The matrix to append.
+   * @returns This matrix. Good for chaining method calls.
+   */
+  append(t) {
+    const h = this.a, s = this.b, i = this.c, c = this.d;
+    return this.a = t.a * h + t.b * i, this.b = t.a * s + t.b * c, this.c = t.c * h + t.d * i, this.d = t.c * s + t.d * c, this.tx = t.tx * h + t.ty * i + this.tx, this.ty = t.tx * s + t.ty * c + this.ty, this;
+  }
+  /**
+   * Sets the matrix based on all the available properties
+   * @param x - Position on the x axis
+   * @param y - Position on the y axis
+   * @param pivotX - Pivot on the x axis
+   * @param pivotY - Pivot on the y axis
+   * @param scaleX - Scale on the x axis
+   * @param scaleY - Scale on the y axis
+   * @param rotation - Rotation in radians
+   * @param skewX - Skew on the x axis
+   * @param skewY - Skew on the y axis
+   * @returns This matrix. Good for chaining method calls.
+   */
+  setTransform(t, h, s, i, c, y, d, b, e) {
+    return this.a = Math.cos(d + e) * c, this.b = Math.sin(d + e) * c, this.c = -Math.sin(d - b) * y, this.d = Math.cos(d - b) * y, this.tx = t - (s * this.a + i * this.c), this.ty = h - (s * this.b + i * this.d), this;
+  }
+  /**
+   * Prepends the given Matrix to this Matrix.
+   * @param matrix - The matrix to prepend
+   * @returns This matrix. Good for chaining method calls.
+   */
+  prepend(t) {
+    const h = this.tx;
+    if (t.a !== 1 || t.b !== 0 || t.c !== 0 || t.d !== 1) {
+      const s = this.a, i = this.c;
+      this.a = s * t.a + this.b * t.c, this.b = s * t.b + this.b * t.d, this.c = i * t.a + this.d * t.c, this.d = i * t.b + this.d * t.d;
+    }
+    return this.tx = h * t.a + this.ty * t.c + t.tx, this.ty = h * t.b + this.ty * t.d + t.ty, this;
+  }
+  /**
+   * Decomposes the matrix (x, y, scaleX, scaleY, and rotation) and sets the properties on to a transform.
+   * @param transform - The transform to apply the properties to.
+   * @returns The transform with the newly applied properties
+   */
+  decompose(t) {
+    const h = this.a, s = this.b, i = this.c, c = this.d, y = t.pivot, d = -Math.atan2(-i, c), b = Math.atan2(s, h), e = Math.abs(d + b);
+    return e < 1e-5 || Math.abs(u - e) < 1e-5 ? (t.rotation = b, t.skew.x = t.skew.y = 0) : (t.rotation = 0, t.skew.x = d, t.skew.y = b), t.scale.x = Math.sqrt(h * h + s * s), t.scale.y = Math.sqrt(i * i + c * c), t.position.x = this.tx + (y.x * h + y.y * i), t.position.y = this.ty + (y.x * s + y.y * c), t;
+  }
+  /**
+   * Inverts this matrix
+   * @returns This matrix. Good for chaining method calls.
+   */
+  invert() {
+    const t = this.a, h = this.b, s = this.c, i = this.d, c = this.tx, y = t * i - h * s;
+    return this.a = i / y, this.b = -h / y, this.c = -s / y, this.d = t / y, this.tx = (s * this.ty - i * c) / y, this.ty = -(t * this.ty - h * c) / y, this;
+  }
+  /**
+   * Resets this Matrix to an identity (default) matrix.
+   * @returns This matrix. Good for chaining method calls.
+   */
+  identity() {
+    return this.a = 1, this.b = 0, this.c = 0, this.d = 1, this.tx = 0, this.ty = 0, this;
+  }
+  /**
+   * Creates a new Matrix object with the same values as this one.
+   * @returns A copy of this matrix. Good for chaining method calls.
    */
   clone() {
-    return new b(this.x, this.y, this.width, this.height);
+    const t = new n();
+    return t.a = this.a, t.b = this.b, t.c = this.c, t.d = this.d, t.tx = this.tx, t.ty = this.ty, t;
   }
   /**
-   * Copies another rectangle to this one.
-   * @param rectangle - The rectangle to copy from.
-   * @returns Returns itself.
-   */
-  copyFrom(t) {
-    return this.x = t.x, this.y = t.y, this.width = t.width, this.height = t.height, this;
-  }
-  /**
-   * Copies this rectangle to another one.
-   * @param rectangle - The rectangle to copy to.
-   * @returns Returns given parameter.
+   * Changes the values of the given matrix to be the same as the ones in this matrix
+   * @param matrix - The matrix to copy to.
+   * @returns The matrix given in parameter with its values updated.
    */
   copyTo(t) {
-    return t.x = this.x, t.y = this.y, t.width = this.width, t.height = this.height, t;
+    return t.a = this.a, t.b = this.b, t.c = this.c, t.d = this.d, t.tx = this.tx, t.ty = this.ty, t;
   }
   /**
-   * Checks whether the x and y coordinates given are contained within this Rectangle
-   * @param x - The X coordinate of the point to test
-   * @param y - The Y coordinate of the point to test
-   * @returns Whether the x/y coordinates are within this Rectangle
+   * Changes the values of the matrix to be the same as the ones in given matrix
+   * @param {PIXI.Matrix} matrix - The matrix to copy from.
+   * @returns {PIXI.Matrix} this
    */
-  contains(t, h) {
-    return this.width <= 0 || this.height <= 0 ? !1 : t >= this.x && t < this.x + this.width && h >= this.y && h < this.y + this.height;
+  copyFrom(t) {
+    return this.a = t.a, this.b = t.b, this.c = t.c, this.d = t.d, this.tx = t.tx, this.ty = t.ty, this;
   }
   /**
-   * Determines whether the `other` Rectangle transformed by `transform` intersects with `this` Rectangle object.
-   * Returns true only if the area of the intersection is >0, this means that Rectangles
-   * sharing a side are not overlapping. Another side effect is that an arealess rectangle
-   * (width or height equal to zero) can't intersect any other rectangle.
-   * @param {Rectangle} other - The Rectangle to intersect with `this`.
-   * @param {Matrix} transform - The transformation matrix of `other`.
-   * @returns {boolean} A value of `true` if the transformed `other` Rectangle intersects with `this`; otherwise `false`.
+   * A default (identity) matrix
+   * @readonly
    */
-  intersects(t, h) {
-    if (!h) {
-      const T = this.x < t.x ? t.x : this.x;
-      if ((this.right > t.right ? t.right : this.right) <= T)
-        return !1;
-      const A = this.y < t.y ? t.y : this.y;
-      return (this.bottom > t.bottom ? t.bottom : this.bottom) > A;
-    }
-    const x = this.left, i = this.right, y = this.top, M = this.bottom;
-    if (i <= x || M <= y)
-      return !1;
-    const s = g[0].set(t.left, t.top), n = g[1].set(t.left, t.bottom), w = g[2].set(t.right, t.top), m = g[3].set(t.right, t.bottom);
-    if (w.x <= s.x || n.y <= s.y)
-      return !1;
-    const a = Math.sign(h.a * h.d - h.b * h.c);
-    if (a === 0 || (h.apply(s, s), h.apply(n, n), h.apply(w, w), h.apply(m, m), Math.max(s.x, n.x, w.x, m.x) <= x || Math.min(s.x, n.x, w.x, m.x) >= i || Math.max(s.y, n.y, w.y, m.y) <= y || Math.min(s.y, n.y, w.y, m.y) >= M))
-      return !1;
-    const u = a * (n.y - s.y), e = a * (s.x - n.x), r = u * x + e * y, c = u * i + e * y, f = u * x + e * M, N = u * i + e * M;
-    if (Math.max(r, c, f, N) <= u * s.x + e * s.y || Math.min(r, c, f, N) >= u * m.x + e * m.y)
-      return !1;
-    const o = a * (s.y - w.y), p = a * (w.x - s.x), P = o * x + p * y, $ = o * i + p * y, E = o * x + p * M, S = o * i + p * M;
-    return !(Math.max(P, $, E, S) <= o * s.x + p * s.y || Math.min(P, $, E, S) >= o * m.x + p * m.y);
+  static get IDENTITY() {
+    return new n();
   }
   /**
-   * Pads the rectangle making it grow in all directions.
-   * If paddingY is omitted, both paddingX and paddingY will be set to paddingX.
-   * @param paddingX - The horizontal padding amount.
-   * @param paddingY - The vertical padding amount.
-   * @returns Returns itself.
+   * A temp matrix
+   * @readonly
    */
-  pad(t = 0, h = t) {
-    return this.x -= t, this.y -= h, this.width += t * 2, this.height += h * 2, this;
-  }
-  /**
-   * Fits this rectangle around the passed one.
-   * @param rectangle - The rectangle to fit.
-   * @returns Returns itself.
-   */
-  fit(t) {
-    const h = Math.max(this.x, t.x), x = Math.min(this.x + this.width, t.x + t.width), i = Math.max(this.y, t.y), y = Math.min(this.y + this.height, t.y + t.height);
-    return this.x = h, this.width = Math.max(x - h, 0), this.y = i, this.height = Math.max(y - i, 0), this;
-  }
-  /**
-   * Enlarges rectangle that way its corners lie on grid
-   * @param resolution - resolution
-   * @param eps - precision
-   * @returns Returns itself.
-   */
-  ceil(t = 1, h = 1e-3) {
-    const x = Math.ceil((this.x + this.width - h) * t) / t, i = Math.ceil((this.y + this.height - h) * t) / t;
-    return this.x = Math.floor((this.x + h) * t) / t, this.y = Math.floor((this.y + h) * t) / t, this.width = x - this.x, this.height = i - this.y, this;
-  }
-  /**
-   * Enlarges this rectangle to include the passed rectangle.
-   * @param rectangle - The rectangle to include.
-   * @returns Returns itself.
-   */
-  enlarge(t) {
-    const h = Math.min(this.x, t.x), x = Math.max(this.x + this.width, t.x + t.width), i = Math.min(this.y, t.y), y = Math.max(this.y + this.height, t.y + t.height);
-    return this.x = h, this.width = x - h, this.y = i, this.height = y - i, this;
+  static get TEMP_MATRIX() {
+    return new n();
   }
 }
-b.prototype.toString = function() {
-  return `[@pixi/math:Rectangle x=${this.x} y=${this.y} width=${this.width} height=${this.height}]`;
+n.prototype.toString = function() {
+  return `[@pixi/math:Matrix a=${this.a} b=${this.b} c=${this.c} d=${this.d} tx=${this.tx} ty=${this.ty}]`;
 };
 export {
-  b as Rectangle
+  n as Matrix
 };
 //# sourceMappingURL=index28.js.map

@@ -1,23 +1,15 @@
-import { __require as f } from "./index348.js";
-import { __require as a } from "./index347.js";
-import { __require as P } from "./index358.js";
-var e, u;
-function p() {
-  if (u)
-    return e;
-  u = 1;
-  var t = f(), o = a(), i = P();
-  return e = t ? function(r) {
-    return t(r);
-  } : o ? function(r) {
-    if (!r || typeof r != "object" && typeof r != "function")
-      throw new TypeError("getProto: not an object");
-    return o(r);
-  } : i ? function(r) {
-    return i(r);
-  } : null, e;
-}
+import { ExtensionType as o } from "./index153.js";
+import { testVideoFormat as r } from "./index362.js";
+const n = {
+  extension: {
+    type: o.DetectionParser,
+    priority: 0
+  },
+  test: async () => r("video/webm"),
+  add: async (e) => [...e, "webm"],
+  remove: async (e) => e.filter((t) => t !== "webm")
+};
 export {
-  p as __require
+  n as detectWebm
 };
 //# sourceMappingURL=index346.js.map

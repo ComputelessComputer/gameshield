@@ -1,35 +1,21 @@
-import { g as p } from "./index326.js";
-import { c as i } from "./index327.js";
-import { o as s } from "./index321.js";
-import { t as u } from "./index320.js";
-var f = p, r = i, c = s, v = u, o = f("%Map%", !0), m = r("Map.prototype.get", !0), l = r("Map.prototype.set", !0), d = r("Map.prototype.has", !0), M = r("Map.prototype.delete", !0), $ = r("Map.prototype.size", !0), I = !!o && /** @type {Exclude<import('.'), false>} */
-function() {
-  var e, n = {
-    assert: function(t) {
-      if (!n.has(t))
-        throw new v("Side channel does not contain " + c(t));
-    },
-    delete: function(t) {
-      if (e) {
-        var a = M(e, t);
-        return $(e) === 0 && (e = void 0), a;
-      }
-      return !1;
-    },
-    get: function(t) {
-      if (e)
-        return m(e, t);
-    },
-    has: function(t) {
-      return e ? d(e, t) : !1;
-    },
-    set: function(t, a) {
-      e || (e = new o()), l(e, t, a);
-    }
-  };
-  return n;
-};
+import { ExtensionType as a } from "./index153.js";
+import { TextureSource as e } from "./index474.js";
+class i extends e {
+  constructor(t) {
+    const r = t.resource || new Float32Array(t.width * t.height * 4);
+    let n = t.format;
+    n || (r instanceof Float32Array ? n = "rgba32float" : r instanceof Int32Array || r instanceof Uint32Array ? n = "rgba32uint" : r instanceof Int16Array || r instanceof Uint16Array ? n = "rgba16uint" : (r instanceof Int8Array, n = "bgra8unorm")), super({
+      ...t,
+      resource: r,
+      format: n
+    }), this.uploadMethodId = "buffer";
+  }
+  static test(t) {
+    return t instanceof Int8Array || t instanceof Uint8Array || t instanceof Uint8ClampedArray || t instanceof Int16Array || t instanceof Uint16Array || t instanceof Int32Array || t instanceof Uint32Array || t instanceof Float32Array;
+  }
+}
+i.extension = a.TextureSource;
 export {
-  I as s
+  i as BufferImageSource
 };
 //# sourceMappingURL=index323.js.map

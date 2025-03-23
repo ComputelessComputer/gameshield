@@ -1,13 +1,14 @@
-import { g as r } from "./index356.js";
-var g = r;
-if (g)
-  try {
-    g([], "length");
-  } catch {
-    g = null;
-  }
-var o = g;
+import { ExtensionType as r } from "./index153.js";
+const t = ["png", "jpg", "jpeg"], n = {
+  extension: {
+    type: r.DetectionParser,
+    priority: -1
+  },
+  test: () => Promise.resolve(!0),
+  add: async (e) => [...e, ...t],
+  remove: async (e) => e.filter((o) => !t.includes(o))
+};
 export {
-  o as g
+  n as detectDefaults
 };
 //# sourceMappingURL=index343.js.map

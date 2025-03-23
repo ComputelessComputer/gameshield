@@ -1,6 +1,12 @@
+import "./index18.js";
+import "./index19.js";
+import "./index20.js";
+import "./index21.js";
+import { MIPMAP_MODES as a, ALPHA_MODES as s } from "./index164.js";
+import { ExtensionType as n, extensions as f } from "./index158.js";
+import "./index22.js";
 import "./index23.js";
 import "./index24.js";
-import { ExtensionType as c, extensions as f } from "./index140.js";
 import "./index25.js";
 import "./index26.js";
 import "./index27.js";
@@ -9,10 +15,10 @@ import "./index29.js";
 import "./index30.js";
 import "./index31.js";
 import "./index32.js";
+import { settings as d } from "./index163.js";
 import "./index33.js";
 import "./index34.js";
 import "./index35.js";
-import { settings as u } from "./index153.js";
 import "./index36.js";
 import "./index37.js";
 import "./index38.js";
@@ -20,20 +26,19 @@ import "./index39.js";
 import "./index40.js";
 import "./index41.js";
 import "./index42.js";
+import { getResolutionOfUrl as y } from "./index165.js";
 import "./index43.js";
-import { detectVideoAlphaMode as l } from "./index160.js";
 import "./index44.js";
 import "./index45.js";
-import { getResolutionOfUrl as s } from "./index157.js";
 import "./index46.js";
 import "./index47.js";
 import "./index48.js";
 import "./index49.js";
 import "./index50.js";
-import "./index51.js";
+import { BaseTexture as D } from "./index51.js";
 import "./index52.js";
 import "./index53.js";
-import { BaseTexture as y } from "./index54.js";
+import "./index54.js";
 import "./index55.js";
 import "./index56.js";
 import "./index57.js";
@@ -58,67 +63,52 @@ import "./index75.js";
 import "./index76.js";
 import "./index77.js";
 import "./index78.js";
+import { checkExtension as P } from "./index166.js";
 import "./index79.js";
 import "./index80.js";
-import { VideoResource as b } from "./index81.js";
-import { checkDataUrl as h } from "./index154.js";
-import { checkExtension as g } from "./index155.js";
-import { LoaderParserPriority as L } from "./index152.js";
-import { createTexture as P } from "./index158.js";
-const U = [".mp4", ".m4v", ".webm", ".ogv"], x = [
-  "video/mp4",
-  "video/webm",
-  "video/ogg"
-], R = {
-  name: "loadVideo",
+import "./index81.js";
+import "./index82.js";
+import "./index83.js";
+import "./index84.js";
+import "./index85.js";
+import { LoaderParserPriority as c } from "./index167.js";
+import "./index86.js";
+import "./index87.js";
+import "./index88.js";
+import "./index89.js";
+import "./index90.js";
+import "./index91.js";
+import { createTexture as A } from "./index168.js";
+import "./index92.js";
+import { parseDDS as E } from "./index97.js";
+import "./index98.js";
+const l = {
   extension: {
-    type: c.LoadParser,
-    priority: L.High
+    type: n.LoadParser,
+    priority: c.High
   },
-  config: {
-    defaultAutoPlay: !0,
-    defaultUpdateFPS: 0,
-    defaultLoop: !1,
-    defaultMuted: !1,
-    defaultPlaysinline: !0
+  name: "loadDDS",
+  test(r) {
+    return P(r, ".dds");
   },
-  test(o) {
-    return h(o, x) || g(o, U);
-  },
-  async load(o, t, n) {
-    var m;
-    let i;
-    const d = await (await u.ADAPTER.fetch(o)).blob(), r = URL.createObjectURL(d);
-    try {
-      const e = {
-        autoPlay: this.config.defaultAutoPlay,
-        updateFPS: this.config.defaultUpdateFPS,
-        loop: this.config.defaultLoop,
-        muted: this.config.defaultMuted,
-        playsinline: this.config.defaultPlaysinline,
-        ...(m = t == null ? void 0 : t.data) == null ? void 0 : m.resourceOptions,
-        autoLoad: !0
-      }, p = new b(r, e);
-      await p.load();
-      const a = new y(p, {
-        alphaMode: await l(),
-        resolution: s(o),
-        ...t == null ? void 0 : t.data
+  async load(r, o, i) {
+    const m = await (await d.ADAPTER.fetch(r)).arrayBuffer(), t = E(m).map((p) => {
+      const e = new D(p, {
+        mipmap: a.OFF,
+        alphaMode: s.NO_PREMULTIPLIED_ALPHA,
+        resolution: y(r),
+        ...o.data
       });
-      a.resource.src = o, i = P(a, n, o), i.baseTexture.once("destroyed", () => {
-        URL.revokeObjectURL(r);
-      });
-    } catch (e) {
-      throw URL.revokeObjectURL(r), e;
-    }
-    return i;
+      return A(e, i, r);
+    });
+    return t.length === 1 ? t[0] : t;
   },
-  unload(o) {
-    o.destroy(!0);
+  unload(r) {
+    Array.isArray(r) ? r.forEach((o) => o.destroy(!0)) : r.destroy(!0);
   }
 };
-f.add(R);
+f.add(l);
 export {
-  R as loadVideo
+  l as loadDDS
 };
 //# sourceMappingURL=index94.js.map

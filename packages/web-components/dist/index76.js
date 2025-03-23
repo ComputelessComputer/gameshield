@@ -1,85 +1,81 @@
-import { ExtensionType as i, extensions as b } from "./index140.js";
-class t {
+import { TARGETS as l } from "./index164.js";
+import { AbstractMultiResource as a } from "./index260.js";
+const n = class h extends a {
   /**
-   * @param renderer - The renderer this System works for.
+   * @param {Array<string|PIXI.Resource>} [source] - Collection of URLs or resources
+   *        to use as the sides of the cube.
+   * @param options - ImageResource options
+   * @param {number} [options.width] - Width of resource
+   * @param {number} [options.height] - Height of resource
+   * @param {number} [options.autoLoad=true] - Whether to auto-load resources
+   * @param {number} [options.linkBaseTexture=true] - In case BaseTextures are supplied,
+   *   whether to copy them or use
    */
-  constructor(e) {
-    this.renderer = e;
-  }
-  /** Sets up the renderer context and necessary buffers. */
-  contextChange() {
-    this.gl = this.renderer.gl, this.CONTEXT_UID = this.renderer.CONTEXT_UID;
-  }
-  /**
-   * Bind TransformFeedback and buffers
-   * @param transformFeedback - TransformFeedback to bind
-   */
-  bind(e) {
-    const { gl: r, CONTEXT_UID: n } = this, s = e._glTransformFeedbacks[n] || this.createGLTransformFeedback(e);
-    r.bindTransformFeedback(r.TRANSFORM_FEEDBACK, s);
-  }
-  /** Unbind TransformFeedback */
-  unbind() {
-    const { gl: e } = this;
-    e.bindTransformFeedback(e.TRANSFORM_FEEDBACK, null);
+  constructor(t, r) {
+    const { width: i, height: o, autoLoad: e, linkBaseTexture: s } = r || {};
+    if (t && t.length !== h.SIDES)
+      throw new Error(`Invalid length. Got ${t.length}, expected 6`);
+    super(6, { width: i, height: o });
+    for (let d = 0; d < h.SIDES; d++)
+      this.items[d].target = l.TEXTURE_CUBE_MAP_POSITIVE_X + d;
+    this.linkBaseTexture = s !== !1, t && this.initFromArray(t, r), e !== !1 && this.load();
   }
   /**
-   * Begin TransformFeedback
-   * @param drawMode - DrawMode for TransformFeedback
-   * @param shader - A Shader used by TransformFeedback. Current bound shader will be used if not provided.
+   * Add binding.
+   * @param baseTexture - parent base texture
    */
-  beginTransformFeedback(e, r) {
-    const { gl: n, renderer: s } = this;
-    r && s.shader.bind(r), n.beginTransformFeedback(e);
+  bind(t) {
+    super.bind(t), t.target = l.TEXTURE_CUBE_MAP;
   }
-  /** End TransformFeedback */
-  endTransformFeedback() {
-    const { gl: e } = this;
-    e.endTransformFeedback();
+  addBaseTextureAt(t, r, i) {
+    if (i === void 0 && (i = this.linkBaseTexture), !this.items[r])
+      throw new Error(`Index ${r} is out of bounds`);
+    if (!this.linkBaseTexture || t.parentTextureArray || Object.keys(t._glTextures).length > 0)
+      if (t.resource)
+        this.addResourceAt(t.resource, r);
+      else
+        throw new Error("CubeResource does not support copying of renderTexture.");
+    else
+      t.target = l.TEXTURE_CUBE_MAP_POSITIVE_X + r, t.parentTextureArray = this.baseTexture, this.items[r] = t;
+    return t.valid && !this.valid && this.resize(t.realWidth, t.realHeight), this.items[r] = t, this;
   }
   /**
-   * Create TransformFeedback and bind buffers
-   * @param tf - TransformFeedback
-   * @returns WebGLTransformFeedback
+   * Upload the resource
+   * @param renderer
+   * @param _baseTexture
+   * @param glTexture
+   * @returns {boolean} true is success
    */
-  createGLTransformFeedback(e) {
-    const { gl: r, renderer: n, CONTEXT_UID: s } = this, f = r.createTransformFeedback();
-    e._glTransformFeedbacks[s] = f, r.bindTransformFeedback(r.TRANSFORM_FEEDBACK, f);
-    for (let a = 0; a < e.buffers.length; a++) {
-      const d = e.buffers[a];
-      d && (n.buffer.update(d), d._glBuffers[s].refCount++, r.bindBufferBase(r.TRANSFORM_FEEDBACK_BUFFER, a, d._glBuffers[s].buffer || null));
+  upload(t, r, i) {
+    const o = this.itemDirtyIds;
+    for (let e = 0; e < h.SIDES; e++) {
+      const s = this.items[e];
+      (o[e] < s.dirtyId || i.dirtyId < r.dirtyId) && (s.valid && s.resource ? (s.resource.upload(t, s, i), o[e] = s.dirtyId) : o[e] < -1 && (t.gl.texImage2D(
+        s.target,
+        0,
+        i.internalFormat,
+        r.realWidth,
+        r.realHeight,
+        0,
+        r.format,
+        i.type,
+        null
+      ), o[e] = -1));
     }
-    return r.bindTransformFeedback(r.TRANSFORM_FEEDBACK, null), e.disposeRunner.add(this), f;
+    return !0;
   }
   /**
-   * Disposes TransfromFeedback
-   * @param {PIXI.TransformFeedback} tf - TransformFeedback
-   * @param {boolean} [contextLost=false] - If context was lost, we suppress delete TransformFeedback
+   * Used to auto-detect the type of resource.
+   * @param {*} source - The source object
+   * @returns {boolean} `true` if source is an array of 6 elements
    */
-  disposeTransformFeedback(e, r) {
-    const n = e._glTransformFeedbacks[this.CONTEXT_UID], s = this.gl;
-    e.disposeRunner.remove(this);
-    const f = this.renderer.buffer;
-    if (f)
-      for (let a = 0; a < e.buffers.length; a++) {
-        const d = e.buffers[a];
-        if (!d)
-          continue;
-        const o = d._glBuffers[this.CONTEXT_UID];
-        o && (o.refCount--, o.refCount === 0 && !r && f.dispose(d, r));
-      }
-    n && (r || s.deleteTransformFeedback(n), delete e._glTransformFeedbacks[this.CONTEXT_UID]);
+  static test(t) {
+    return Array.isArray(t) && t.length === h.SIDES;
   }
-  destroy() {
-    this.renderer = null;
-  }
-}
-t.extension = {
-  type: i.RendererSystem,
-  name: "transformFeedback"
 };
-b.add(t);
+n.SIDES = 6;
+let I = n;
 export {
-  t as TransformFeedbackSystem
+  I as CubeResource
 };
 //# sourceMappingURL=index76.js.map

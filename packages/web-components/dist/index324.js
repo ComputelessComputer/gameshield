@@ -1,38 +1,31 @@
-import { g as f } from "./index326.js";
-import { c as s } from "./index327.js";
-import { o as c } from "./index321.js";
-import { s as u } from "./index323.js";
-import { t as l } from "./index320.js";
-var m = f, o = s, v = c, n = u, M = l, r = m("%WeakMap%", !0), d = o("WeakMap.prototype.get", !0), h = o("WeakMap.prototype.set", !0), $ = o("WeakMap.prototype.has", !0), w = o("WeakMap.prototype.delete", !0), I = r ? (
-  /** @type {Exclude<import('.'), false>} */
-  function() {
-    var e, a, p = {
-      assert: function(t) {
-        if (!p.has(t))
-          throw new M("Side channel does not contain " + v(t));
-      },
-      delete: function(t) {
-        if (r && t && (typeof t == "object" || typeof t == "function")) {
-          if (e)
-            return w(e, t);
-        } else if (n && a)
-          return a.delete(t);
-        return !1;
-      },
-      get: function(t) {
-        return r && t && (typeof t == "object" || typeof t == "function") && e ? d(e, t) : a && a.get(t);
-      },
-      has: function(t) {
-        return r && t && (typeof t == "object" || typeof t == "function") && e ? $(e, t) : !!a && a.has(t);
-      },
-      set: function(t, i) {
-        r && t && (typeof t == "object" || typeof t == "function") ? (e || (e = new r()), h(e, t, i)) : n && (a || (a = n()), a.set(t, i));
-      }
-    };
-    return p;
+import { DOMAdapter as h } from "./index365.js";
+import { ExtensionType as r } from "./index153.js";
+import { TextureSource as a } from "./index474.js";
+class u extends a {
+  constructor(e) {
+    e.resource || (e.resource = h.get().createCanvas()), e.width || (e.width = e.resource.width, e.autoDensity || (e.width /= e.resolution)), e.height || (e.height = e.resource.height, e.autoDensity || (e.height /= e.resolution)), super(e), this.uploadMethodId = "image", this.autoDensity = e.autoDensity, this.resizeCanvas(), this.transparent = !!e.transparent;
   }
-) : n;
+  resizeCanvas() {
+    this.autoDensity && (this.resource.style.width = `${this.width}px`, this.resource.style.height = `${this.height}px`), (this.resource.width !== this.pixelWidth || this.resource.height !== this.pixelHeight) && (this.resource.width = this.pixelWidth, this.resource.height = this.pixelHeight);
+  }
+  resize(e = this.width, i = this.height, s = this._resolution) {
+    const t = super.resize(e, i, s);
+    return t && this.resizeCanvas(), t;
+  }
+  static test(e) {
+    return globalThis.HTMLCanvasElement && e instanceof HTMLCanvasElement || globalThis.OffscreenCanvas && e instanceof OffscreenCanvas;
+  }
+  /**
+   * Returns the 2D rendering context for the canvas.
+   * Caches the context after creating it.
+   * @returns The 2D rendering context of the canvas.
+   */
+  get context2D() {
+    return this._context2D || (this._context2D = this.resource.getContext("2d"));
+  }
+}
+u.extension = r.TextureSource;
 export {
-  I as s
+  u as CanvasSource
 };
 //# sourceMappingURL=index324.js.map

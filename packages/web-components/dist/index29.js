@@ -1,47 +1,79 @@
-import { SHAPES as n } from "./index240.js";
-class d {
+class i {
   /**
-   * @param x - The X coordinate of the upper-left corner of the rounded rectangle
-   * @param y - The Y coordinate of the upper-left corner of the rounded rectangle
-   * @param width - The overall width of this rounded rectangle
-   * @param height - The overall height of this rounded rectangle
-   * @param radius - Controls the radius of the rounded corners
+   * Creates a new `ObservablePoint`
+   * @param cb - callback function triggered when `x` and/or `y` are changed
+   * @param scope - owner of callback
+   * @param {number} [x=0] - position of the point on the x axis
+   * @param {number} [y=0] - position of the point on the y axis
    */
-  constructor(s = 0, r = 0, t = 0, i = 0, h = 20) {
-    this.x = s, this.y = r, this.width = t, this.height = i, this.radius = h, this.type = n.RREC;
+  constructor(t, s, h = 0, e = 0) {
+    this._x = h, this._y = e, this.cb = t, this.scope = s;
   }
   /**
-   * Creates a clone of this Rounded Rectangle.
-   * @returns - A copy of the rounded rectangle.
+   * Creates a clone of this point.
+   * The callback and scope params can be overridden otherwise they will default
+   * to the clone object's values.
+   * @override
+   * @param cb - The callback function triggered when `x` and/or `y` are changed
+   * @param scope - The owner of the callback
+   * @returns a copy of this observable point
    */
-  clone() {
-    return new d(this.x, this.y, this.width, this.height, this.radius);
+  clone(t = this.cb, s = this.scope) {
+    return new i(t, s, this._x, this._y);
   }
   /**
-   * Checks whether the x and y coordinates given are contained within this Rounded Rectangle
-   * @param x - The X coordinate of the point to test.
-   * @param y - The Y coordinate of the point to test.
-   * @returns - Whether the x/y coordinates are within this Rounded Rectangle.
+   * Sets the point to a new `x` and `y` position.
+   * If `y` is omitted, both `x` and `y` will be set to `x`.
+   * @param {number} [x=0] - position of the point on the x axis
+   * @param {number} [y=x] - position of the point on the y axis
+   * @returns The observable point instance itself
    */
-  contains(s, r) {
-    if (this.width <= 0 || this.height <= 0)
-      return !1;
-    if (s >= this.x && s <= this.x + this.width && r >= this.y && r <= this.y + this.height) {
-      const t = Math.max(0, Math.min(this.radius, Math.min(this.width, this.height) / 2));
-      if (r >= this.y + t && r <= this.y + this.height - t || s >= this.x + t && s <= this.x + this.width - t)
-        return !0;
-      let i = s - (this.x + t), h = r - (this.y + t);
-      const e = t * t;
-      if (i * i + h * h <= e || (i = s - (this.x + this.width - t), i * i + h * h <= e) || (h = r - (this.y + this.height - t), i * i + h * h <= e) || (i = s - (this.x + t), i * i + h * h <= e))
-        return !0;
-    }
-    return !1;
+  set(t = 0, s = t) {
+    return (this._x !== t || this._y !== s) && (this._x = t, this._y = s, this.cb.call(this.scope)), this;
+  }
+  /**
+   * Copies x and y from the given point (`p`)
+   * @param p - The point to copy from. Can be any of type that is or extends `IPointData`
+   * @returns The observable point instance itself
+   */
+  copyFrom(t) {
+    return (this._x !== t.x || this._y !== t.y) && (this._x = t.x, this._y = t.y, this.cb.call(this.scope)), this;
+  }
+  /**
+   * Copies this point's x and y into that of the given point (`p`)
+   * @param p - The point to copy to. Can be any of type that is or extends `IPointData`
+   * @returns The point (`p`) with values updated
+   */
+  copyTo(t) {
+    return t.set(this._x, this._y), t;
+  }
+  /**
+   * Accepts another point (`p`) and returns `true` if the given point is equal to this point
+   * @param p - The point to check
+   * @returns Returns `true` if both `x` and `y` are equal
+   */
+  equals(t) {
+    return t.x === this._x && t.y === this._y;
+  }
+  /** Position of the observable point on the x axis. */
+  get x() {
+    return this._x;
+  }
+  set x(t) {
+    this._x !== t && (this._x = t, this.cb.call(this.scope));
+  }
+  /** Position of the observable point on the y axis. */
+  get y() {
+    return this._y;
+  }
+  set y(t) {
+    this._y !== t && (this._y = t, this.cb.call(this.scope));
   }
 }
-d.prototype.toString = function() {
-  return `[@pixi/math:RoundedRectangle x=${this.x} y=${this.y}width=${this.width} height=${this.height} radius=${this.radius}]`;
+i.prototype.toString = function() {
+  return `[@pixi/math:ObservablePoint x=${this.x} y=${this.y} scope=${this.scope}]`;
 };
 export {
-  d as RoundedRectangle
+  i as ObservablePoint
 };
 //# sourceMappingURL=index29.js.map
