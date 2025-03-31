@@ -10,7 +10,7 @@ GameShield follows a modular architecture with three main packages:
 2. **React Package**: Provides React components for easy integration into React applications
 3. **Server Package**: Handles server-side verification and security features
 
-<img src="/gameshield_architecture.png" darkSrc="/gameshield_architecture_dark.png" alt="GameShield Architecture" width="600px"/>
+<img src="/gameshield_how_it_works.png" darkSrc="/gameshield_how_it_works_dark.png" alt="GameShield Architecture" width="600px"/>
 
 ## Verification Process
 
