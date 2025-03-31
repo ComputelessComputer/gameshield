@@ -13,11 +13,11 @@ const getFilter = () => {
 const filter = getFilter()
 
 export default defineConfig({
-  title: "🎮 Gameshield 🛡️",
+  title: "🎮 GameShield 🛡️",
   description: "Generative Game CAPTCHA - Prevent bots with interactive games",
   ignoreDeadLinks: true,
   themeConfig: {
-    siteTitle: '🎮 Gameshield 🛡️',
+    siteTitle: '🎮 GameShield 🛡️',
     logo: false,
     nav: [
       { text: 'Home', link: '/' },
@@ -30,15 +30,16 @@ export default defineConfig({
         {
           text: 'Introduction',
           items: [
-            { text: 'What is Gameshield?', link: '/guide/' },
+            { text: 'What is GameShield?', link: '/guide/' },
             { text: 'Getting Started', link: '/guide/getting-started' },
-            { text: 'Installation', link: '/guide/installation' },
+            { text: 'Installation', link: '/guide/installation' }
           ]
         },
         {
           text: 'Core Concepts',
           items: [
             { text: 'How it Works', link: '/guide/how-it-works' },
+            { text: 'Architecture', link: '/guide/architecture' },
             { 
               text: 'Game Types', 
               link: '/guide/game-types',
@@ -47,23 +48,18 @@ export default defineConfig({
                 { text: '🏓 Pong', link: '/guide/games/pong' },
                 { text: '🐍 Snake', link: '/guide/games/snake' },
                 { text: '🧱 Breakout', link: '/guide/games/breakout' },
-                { text: '🌀 Maze', link: '/guide/games/maze' },
-                { text: '🎯 Pattern', link: '/guide/games/pattern' },
-                { text: '🦖 Dino Run', link: '/guide/games/dino-run' },
-                { text: '🧩 Puzzle Slider', link: '/guide/games/puzzle-slider' },
-                { text: '⚖️ Physics Puzzles', link: '/guide/games/physics-puzzles' },
-                { text: '📝 Sequence Memory', link: '/guide/games/sequence-memory' }
+                { text: '🦖 Dino Run', link: '/guide/games/dino-run' }
               ]
             },
-            { text: 'Security Features', link: '/guide/security-features' },
-            { text: 'Tech Stack & Architecture', link: '/guide/tech-stack' },
+            { text: 'Security Features', link: '/guide/security-features' }
           ]
         },
         {
-          text: 'Analytics & Monitoring',
+          text: 'Packages',
           items: [
-            { text: 'Admin Dashboard', link: '/guide/admin-dashboard' },
-            { text: 'Analytics System', link: '/guide/analytics-system' },
+            { text: '@gameshield/core', link: '/guide/packages/core' },
+            { text: '@gameshield/react', link: '/guide/packages/react' },
+            { text: '@gameshield/server', link: '/guide/packages/server' }
           ]
         },
         {
@@ -71,18 +67,37 @@ export default defineConfig({
           items: [
             { text: 'Customization', link: '/guide/customization' },
             { text: 'Integration Examples', link: '/guide/integration-examples' },
-            { text: 'Troubleshooting', link: '/guide/troubleshooting' },
+            { text: 'Behavior Analysis', link: '/guide/behavior-analysis' },
+            { text: 'Troubleshooting', link: '/guide/troubleshooting' }
           ]
         }
       ],
       '/api/': [
         {
-          text: 'API Reference',
+          text: 'Core Package',
           items: [
-            { text: 'Overview', link: '/api/' },
-            { text: 'SDK Methods', link: '/api/sdk-methods' },
-            { text: 'Server API', link: '/api/server' },
-            { text: 'Configuration', link: '/api/configuration' },
+            { text: 'Overview', link: '/api/core/' },
+            { text: 'Game Factory', link: '/api/core/game-factory' },
+            { text: 'Token Management', link: '/api/core/token' },
+            { text: 'Behavior Analyzer', link: '/api/core/behavior-analyzer' }
+          ]
+        },
+        {
+          text: 'React Package',
+          items: [
+            { text: 'Overview', link: '/api/react/' },
+            { text: 'GameShield Component', link: '/api/react/game-shield' },
+            { text: 'Hooks', link: '/api/react/hooks' },
+            { text: 'Theming', link: '/api/react/theming' }
+          ]
+        },
+        {
+          text: 'Server Package',
+          items: [
+            { text: 'Overview', link: '/api/server/' },
+            { text: 'Verification API', link: '/api/server/verification' },
+            { text: 'Security Utilities', link: '/api/server/security' },
+            { text: 'Configuration', link: '/api/server/configuration' }
           ]
         }
       ]
@@ -92,7 +107,7 @@ export default defineConfig({
     ],
     footer: {
       message: 'Released under the MIT License.',
-      copyright: 'Copyright 2025 Gameshield'
+      copyright: 'Copyright 2025 GameShield'
     },
     search: {
       provider: 'local',

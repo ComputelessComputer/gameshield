@@ -1,177 +1,139 @@
-# Gameshield - Generative Game CAPTCHA
+# GameShield - Generative Game CAPTCHA
 
 > Inspired by [Guillermo Rauch](https://x.com/rauchg)'s [Doom CAPTCHA](https://doom-captcha.vercel.app)
 
 ## Overview
 
-Gameshield is an innovative, open-source CAPTCHA system designed to prevent web crawling and bot interactions using interactive, randomly generated games. Unlike traditional CAPTCHA methods, which rely on text-based or image recognition challenges, this approach leverages generative games that require real-time human interaction to verify authenticity.
+GameShield is an innovative, open-source CAPTCHA system designed to prevent web crawling and bot interactions using interactive, randomly generated games. Unlike traditional CAPTCHA methods, which rely on text-based or image recognition challenges, this approach leverages generative games that require real-time human interaction to verify authenticity.
 
 ## Features
 
-- 🎮 Interactive Generative Games – Unique mini-games that adapt dynamically.
-- 🔒 Enhanced Security – Resistant to automated solvers and AI-based attacks.
-- 🖥️ Easy Integration – Framework-agnostic Web Components for any tech stack.
-- 🌍 Accessible – Designed to be user-friendly and inclusive.
-- 🚀 Optimized for Performance – Runs efficiently in both browser and mobile environments.
-- 🧠 Behavior Analysis – Advanced detection of human vs bot interaction patterns.
-- 🔐 Token-based Verification – Secure JWT tokens for server-side validation.
+- 🎮 Interactive Generative Games – Unique mini-games that adapt dynamically
+- 🔒 Enhanced Security – Resistant to automated solvers and AI-based attacks
+- ⚛️ React-based – Built with React for seamless integration with modern web apps
+- 🌍 Accessible – Designed to be user-friendly and inclusive
+- 🚀 Optimized for Performance – Runs efficiently in both browser and mobile environments
+- 🧠 Behavior Analysis – Advanced detection of human vs bot interaction patterns
+- 🔐 Token-based Verification – Secure verification tokens for server-side validation
 
 ## Monorepo Structure
 
-This project follows a monorepo architecture using Turborepo + pnpm for efficient package management.
+This project follows a clean, modular monorepo architecture using Turborepo + pnpm for efficient package management.
 
 ```
 /gameshield
 ├── apps/
-│   ├── backend/                              # Hono-based API for verification
 │   └── frontend/                             # Next.js demo application
 ├── packages/
-│   ├── game-core/                            # Core game logic & behavior analysis
-│   ├── captcha-sdk/                          # SDK for integration
-│   ├── security-utils/                       # Security & token utilities
-│   ├── web-components/                       # Lit-based Web Components
-│   └── utils/                                # Helper functions
-├── infra/                                    # Deployment & infrastructure
+│   ├── core/                                 # Core CAPTCHA logic (@gameshield/core)
+│   ├── react/                                # React UI components (@gameshield/react)
+│   └── server/                               # Server-side validation (@gameshield/server)
 ├── docs/                                     # Documentation
 ├── package.json                              # Root dependencies & scripts
-├── turbo.json                                # Monorepo configuration
-└── .github/workflows/                        # CI/CD setup
+└── turbo.json                                # Monorepo configuration
 ```
+
+### Package Details
+
+#### @gameshield/core
+
+The logic engine with no UI dependencies:
+
+- Game challenge generation
+- Token/session management
+- Verification logic
+- Behavior analysis for bot detection
+
+#### @gameshield/react
+
+React-based UI components:
+
+- Ready-to-use GameShield component
+- Hooks for custom integrations
+- Theming and customization options
+- Event handling (success, failure, timeout)
+
+#### @gameshield/server
+
+Server-side validation and management:
+
+- API routes/middleware for verification
+- Token validation
+- Security features (rate limiting, IP protection)
 
 ## Getting Started
 
 ### Prerequisites
 
-Ensure you have the following installed:
-
-- pnpm (for package management)
-- Node.js (LTS) (for development)
-- Bun (for running the backend)
-- Turborepo (for monorepo management)
+- Node.js 18+
+- pnpm 8+
 
 ### Installation
 
-Clone the repository and install dependencies:
-
-```
-git clone https://github.com/your-username/gameshield.git
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/gameshield.git
 cd gameshield
+
+# Install dependencies
 pnpm install
 ```
 
-### Running the Project
+### Development
 
-To start all applications simultaneously:
+```bash
+# Start the development server
+pnpm dev
 
-```
-pnpm run dev
-```
-
-This will:
-
-- Start the frontend demo at http://localhost:3000
-- Start the API server at http://localhost:3001
-- Start the Web Components demo at http://localhost:3002
-
-### Running Individual Components
-
-To run just the frontend:
-
-```
-pnpm --filter gameshield-demo dev
+# Build all packages
+pnpm build
 ```
 
-To run the backend:
+## Usage
 
-```
-pnpm --filter gameshield-api dev
-```
+### React Component
 
-To run the Web Components demo:
+```jsx
+import { GameShield } from "@gameshield/react";
 
-```
-pnpm --filter gameshield-web-components dev
-```
+function MyForm() {
+  return (
+    <form>
+      <h2>Contact Form</h2>
 
-### Integration Guide
+      {/* Other form fields */}
 
-#### Using Web Components (Recommended)
+      <div className="captcha-container">
+        <GameShield
+          size="400px"
+          gameType="random"
+          difficulty="medium"
+          onSuccess={(token) => {
+            console.log("Verified:", token);
+            // Send token to your server for verification
+          }}
+          onFailure={(reason) => console.log("Failed:", reason)}
+        />
+      </div>
 
-The easiest way to integrate GameShield is using our Web Components, which work with any framework or vanilla HTML:
-
-```html
-<!-- Via CDN -->
-<script
-  type="module"
-  src="https://cdn.jsdelivr.net/npm/gameshield-web-components/dist/index.js"
-></script>
-
-<!-- In your HTML -->
-<game-shield api-key="your-api-key" game-type="random" difficulty="medium">
-</game-shield>
-
-<script>
-  const captcha = document.querySelector("game-shield");
-
-  captcha.addEventListener("success", (e) => {
-    console.log("CAPTCHA verified with token:", e.detail.token);
-    // Send token to your server for verification
-  });
-
-  captcha.addEventListener("failure", () => {
-    console.log("CAPTCHA verification failed");
-  });
-</script>
+      <button type="submit">Submit</button>
+    </form>
+  );
+}
 ```
 
-#### Using the SDK (Legacy)
-
-You can also integrate the CAPTCHA using our JavaScript SDK:
-
-```
-pnpm add @gameshield/captcha-sdk
-```
-
-Example usage:
+### Server-side Verification
 
 ```javascript
-import { generateCaptcha } from "@gameshield/captcha-sdk";
-
-const captcha = generateCaptcha({
-  container: document.getElementById("captcha-container"),
-  gameType: "random", // Options: 'pong', 'snake', 'breakout', 'dino-run', 'random'
-  difficulty: "medium", // Options: 'easy', 'medium', 'hard'
-  onSuccess: (token) => {
-    // Send token to your server for verification
-    console.log("Verification successful, token:", token);
-  },
-  onFailure: () => {
-    console.log("Verification failed");
-  },
-  apiEndpoint: "https://your-api.com/verify", // Optional: for server-side verification
-});
-```
-
-#### Server-side Verification
-
-To verify the CAPTCHA token on your server:
-
-```javascript
-import { SecurityUtils } from "@gameshield/security-utils";
-
-// Initialize with your secret keys
-const securityUtils = new SecurityUtils({
-  jwtSecret: process.env.JWT_SECRET,
-  encryptionKey: process.env.ENCRYPTION_KEY,
-});
+import { verifyToken } from "@gameshield/server";
 
 // In your API route handler
 app.post("/verify", (req, res) => {
   const { token } = req.body;
 
-  const result = securityUtils.verifyCaptcha(token);
+  const result = verifyToken(token);
 
-  if (result.valid && result.isHuman) {
+  if (result.valid) {
     // Token is valid and user is human
     res.json({ success: true });
   } else {
@@ -184,100 +146,11 @@ app.post("/verify", (req, res) => {
 });
 ```
 
-## How It Works
-
-GameShield uses a combination of game interaction and behavior analysis to determine if a user is human:
-
-1. **Game Challenge**: Users complete a simple mini-game (Pong, Snake, Breakout, or Dino Run).
-2. **Behavior Analysis**: During gameplay, the system analyzes:
-   - Movement patterns (smoothness, variability)
-   - Reaction times
-   - Decision-making patterns
-   - Interaction density
-3. **Token Generation**: Upon successful completion, a secure JWT token is generated containing behavior metrics.
-4. **Server Verification**: The token can be verified server-side to confirm the user is human.
-
-## Web Components Implementation
-
-GameShield is built using Lit, a lightweight library for building fast, reactive web components:
-
-- **Framework Agnostic**: Works with React, Vue, Angular, Svelte, or vanilla HTML
-- **Shadow DOM Encapsulation**: Styles and JavaScript are isolated from the rest of your application
-- **Custom Elements**: Uses the Web Components standard for maximum compatibility
-- **Small Bundle Size**: Minimal impact on your application's performance
-
-## Deployment
-
-### Frontend Deployment
-
-```
-pnpm --filter gameshield-demo build
-```
-
-Host it on Vercel, Netlify, or any static hosting provider.
-
-### Backend Deployment
-
-```
-pnpm --filter gameshield-api build
-```
-
-The backend uses Bun and Hono, making it ideal for deployment on Fly.io, Cloudflare Workers, or similar platforms.
-
-### Web Components Deployment
-
-```
-pnpm --filter gameshield-web-components build
-```
-
-The built web components can be deployed to a CDN like jsDelivr or unpkg.
-
-## Environment Variables
-
-For production, set these environment variables:
-
-```
-# Backend
-JWT_SECRET=your-secure-jwt-secret
-ENCRYPTION_KEY=your-secure-encryption-key
-TOKEN_EXPIRATION=300 # in seconds
-
-# Frontend
-NEXT_PUBLIC_API_URL=https://your-api-url.com
-```
-
-## Contributing
-
-We welcome contributions! Follow these steps to get involved:
-
-1. Fork the repository.
-2. Create a new branch (git checkout -b feature-branch).
-3. Commit your changes (git commit -m "Add new feature").
-4. Push to your branch (git push origin feature-branch).
-5. Open a pull request.
-
-## Testing
-
-Run tests across all packages:
-
-```
-pnpm run test
-```
-
-For specific package tests:
-
-```
-pnpm --filter <package-name> test
-```
-
 ## License
 
-This project is licensed under the MIT License.
+This project is licensed under the MIT License - see the LICENSE file for details.
 
-## Contact
+## Acknowledgments
 
-For any questions, feel free to open an issue or reach out at jeeheontransformers@gmail.com.
-
-## Tasks
-
-- [ ] Need to support correct rendering for multiple browser types.
+- Inspired by [Doom CAPTCHA](https://doom-captcha.vercel.app) by Guillermo Rauch
+- Built with [React](https://reactjs.org/), [Next.js](https://nextjs.org/), and [PixiJS](https://pixijs.com/)

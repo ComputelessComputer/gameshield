@@ -1,8 +1,8 @@
 {
   "name": "gameshield",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Generative Game CAPTCHA - Innovative security through interactive games",
+  "private": true,
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
@@ -19,14 +19,16 @@
     "frontend:e2e": "pnpm --filter frontend cypress open",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
-    "docs:preview": "vitepress preview docs",
-    "docs:dev:guide": "vitepress dev docs --filter guide",
-    "docs:dev:api": "vitepress dev docs --filter api",
-    "docs:dev:search": "vitepress dev docs --filter"
+    "docs:preview": "vitepress preview docs"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "captcha",
+    "security",
+    "game",
+    "react"
+  ],
+  "author": "Fastrepl Inc.",
+  "license": "MIT",
   "workspaces": [
     "apps/*",
     "packages/*"

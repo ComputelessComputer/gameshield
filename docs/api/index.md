@@ -1,86 +1,188 @@
 # API Reference
 
-Welcome to the GameShield API reference. This section provides detailed documentation for all APIs and SDK methods available in GameShield.
+Welcome to the GameShield API reference. This section provides detailed documentation for all APIs and methods available in the GameShield packages.
 
 ## Quick Links
 
-- [SDK Methods](/api/sdk-methods) - Client-side JavaScript SDK documentation
-- [Server API](/api/server) - Server-side API endpoints and usage
-- [Configuration](/api/configuration) - Complete configuration options
+- [@gameshield/core](/api/core) - Core functionality and game engine
+- [@gameshield/react](/api/react) - React component documentation
+- [@gameshield/server](/api/server) - Server-side verification API
 
 ## Overview
 
-GameShield provides three main interfaces:
+GameShield follows a modular architecture with three main packages:
 
-1. **Client-Side SDK**: JavaScript library for CAPTCHA challenges
+1. **@gameshield/core**: Core functionality for CAPTCHA challenges
    - Game generation and management
    - User interaction handling
-   - Analytics integration
-   - UI customization
+   - Behavior analysis
+   - Token generation
 
-2. **Server-Side API**: RESTful endpoints for:
+2. **@gameshield/react**: React components and hooks
+   - Ready-to-use GameShield component
+   - Custom hooks for advanced use cases
+   - TypeScript support
+   - Responsive design
+
+3. **@gameshield/server**: Server-side verification
    - Token verification
-   - Analytics data access
-   - Admin operations
-   - System health monitoring
-
-3. **Analytics System**: Comprehensive monitoring with:
-   - Built-in localStorage provider
-   - Custom provider support
-   - Real-time metrics
-   - Risk scoring
+   - Security utilities
+   - Rate limiting
+   - IP protection
 
 ## Getting Started
 
-### 1. Install the SDK
+### 1. Install the Packages
 
 ```bash
-npm install @gameshield/captcha-sdk
-# or
-yarn add @gameshield/captcha-sdk
-# or
-pnpm add @gameshield/captcha-sdk
+# Install the React package (includes core as a dependency)
+npm install @gameshield/react
+
+# For server-side verification
+npm install @gameshield/server
+
+# Or using yarn
+yarn add @gameshield/react
+yarn add @gameshield/server
+
+# Or using pnpm
+pnpm add @gameshield/react
+pnpm add @gameshield/server
 ```
 
-### 2. Basic Implementation
+### 2. Client-Side Implementation
 
-```typescript
-import { CaptchaSDK } from '@gameshield/captcha-sdk';
+#### React Component
 
-const captcha = new CaptchaSDK({
-  container: document.getElementById('captcha-container'),
-  theme: 'light',
+```jsx
+import React, { useState } from 'react';
+import { GameShield } from '@gameshield/react';
+
+function ContactForm() {
+  const [token, setToken] = useState(null);
+  
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    
+    if (!token) {
+      alert('Please complete the CAPTCHA verification');
+      return;
+    }
+    
+    // Send form data with token to your server
+    fetch('/api/submit', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CAPTCHA-Token': token
+      },
+      body: JSON.stringify({
+        name: e.target.name.value,
+        email: e.target.email.value
+      })
+    });
+  };
+  
+  return (
+    <form onSubmit={handleSubmit}>
+      <input name="name" required />
+      <input name="email" type="email" required />
+      
+      <GameShield
+        size="400px"
+        gameType="random"
+        difficulty="medium"
+        onSuccess={setToken}
+      />
+      
+      <button type="submit" disabled={!token}>Submit</button>
+    </form>
+  );
+}
+```
+
+#### Core API (Vanilla JavaScript)
+
+```javascript
+import { createGameShield } from '@gameshield/core';
+
+const container = document.getElementById('captcha-container');
+let token = null;
+
+const gameShield = createGameShield({
+  container,
+  size: '400px',
   gameType: 'pong',
   difficulty: 'medium',
-  onSuccess: (token) => {
-    // Send token to your server
+  onSuccess: (captchaToken) => {
+    token = captchaToken;
+    document.getElementById('submit-button').disabled = false;
   },
-  onFailure: (error) => {
-    console.error('Verification failed:', error);
+  onFailure: (reason) => {
+    console.error('Verification failed:', reason);
   }
+});
+
+document.getElementById('contact-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  
+  if (!token) {
+    alert('Please complete the CAPTCHA verification');
+    return;
+  }
+  
+  // Send form data with token to your server
+  // ...
 });
 ```
 
 ### 3. Server-Side Verification
 
-```typescript
-import { verifyToken } from '@gameshield/captcha-sdk/server';
+```javascript
+const express = require('express');
+const { verifyToken } = require('@gameshield/server');
 
-async function validateCaptcha(token: string) {
-  try {
-    const result = await verifyToken(token);
-    return result.valid;
-  } catch (error) {
-    console.error('Verification error:', error);
-    return false;
+const app = express();
+app.use(express.json());
+
+app.post('/api/submit', (req, res) => {
+  const token = req.headers['x-captcha-token'];
+  
+  if (!token) {
+    return res.status(400).json({
+      success: false,
+      message: 'CAPTCHA token is required'
+    });
   }
-}
+  
+  const verification = verifyToken(token);
+  
+  if (verification.valid) {
+    // Process the form submission
+    // ...
+    
+    return res.json({
+      success: true,
+      message: 'Form submitted successfully'
+    });
+  } else {
+    return res.status(400).json({
+      success: false,
+      message: 'CAPTCHA verification failed',
+      reason: verification.reason
+    });
+  }
+});
+
+app.listen(3000, () => {
+  console.log('Server running on port 3000');
+});
 ```
 
 ## Next Steps
 
-1. Explore [SDK Methods](/api/sdk-methods) for detailed client-side options
-2. Review [Server API](/api/server) for backend integration
-3. Configure your implementation using the [Configuration Guide](/api/configuration)
-4. Set up analytics with the [Analytics System Guide](/guide/analytics-system)
-5. Access monitoring through the [Admin Dashboard](/guide/admin-dashboard)
+1. Explore the [@gameshield/core API](/api/core) for detailed core functionality
+2. Review the [@gameshield/react API](/api/react) for React component options
+3. Learn about the [@gameshield/server API](/api/server) for server-side verification
+4. Check out the [Integration Examples](/guide/integration-examples) for common use cases
+5. Read about [Behavior Analysis](/guide/behavior-analysis) for advanced security features

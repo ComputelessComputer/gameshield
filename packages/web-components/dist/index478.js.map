@@ -1,1 +1,0 @@
-{"version":3,"file":"index478.js","sources":["../../../node_modules/.pnpm/pixi.js@8.8.1/node_modules/pixi.js/lib/utils/misc/NOOP.mjs"],"sourcesContent":["\"use strict\";\nconst NOOP = () => {\n};\n\nexport { NOOP };\n//# sourceMappingURL=NOOP.mjs.map\n"],"names":["NOOP"],"mappings":"AACK,MAACA,IAAO,MAAM;AACnB;","x_google_ignoreList":[0]}

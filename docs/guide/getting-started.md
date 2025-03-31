@@ -1,259 +1,177 @@
 # Getting Started with GameShield
 
-This guide will help you quickly integrate GameShield's game-based CAPTCHA into your web application.
+This guide will help you quickly integrate GameShield into your application. GameShield uses a modular architecture, allowing you to use only the components you need.
 
-## Quick Start
+## Installation
 
-### 1. Installation
+### React Applications
 
-Install the GameShield SDK using your preferred package manager:
+For React applications, you'll need the React component package:
 
 ```bash
 # Using npm
-npm install @gameshield/captcha-sdk
+npm install @gameshield/react
 
 # Using yarn
-yarn add @gameshield/captcha-sdk
+yarn add @gameshield/react
 
-# Using pnpm (recommended)
-pnpm add @gameshield/captcha-sdk
+# Using pnpm
+pnpm add @gameshield/react
 ```
 
-### 2. Basic Implementation
+### Server-side Verification
 
-Add GameShield to your web application:
+If you need server-side verification (recommended for production):
 
-```typescript
-import { CaptchaSDK } from '@gameshield/captcha-sdk';
+```bash
+# Using npm
+npm install @gameshield/server
 
-// Initialize the CAPTCHA
-const captcha = new CaptchaSDK({
-  container: document.getElementById('captcha-container'),
-  theme: 'light',
-  gameType: 'pong',
-  onSuccess: (token) => {
-    // Send token to your server for verification
-    verifyToken(token);
-  },
-  onFailure: (error) => {
-    console.error('Verification failed:', error);
-  }
-});
+# Using yarn
+yarn add @gameshield/server
+
+# Using pnpm
+pnpm add @gameshield/server
 ```
 
-### 3. Server-Side Verification
+## Basic Integration
 
-Verify the CAPTCHA token on your server:
+### Client-side Integration
 
-```typescript
-import { verifyToken } from '@gameshield/captcha-sdk/server';
+Add the GameShield component to your form:
 
-async function verifyToken(token: string) {
-  try {
-    const result = await verifyToken(token);
-    return result.valid;
-  } catch (error) {
-    console.error('Verification error:', error);
-    return false;
-  }
-}
-```
+```jsx
+import React, { useState } from 'react';
+import { GameShield } from '@gameshield/react';
 
-## Features Overview
-
-### Available Games
-- **Pong**: Classic paddle game
-- **Snake**: Pattern collection game
-- **Breakout**: Brick-breaking challenge
-- **Maze**: Navigation puzzle
-- **Pattern**: Pattern matching game
-
-### Customization Options
-- Light/dark themes
-- Multiple difficulty levels
-- Custom styling
-- Game selection
-- Analytics integration
-
-## Advanced Setup
-
-### Analytics Integration
-
-Enable analytics to track verification metrics:
-
-```typescript
-import { CaptchaSDK, LocalStorageProvider } from '@gameshield/captcha-sdk';
-
-const captcha = new CaptchaSDK({
-  container: element,
-  analyticsProvider: new LocalStorageProvider(),
-  // ... other options
-});
-```
-
-### Custom Styling
-
-Apply custom styles to match your brand:
-
-```typescript
-const captcha = new CaptchaSDK({
-  container: element,
-  theme: 'light',
-  customStyles: {
-    container: {
-      borderRadius: '8px',
-      boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-    },
-    game: {
-      background: '#f5f5f5'
-    },
-    button: {
-      background: '#0070f3',
-      color: 'white'
-    }
-  }
-});
-```
-
-### Error Handling
-
-Implement robust error handling:
-
-```typescript
-const captcha = new CaptchaSDK({
-  // ... other options
-  onError: (error) => {
-    switch (error.code) {
-      case 'NETWORK_ERROR':
-        showRetryButton();
-        break;
-      case 'VERIFICATION_FAILED':
-        resetCaptcha();
-        break;
-      default:
-        console.error('Unknown error:', error);
-    }
-  }
-});
-```
-
-## Integration Examples
-
-### React Component
-```tsx
-import { useEffect, useRef } from 'react';
-import { CaptchaSDK } from '@gameshield/captcha-sdk';
-
-function CaptchaComponent({ onVerify }) {
-  const containerRef = useRef<HTMLDivElement>(null);
+function ContactForm() {
+  const [token, setToken] = useState(null);
   
-  useEffect(() => {
-    if (!containerRef.current) return;
-
-    const captcha = new CaptchaSDK({
-      container: containerRef.current,
-      onSuccess: onVerify
-    });
-
-    return () => captcha.destroy();
-  }, [onVerify]);
-
-  return <div ref={containerRef} />;
-}
-```
-
-### Form Integration
-```typescript
-const form = document.querySelector('form');
-let captchaToken = null;
-
-const captcha = new CaptchaSDK({
-  container: document.getElementById('captcha'),
-  onSuccess: (token) => {
-    captchaToken = token;
-  }
-});
-
-form.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  
-  if (!captchaToken) {
-    alert('Please complete the CAPTCHA');
-    return;
-  }
-
-  // Submit form with token
-  const formData = new FormData(form);
-  formData.append('captchaToken', captchaToken);
-  
-  try {
-    const response = await fetch('/api/submit', {
-      method: 'POST',
-      body: formData
-    });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     
-    if (response.ok) {
-      // Handle success
+    if (!token) {
+      alert('Please complete the CAPTCHA verification');
+      return;
     }
-  } catch (error) {
-    console.error('Submission failed:', error);
+    
+    // Include the token in your form submission
+    const formData = new FormData(e.target);
+    formData.append('captchaToken', token);
+    
+    // Send the form data to your server
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        body: formData
+      });
+      
+      if (response.ok) {
+        alert('Form submitted successfully!');
+      } else {
+        alert('Form submission failed. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      alert('An error occurred. Please try again later.');
+    }
+  };
+  
+  return (
+    <form onSubmit={handleSubmit}>
+      <div className="form-group">
+        <label htmlFor="name">Name</label>
+        <input type="text" id="name" name="name" required />
+      </div>
+      
+      <div className="form-group">
+        <label htmlFor="email">Email</label>
+        <input type="email" id="email" name="email" required />
+      </div>
+      
+      <div className="form-group">
+        <label htmlFor="message">Message</label>
+        <textarea id="message" name="message" required></textarea>
+      </div>
+      
+      <div className="captcha-container">
+        <GameShield
+          size="400px"
+          gameType="random"
+          difficulty="medium"
+          onSuccess={(captchaToken) => {
+            setToken(captchaToken);
+            console.log('Verification successful!');
+          }}
+          onFailure={(reason) => {
+            console.log('Verification failed:', reason);
+          }}
+        />
+      </div>
+      
+      <button type="submit">Submit</button>
+    </form>
+  );
+}
+
+export default ContactForm;
+```
+
+### Server-side Verification
+
+On your server, verify the token:
+
+```javascript
+import express from 'express';
+import { verifyToken } from '@gameshield/server';
+
+const app = express();
+app.use(express.json());
+
+app.post('/api/contact', async (req, res) => {
+  const { captchaToken } = req.body;
+  
+  // Verify the CAPTCHA token
+  const verification = verifyToken(captchaToken);
+  
+  if (!verification.valid) {
+    return res.status(400).json({
+      success: false,
+      message: 'CAPTCHA verification failed'
+    });
   }
+  
+  // Token is valid, process the form submission
+  // ...
+  
+  return res.status(200).json({
+    success: true,
+    message: 'Form submitted successfully'
+  });
+});
+
+app.listen(3000, () => {
+  console.log('Server running on port 3000');
 });
 ```
 
-## Best Practices
+## Component Properties
 
-### Security
-1. Always verify tokens server-side
-2. Implement rate limiting
-3. Use HTTPS for all requests
-4. Keep your API keys secure
+The `GameShield` component accepts the following props:
 
-### Performance
-1. Load the SDK asynchronously
-2. Initialize CAPTCHA only when needed
-3. Clean up instances properly
-4. Use appropriate difficulty levels
-
-### User Experience
-1. Show clear error messages
-2. Provide retry options
-3. Maintain consistent styling
-4. Consider accessibility
-
-## Troubleshooting
-
-### Common Issues
-
-1. **CAPTCHA Not Loading**
-   - Check container element exists
-   - Verify SDK installation
-   - Check for console errors
-
-2. **Verification Failing**
-   - Validate token format
-   - Check server configuration
-   - Verify API keys
-
-3. **Style Issues**
-   - Check CSS conflicts
-   - Verify container size
-   - Review custom styles
-
-### Debug Mode
-
-Enable debug mode for detailed logs:
-
-```typescript
-const captcha = new CaptchaSDK({
-  debug: true,
-  // ... other options
-});
-```
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `size` | string \| number | `"400px"` | Size of the component (maintains 1:1 aspect ratio) |
+| `gameType` | string | `"random"` | Type of game to display (`"pong"`, `"snake"`, `"breakout"`, `"dino-run"`, or `"random"`) |
+| `difficulty` | string | `"medium"` | Difficulty level (`"easy"`, `"medium"`, or `"hard"`) |
+| `onSuccess` | function | - | Callback when verification succeeds, receives token as parameter |
+| `onFailure` | function | - | Callback when verification fails, receives reason as parameter |
+| `onTimeout` | function | - | Callback when verification times out |
+| `className` | string | `""` | Additional CSS class for styling |
 
 ## Next Steps
 
-1. Explore [Integration Examples](/guide/integration-examples)
-2. Review [API Reference](/api)
-3. Set up [Analytics](/guide/analytics-system)
-4. Configure [Admin Dashboard](/guide/admin-dashboard)
+- Learn about the [architecture](/guide/architecture) of GameShield
+- Explore the [@gameshield/core](/guide/packages/core) package
+- Customize the [React component](/guide/packages/react)
+- Set up [server-side verification](/guide/packages/server)

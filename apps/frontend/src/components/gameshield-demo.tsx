@@ -1,18 +1,14 @@
 "use client";
 
 import { RefreshCcwIcon } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
+import { GameShield } from "@gameshield/react";
 
 export default function GameshieldDemo() {
-  const gameShieldRef = useRef<HTMLElement | null>(null);
-
-  useEffect(() => {
-    import("@gameshield/web-components");
-  }, []);
+  const gameShieldRef = useRef<{ reset: () => void } | null>(null);
 
   const handleRefresh = () => {
-    if (gameShieldRef.current && "reset" in gameShieldRef.current) {
-      // @ts-expect-error - Custom element method
+    if (gameShieldRef.current) {
       gameShieldRef.current.reset();
     }
   };
@@ -20,15 +16,16 @@ export default function GameshieldDemo() {
   return (
     <div className="flex w-full flex-col items-center">
       <div className="aspect-square w-full max-w-[500px]">
-        {/* @ts-expect-error - Custom element */}
-        <game-shield
+        <GameShield
           ref={gameShieldRef}
-          game-type="random"
+          gameType="random"
           difficulty="medium"
           size="100%"
-          style={{
-            width: "100%",
-            height: "100%",
+          onSuccess={(token) => {
+            console.log("Verification successful:", token);
+          }}
+          onFailure={(reason) => {
+            console.log("Verification failed:", reason);
           }}
         />
       </div>

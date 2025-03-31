@@ -1,17 +1,17 @@
 ---
 layout: home
-
+title: GameShield
 hero:
-  name: "🎮 Gameshield 🛡️"
+  name: "GameShield"
   text: "Generative Game CAPTCHA"
-  tagline: Protect your website from bots with interactive, fun game challenges
+  tagline: Prevent bots with interactive games that humans love to play
   image:
-    src: https://i.imgur.com/FRGCIc3.gif
-    alt: GameShield CAPTCHA illustration
+    src: /logo.png
+    alt: GameShield Logo
   actions:
     - theme: brand
       text: Get Started
-      link: /guide/
+      link: /guide/getting-started
     - theme: alt
       text: View on GitHub
       link: https://github.com/ComputelessComputer/gameshield
@@ -19,20 +19,62 @@ hero:
 features:
   - icon: 🎮
     title: Interactive Games
-    details: Unique mini-games that adapt dynamically to provide a fun user experience while verifying human interaction.
+    details: Verify users with fun mini-games instead of frustrating text challenges
+  - icon: ⚛️
+    title: React-based
+    details: Seamlessly integrate with React applications using our dedicated components
+  - icon: 🧠
+    title: Behavior Analysis
+    details: Advanced detection of human vs bot interaction patterns
   - icon: 🔒
     title: Enhanced Security
-    details: Resistant to automated solvers and AI-based attacks, providing better protection than traditional CAPTCHAs.
-  - icon: 🖥️
-    title: Easy Integration
-    details: Lightweight SDK that can be integrated into any website with just a few lines of code.
-  - icon: 🌍
-    title: Accessibility
-    details: Designed to be user-friendly and inclusive, with multiple game types to accommodate different abilities.
+    details: Resistant to automated solvers and AI-based attacks
   - icon: 🚀
     title: Optimized Performance
-    details: Runs efficiently in both browser and mobile environments with minimal impact on page load times.
-  - icon: 🛠️
-    title: Customizable
-    details: Tailor the appearance and behavior to match your website's design and requirements.
+    details: Lightweight and efficient in both browser and mobile environments
+  - icon: 🧩
+    title: Modular Architecture
+    details: Use only what you need with our core, React, and server packages
 ---
+
+## What is GameShield?
+
+GameShield is an innovative, open-source CAPTCHA system designed to prevent web crawling and bot interactions using interactive, randomly generated games. Unlike traditional CAPTCHA methods, which rely on text-based or image recognition challenges, this approach leverages generative games that require real-time human interaction to verify authenticity.
+
+## Quick Installation
+
+```bash
+# Install the React component
+npm install @gameshield/react
+
+# For server-side verification
+npm install @gameshield/server
+```
+
+## Basic Usage
+
+```jsx
+import { GameShield } from '@gameshield/react';
+
+function MyForm() {
+  return (
+    <form>
+      <div className="captcha-container">
+        <GameShield 
+          size="400px"
+          gameType="random"
+          difficulty="medium"
+          onSuccess={(token) => console.log('Verified:', token)}
+        />
+      </div>
+      <button type="submit">Submit</button>
+    </form>
+  );
+}
+```
+
+## Why GameShield?
+
+Traditional CAPTCHAs frustrate users with illegible text or endless image grids. GameShield transforms verification into an engaging experience that users actually enjoy, while providing stronger security against automated attacks.
+
+[Learn more about how it works →](/guide/how-it-works)

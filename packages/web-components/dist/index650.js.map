@@ -1,1 +1,0 @@
-{"version":3,"file":"index650.js","sources":["../../../node_modules/.pnpm/math-intrinsics@1.1.0/node_modules/math-intrinsics/pow.js"],"sourcesContent":["'use strict';\n\n/** @type {import('./pow')} */\nmodule.exports = Math.pow;\n"],"names":["pow"],"mappings":"IAGAA,IAAiB,KAAK;","x_google_ignoreList":[0]}

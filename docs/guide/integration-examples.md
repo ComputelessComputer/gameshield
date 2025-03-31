@@ -1,58 +1,34 @@
 # Integration Examples
 
-This guide provides practical examples of integrating Gameshield into various frameworks and environments.
+This guide provides practical examples of integrating GameShield into various frameworks and environments.
 
 ## Frontend Frameworks
 
 ### React Integration
 
 ```jsx
-import React, { useEffect, useRef } from 'react';
-import { generateCaptcha } from '@gameshield/captcha-sdk';
+import React, { useState } from 'react';
+import { GameShield } from '@gameshield/react';
 
-function GameshieldCaptcha({ onVerify }) {
-  const containerRef = useRef(null);
-  const captchaRef = useRef(null);
-
-  useEffect(() => {
-    if (containerRef.current && !captchaRef.current) {
-      captchaRef.current = generateCaptcha({
-        container: containerRef.current,
-        onSuccess: (token) => {
-          onVerify(token);
-        }
-      });
-    }
-
-    return () => {
-      if (captchaRef.current) {
-        captchaRef.current.destroy();
-        captchaRef.current = null;
-      }
-    };
-  }, [onVerify]);
-
-  return <div ref={containerRef} className="gameshield-container"></div>;
-}
-
-// Usage in a form
 function ContactForm() {
-  const [token, setToken] = React.useState(null);
+  const [token, setToken] = useState(null);
   
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!token) {
-      alert('Please complete the CAPTCHA');
+      alert('Please complete the CAPTCHA verification');
       return;
     }
     
     // Submit form with token
     const formData = new FormData(e.target);
-    formData.append('captchaToken', token);
     
     try {
       const response = await fetch('/api/submit-form', {
         method: 'POST',
+        headers: {
+          'X-CAPTCHA-Token': token
+        },
         body: formData
       });
       const data = await response.json();
@@ -68,10 +44,23 @@ function ContactForm() {
       <input type="text" name="name" placeholder="Your Name" required />
       <input type="email" name="email" placeholder="Your Email" required />
       
-      {/* Gameshield CAPTCHA */}
-      <GameshieldCaptcha onVerify={setToken} />
+      {/* GameShield CAPTCHA */}
+      <div className="captcha-container">
+        <GameShield
+          size="400px"
+          gameType="random"
+          difficulty="medium"
+          onSuccess={(captchaToken) => {
+            setToken(captchaToken);
+            console.log('Verification successful!');
+          }}
+          onFailure={(reason) => {
+            console.log('Verification failed:', reason);
+          }}
+        />
+      </div>
       
-      <button type="submit">Submit</button>
+      <button type="submit" disabled={!token}>Submit</button>
     </form>
   );
 }
@@ -87,36 +76,54 @@ function ContactForm() {
 </template>
 
 <script>
-import { generateCaptcha } from '@gameshield/captcha-sdk';
+import { createGameShield } from '@gameshield/core';
 
 export default {
-  name: 'GameshieldCaptcha',
+  name: 'GameShieldCaptcha',
   props: {
     onVerify: {
       type: Function,
       required: true
+    },
+    gameType: {
+      type: String,
+      default: 'random'
+    },
+    difficulty: {
+      type: String,
+      default: 'medium'
+    },
+    size: {
+      type: [String, Number],
+      default: '400px'
     }
   },
   data() {
     return {
-      captchaInstance: null
+      gameShieldInstance: null
     };
   },
   mounted() {
     this.initCaptcha();
   },
   beforeUnmount() {
-    if (this.captchaInstance) {
-      this.captchaInstance.destroy();
-      this.captchaInstance = null;
+    if (this.gameShieldInstance) {
+      this.gameShieldInstance.destroy();
+      this.gameShieldInstance = null;
     }
   },
   methods: {
     initCaptcha() {
-      this.captchaInstance = generateCaptcha({
+      this.gameShieldInstance = createGameShield({
         container: this.$refs.captchaContainer,
+        gameType: this.gameType,
+        difficulty: this.difficulty,
+        size: this.size,
         onSuccess: (token) => {
           this.onVerify(token);
+        },
+        onFailure: (reason) => {
+          this.$emit('failure', reason);
         }
       });
     }
@@ -131,19 +138,25 @@ export default {
     <input type="text" v-model="name" placeholder="Your Name" required />
     <input type="email" v-model="email" placeholder="Your Email" required />
     
-    <!-- Gameshield CAPTCHA -->
-    <gameshield-captcha :on-verify="setCaptchaToken" />
+    <!-- GameShield CAPTCHA -->
+    <game-shield-captcha 
+      :on-verify="setCaptchaToken" 
+      :game-type="'pong'"
+      :difficulty="'easy'"
+      :size="'450px'"
+      @failure="handleFailure"
+    />
     
     <button type="submit" :disabled="!captchaToken">Submit</button>
   </form>
 </template>
 
 <script>
-import GameshieldCaptcha from './GameshieldCaptcha.vue';
+import GameShieldCaptcha from './GameShieldCaptcha.vue';
 
 export default {
   components: {
-    GameshieldCaptcha
+    GameShieldCaptcha
   },
   data() {
     return {
@@ -156,9 +169,12 @@ export default {
     setCaptchaToken(token) {
       this.captchaToken = token;
     },
+    handleFailure(reason) {
+      console.error('CAPTCHA verification failed:', reason);
+    },
     async handleSubmit() {
       if (!this.captchaToken) {
-        alert('Please complete the CAPTCHA');
+        alert('Please complete the CAPTCHA verification');
         return;
       }
       
@@ -166,12 +182,12 @@ export default {
         const response = await fetch('/api/submit-form', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'X-CAPTCHA-Token': this.captchaToken
           },
           body: JSON.stringify({
             name: this.name,
-            email: this.email,
-            captchaToken: this.captchaToken
+            email: this.email
           })
         });
         const data = await response.json();
@@ -189,59 +205,90 @@ export default {
 
 ```typescript
 // gameshield-captcha.component.ts
-import { Component, ElementRef, EventEmitter, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
-import { generateCaptcha } from '@gameshield/captcha-sdk';
+import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { createGameShield } from '@gameshield/core';
 
 @Component({
   selector: 'app-gameshield-captcha',
-  template: '<div #captchaContainer class="gameshield-container"></div>'
+  template: '<div #captchaContainer class="gameshield-container" [style.width]="size" [style.height]="size"></div>'
 })
-export class GameshieldCaptchaComponent implements OnInit, OnDestroy {
+export class GameShieldCaptchaComponent implements OnInit, OnDestroy {
   @ViewChild('captchaContainer', { static: true }) captchaContainer!: ElementRef;
   @Output() verify = new EventEmitter<string>();
+  @Output() failure = new EventEmitter<string>();
   
-  private captchaInstance: any = null;
+  @Input() gameType: string = 'random';
+  @Input() difficulty: string = 'medium';
+  @Input() size: string = '400px';
+  
+  private gameShieldInstance: any = null;
 
   ngOnInit() {
     this.initCaptcha();
   }
 
   ngOnDestroy() {
-    if (this.captchaInstance) {
-      this.captchaInstance.destroy();
-      this.captchaInstance = null;
+    if (this.gameShieldInstance) {
+      this.gameShieldInstance.destroy();
+      this.gameShieldInstance = null;
     }
   }
 
   private initCaptcha() {
-    this.captchaInstance = generateCaptcha({
+    this.gameShieldInstance = createGameShield({
       container: this.captchaContainer.nativeElement,
+      gameType: this.gameType,
+      difficulty: this.difficulty,
+      size: this.size,
       onSuccess: (token: string) => {
         this.verify.emit(token);
+      },
+      onFailure: (reason: string) => {
+        this.failure.emit(reason);
       }
     });
   }
 }
 
-// Usage in a form component
+// contact-form.component.ts
 import { Component } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Component({
   selector: 'app-contact-form',
   template: `
-    <form (ngSubmit)="onSubmit()" [formGroup]="contactForm">
-      <input type="text" formControlName="name" placeholder="Your Name" required>
-      <input type="email" formControlName="email" placeholder="Your Email" required>
+    <form [formGroup]="contactForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="name">Name</label>
+        <input type="text" id="name" formControlName="name" class="form-control">
+        <div *ngIf="contactForm.get('name')?.invalid && contactForm.get('name')?.touched">
+          Name is required
+        </div>
+      </div>
       
-      <app-gameshield-captcha (verify)="setCaptchaToken($event)"></app-gameshield-captcha>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" formControlName="email" class="form-control">
+        <div *ngIf="contactForm.get('email')?.invalid && contactForm.get('email')?.touched">
+          Valid email is required
+        </div>
+      </div>
+      
+      <app-gameshield-captcha 
+        (verify)="setCaptchaToken($event)"
+        (failure)="handleFailure($event)"
+        [gameType]="'breakout'"
+        [difficulty]="'medium'"
+        [size]="'450px'"
+      ></app-gameshield-captcha>
       
       <button type="submit" [disabled]="!captchaToken || contactForm.invalid">Submit</button>
     </form>
   `
 })
 export class ContactFormComponent {
-  contactForm = this.formBuilder.group({
+  contactForm: FormGroup = this.formBuilder.group({
     name: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]]
   });
@@ -257,24 +304,26 @@ export class ContactFormComponent {
     this.captchaToken = token;
   }
   
+  handleFailure(reason: string) {
+    console.error('CAPTCHA verification failed:', reason);
+  }
+  
   onSubmit() {
-    if (!this.captchaToken) {
-      alert('Please complete the CAPTCHA');
+    if (this.contactForm.invalid || !this.captchaToken) {
       return;
     }
     
-    const formData = {
-      ...this.contactForm.value,
-      captchaToken: this.captchaToken
-    };
+    const headers = new HttpHeaders({
+      'X-CAPTCHA-Token': this.captchaToken
+    });
     
-    this.http.post('/api/submit-form', formData)
+    this.http.post('/api/submit-form', this.contactForm.value, { headers })
       .subscribe(
-        response => {
-          // Handle success
+        (response) => {
+          console.log('Form submitted successfully', response);
         },
-        error => {
-          console.error('Form submission error:', error);
+        (error) => {
+          console.error('Error submitting form', error);
         }
       );
   }
@@ -287,22 +336,31 @@ export class ContactFormComponent {
 
 ```javascript
 const express = require('express');
-const { verifyToken } from '@gameshield/captcha-sdk-server';
+const { verifyToken } = require('@gameshield/server');
 
 const app = express();
 app.use(express.json());
 
 app.post('/api/submit-form', async (req, res) => {
-  const { captchaToken, ...formData } = req.body;
+  // Get token from header or body
+  const token = req.headers['x-captcha-token'] || req.body.captchaToken;
+  
+  if (!token) {
+    return res.status(400).json({
+      success: false,
+      message: 'CAPTCHA token is required'
+    });
+  }
   
   // Verify the CAPTCHA token
   try {
-    const verification = await verifyToken(captchaToken);
+    const verification = verifyToken(token);
     
     if (!verification.valid) {
       return res.status(400).json({
         success: false,
-        message: 'CAPTCHA verification failed'
+        message: 'CAPTCHA verification failed',
+        reason: verification.reason
       });
     }
     
@@ -334,50 +392,55 @@ app.listen(3000, () => {
 // verify_captcha.php
 
 function verifyCaptchaToken($token) {
-    $apiKey = 'YOUR_API_SECRET_KEY';
+    $secretKey = getenv('GAMESHIELD_SECRET_KEY');
     $url = 'https://api.gameshield.dev/verify';
     
     $data = [
         'token' => $token,
-        'secret' => $apiKey
+        'secret' => $secretKey
     ];
     
     $options = [
         'http' => [
-            'header' => "Content-type: application/json\r\n",
-            'method' => 'POST',
+            'header'  => "Content-type: application/json\r\n",
+            'method'  => 'POST',
             'content' => json_encode($data)
         ]
     ];
     
-    $context = stream_context_create($options);
-    $response = file_get_contents($url, false, $context);
+    $context  = stream_context_create($options);
+    $result = file_get_contents($url, false, $context);
     
-    if ($response === FALSE) {
+    if ($result === FALSE) {
         return [
             'valid' => false,
-            'error' => 'Failed to connect to verification API'
+            'reason' => 'Failed to connect to verification service'
         ];
     }
     
-    return json_decode($response, true);
+    return json_decode($result, true);
 }
 
-// Usage in form handler
+// Process form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $captchaToken = $_POST['captchaToken'] ?? '';
+    // Get token from header or POST data
+    $token = $_SERVER['HTTP_X_CAPTCHA_TOKEN'] ?? $_POST['captchaToken'] ?? '';
     
-    if (empty($captchaToken)) {
+    if (empty($token)) {
         http_response_code(400);
         echo json_encode(['success' => false, 'message' => 'CAPTCHA token is required']);
         exit;
     }
     
-    $verification = verifyCaptchaToken($captchaToken);
+    $verification = verifyCaptchaToken($token);
     
     if (!$verification['valid']) {
         http_response_code(400);
-        echo json_encode(['success' => false, 'message' => 'CAPTCHA verification failed']);
+        echo json_encode([
+            'success' => false, 
+            'message' => 'CAPTCHA verification failed',
+            'reason' => $verification['reason'] ?? 'Unknown reason'
+        ]);
         exit;
     }
     
@@ -394,45 +457,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 ```python
 from flask import Flask, request, jsonify
 import requests
+import os
 
 app = Flask(__name__)
 
 def verify_captcha_token(token):
-    api_key = 'YOUR_API_SECRET_KEY'
+    secret_key = os.environ.get('GAMESHIELD_SECRET_KEY')
     url = 'https://api.gameshield.dev/verify'
     
     data = {
         'token': token,
-        'secret': api_key
+        'secret': secret_key
     }
     
     try:
         response = requests.post(url, json=data)
-        response.raise_for_status()
         return response.json()
-    except requests.exceptions.RequestException as e:
+    except Exception as e:
         return {
             'valid': False,
-            'error': str(e)
+            'reason': str(e)
         }
 
 @app.route('/api/submit-form', methods=['POST'])
 def submit_form():
-    data = request.json
-    captcha_token = data.get('captchaToken')
+    # Get token from header or JSON data
+    token = request.headers.get('X-CAPTCHA-Token') or request.json.get('captchaToken')
     
-    if not captcha_token:
+    if not token:
         return jsonify({
             'success': False,
             'message': 'CAPTCHA token is required'
         }), 400
     
-    verification = verify_captcha_token(captcha_token)
+    verification = verify_captcha_token(token)
     
     if not verification.get('valid'):
         return jsonify({
             'success': False,
-            'message': 'CAPTCHA verification failed'
+            'message': 'CAPTCHA verification failed',
+            'reason': verification.get('reason', 'Unknown reason')
         }), 400
     
     # Process form data
@@ -453,8 +517,11 @@ if __name__ == '__main__':
 
 For multi-step forms, you can verify the CAPTCHA at the final step:
 
-```javascript
-// Frontend (React example)
+```jsx
+// React example
+import React, { useState } from 'react';
+import { GameShield } from '@gameshield/react';
+
 function MultiStepForm() {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({});
@@ -468,9 +535,16 @@ function MultiStepForm() {
     setStep(step - 1);
   };
   
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+  
   const handleSubmit = async () => {
     if (!captchaToken) {
-      alert('Please complete the CAPTCHA');
+      alert('Please complete the CAPTCHA verification');
       return;
     }
     
@@ -478,12 +552,10 @@ function MultiStepForm() {
       const response = await fetch('/api/submit-form', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'X-CAPTCHA-Token': captchaToken
         },
-        body: JSON.stringify({
-          ...formData,
-          captchaToken
-        })
+        body: JSON.stringify(formData)
       });
       const data = await response.json();
       // Handle response
@@ -497,7 +569,22 @@ function MultiStepForm() {
       {step === 1 && (
         <div>
           <h2>Step 1: Personal Information</h2>
-          {/* Step 1 fields */}
+          <input 
+            type="text" 
+            name="name" 
+            placeholder="Your Name" 
+            value={formData.name || ''} 
+            onChange={handleChange} 
+            required 
+          />
+          <input 
+            type="email" 
+            name="email" 
+            placeholder="Your Email" 
+            value={formData.email || ''} 
+            onChange={handleChange} 
+            required 
+          />
           <button onClick={handleNextStep}>Next</button>
         </div>
       )}
@@ -505,7 +592,13 @@ function MultiStepForm() {
       {step === 2 && (
         <div>
           <h2>Step 2: Additional Details</h2>
-          {/* Step 2 fields */}
+          <textarea 
+            name="message" 
+            placeholder="Your Message" 
+            value={formData.message || ''} 
+            onChange={handleChange} 
+            required 
+          />
           <button onClick={handlePrevStep}>Back</button>
           <button onClick={handleNextStep}>Next</button>
         </div>
@@ -514,7 +607,12 @@ function MultiStepForm() {
       {step === 3 && (
         <div>
           <h2>Step 3: Verification</h2>
-          <GameshieldCaptcha onVerify={setCaptchaToken} />
+          <GameShield
+            size="400px"
+            gameType="random"
+            difficulty="medium"
+            onSuccess={setCaptchaToken}
+          />
           <button onClick={handlePrevStep}>Back</button>
           <button onClick={handleSubmit} disabled={!captchaToken}>Submit</button>
         </div>
@@ -524,15 +622,31 @@ function MultiStepForm() {
 }
 ```
 
-### Rate Limiting and Timeouts
+### Rate Limiting and Security
 
-For enhanced security, implement rate limiting and token timeouts:
+For enhanced security, implement rate limiting and additional security measures:
 
 ```javascript
 // Server-side (Node.js example)
 const express = require('express');
-const { verifyToken } = require('@gameshield/captcha-sdk-server');
+const { verifyToken, configureServer } = require('@gameshield/server');
 const rateLimit = require('express-rate-limit');
+
+// Configure GameShield server
+configureServer({
+  secretKey: process.env.GAMESHIELD_SECRET_KEY,
+  tokenExpiration: 300, // 5 minutes in seconds
+  rateLimit: {
+    enabled: true,
+    maxRequests: 100,
+    windowMs: 15 * 60 * 1000 // 15 minutes
+  },
+  ipProtection: {
+    enabled: true,
+    blacklist: [],
+    suspiciousAttempts: 5
+  }
+});
 
 const app = express();
 app.use(express.json());
@@ -545,30 +659,35 @@ const formSubmitLimiter = rateLimit({
 });
 
 app.post('/api/submit-form', formSubmitLimiter, async (req, res) => {
-  const { captchaToken, ...formData } = req.body;
+  const token = req.headers['x-captcha-token'] || req.body.captchaToken;
+  
+  if (!token) {
+    return res.status(400).json({
+      success: false,
+      message: 'CAPTCHA token is required'
+    });
+  }
   
   // Verify the CAPTCHA token
   try {
-    const verification = await verifyToken(captchaToken);
+    const verification = verifyToken(token);
     
     if (!verification.valid) {
       return res.status(400).json({
         success: false,
-        message: 'CAPTCHA verification failed'
+        message: 'CAPTCHA verification failed',
+        reason: verification.reason
       });
     }
     
-    // Check token age (optional, if supported by your verification response)
-    if (verification.timestamp) {
-      const tokenAge = Date.now() - new Date(verification.timestamp).getTime();
-      const maxTokenAge = 5 * 60 * 1000; // 5 minutes
-      
-      if (tokenAge > maxTokenAge) {
-        return res.status(400).json({
-          success: false,
-          message: 'CAPTCHA token has expired, please try again'
-        });
-      }
+    // Access behavior metrics for additional security checks
+    const { behaviorMetrics } = verification.data;
+    
+    if (behaviorMetrics.confidence < 0.7) {
+      return res.status(400).json({
+        success: false,
+        message: 'Suspicious behavior detected'
+      });
     }
     
     // Process the form data
@@ -594,6 +713,6 @@ app.listen(3000, () => {
 
 ## Next Steps
 
-- Check out the [Customization](/guide/customization) guide to learn how to style and configure Gameshield
+- Check out the [Behavior Analysis](/guide/behavior-analysis) guide to learn how GameShield detects bots
 - Visit the [Troubleshooting](/guide/troubleshooting) page if you encounter any issues
-- Explore the [API Reference](/api/) for detailed information on all available methods and options
+- Explore the API references for [@gameshield/core](/guide/packages/core), [@gameshield/react](/guide/packages/react), and [@gameshield/server](/guide/packages/server) packages

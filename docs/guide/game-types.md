@@ -6,79 +6,41 @@ layout: doc
 
 GameShield offers a variety of game-based CAPTCHA challenges, each designed to be engaging while effectively preventing automated access.
 
-## Available Games
+## Core Game Types
+
+GameShield currently includes four primary game types that provide a balance of user engagement and security:
 
 <div class="game-grid">
   <div class="game-card">
-    <a href="/guide/games/pong" class="game-link">
+    <div class="game-link">
       <div class="game-icon">🏓</div>
       <h3>Pong</h3>
-      <p>Classic paddle-and-ball game testing reflexes and timing. Perfect for quick verifications.</p>
-    </a>
+      <p>Classic paddle-and-ball game testing reflexes and timing. Perfect for quick verifications with minimal complexity.</p>
+    </div>
   </div>
   
   <div class="game-card">
-    <a href="/guide/games/snake" class="game-link">
+    <div class="game-link">
       <div class="game-icon">🐍</div>
       <h3>Snake</h3>
-      <p>Pattern-based challenge where players collect items in sequence, testing planning and control.</p>
-    </a>
+      <p>Pattern-based challenge where players collect items in sequence, testing planning and control abilities.</p>
+    </div>
   </div>
   
   <div class="game-card">
-    <a href="/guide/games/breakout" class="game-link">
+    <div class="game-link">
       <div class="game-icon">🧱</div>
       <h3>Breakout</h3>
-      <p>Block-breaking arcade game that tests precision and strategic planning abilities.</p>
-    </a>
+      <p>Block-breaking arcade game that tests precision and strategic planning abilities while maintaining user engagement.</p>
+    </div>
   </div>
   
   <div class="game-card">
-    <a href="/guide/games/maze" class="game-link">
-      <div class="game-icon">🌀</div>
-      <h3>Maze</h3>
-      <p>Dynamic maze navigation challenge testing pathfinding and spatial reasoning.</p>
-    </a>
-  </div>
-  
-  <div class="game-card">
-    <a href="/guide/games/pattern" class="game-link">
-      <div class="game-icon">🎯</div>
-      <h3>Pattern</h3>
-      <p>Memory-based challenge requiring players to recreate specific visual sequences.</p>
-    </a>
-  </div>
-  
-  <div class="game-card">
-    <a href="/guide/games/dino-run" class="game-link">
+    <div class="game-link">
       <div class="game-icon">🦖</div>
       <h3>Dino Run</h3>
-      <p>Timing-based challenge requiring precise jumps and obstacle avoidance.</p>
-    </a>
-  </div>
-  
-  <div class="game-card">
-    <a href="/guide/games/puzzle-slider" class="game-link">
-      <div class="game-icon">🧩</div>
-      <h3>Puzzle Slider</h3>
-      <p>Sliding puzzle that tests spatial reasoning and planning abilities.</p>
-    </a>
-  </div>
-  
-  <div class="game-card">
-    <a href="/guide/games/physics-puzzles" class="game-link">
-      <div class="game-icon">⚖️</div>
-      <h3>Physics Puzzles</h3>
-      <p>Physics-based challenges requiring intuitive understanding of object interactions.</p>
-    </a>
-  </div>
-  
-  <div class="game-card">
-    <a href="/guide/games/sequence-memory" class="game-link">
-      <div class="game-icon">📝</div>
-      <h3>Sequence Memory</h3>
-      <p>Memory challenge testing sequence recall and attention to detail.</p>
-    </a>
+      <p>Timing-based challenge requiring precise jumps and obstacle avoidance, inspired by the popular offline browser game.</p>
+    </div>
   </div>
 </div>
 
@@ -131,59 +93,141 @@ GameShield offers a variety of game-based CAPTCHA challenges, each designed to b
 
 ## Game Selection
 
-GameShield automatically selects the most appropriate game type based on various factors:
+GameShield allows you to specify which game type to use or set it to "random" for automatic selection:
 
-### Device Capabilities
-- Screen size and orientation
-- Input methods available
-- Processing power
-- Network conditions
+```jsx
+// React component with specific game type
+<GameShield
+  gameType="pong"
+  size="400px"
+  onSuccess={handleSuccess}
+/>
 
-### User Context
-- Previous verification history
-- Session characteristics
-- Risk assessment score
-- Accessibility requirements
-
-### Security Requirements
-- Current threat level
-- Site-specific settings
-- Traffic patterns
-- Historical attack data
-
-## Customization
-
-You can customize the game selection and behavior:
-
-```typescript
-const captcha = new CaptchaSDK({
-  preferredGames: ['pong', 'snake'],
-  excludedGames: ['maze'],
-  difficulty: 'adaptive',
-  accessibility: {
-    highContrast: true,
-    reducedMotion: false,
-    audioFeedback: true
-  }
+// Core API with random game selection
+const gameShield = createGameShield({
+  container: document.getElementById('captcha-container'),
+  gameType: 'random',
+  size: '400px',
+  onSuccess: handleSuccess
 });
 ```
 
-### Available Options
-- `preferredGames`: Prioritize specific game types
-- `excludedGames`: Disable certain game types
-- `difficulty`: Set fixed or adaptive difficulty
-- `accessibility`: Configure accessibility features
+### Game Type Options
+
+The `gameType` property accepts the following values:
+
+| Value | Description |
+|-------|-------------|
+| `"pong"` | Classic paddle-and-ball game |
+| `"snake"` | Snake movement and collection game |
+| `"breakout"` | Block-breaking arcade game |
+| `"dino-run"` | Obstacle jumping game |
+| `"random"` | Randomly selects one of the available games |
+
+## Difficulty Levels
+
+Each game can be configured with different difficulty levels to balance security and user experience:
+
+```jsx
+// React component with easy difficulty
+<GameShield
+  gameType="snake"
+  difficulty="easy"
+  size="400px"
+  onSuccess={handleSuccess}
+/>
+```
+
+### Difficulty Options
+
+The `difficulty` property accepts the following values:
+
+| Value | Description |
+|-------|-------------|
+| `"easy"` | Lower challenge level, suitable for most users |
+| `"medium"` | Balanced difficulty (default) |
+| `"hard"` | Higher challenge level for enhanced security |
+
+## Game Behavior
+
+All games in GameShield share common characteristics:
+
+1. **1:1 Aspect Ratio**: All games maintain a perfect square aspect ratio for consistent display
+2. **Responsive Design**: Games adapt to the specified size while maintaining playability
+3. **Touch Support**: All games work with both mouse and touch input
+4. **Behavior Analysis**: User interactions during gameplay are analyzed for bot detection
+5. **Completion Criteria**: Each game has specific objectives that must be met for verification
 
 ## Implementation
 
-For detailed configuration options and implementation guidelines, visit each game's dedicated page:
+### React Component
 
-- [Pong](/guide/games/pong)
-- [Snake](/guide/games/snake)
-- [Breakout](/guide/games/breakout)
-- [Maze](/guide/games/maze)
-- [Pattern](/guide/games/pattern)
-- [Dino Run](/guide/games/dino-run)
-- [Puzzle Slider](/guide/games/puzzle-slider)
-- [Physics Puzzles](/guide/games/physics-puzzles)
-- [Sequence Memory](/guide/games/sequence-memory)
+```jsx
+import React, { useState } from 'react';
+import { GameShield } from '@gameshield/react';
+
+function CaptchaForm() {
+  const [token, setToken] = useState(null);
+  
+  return (
+    <div>
+      <GameShield
+        size="450px"
+        gameType="random"
+        difficulty="medium"
+        onSuccess={(token) => {
+          setToken(token);
+          console.log('Verification successful!');
+        }}
+        onFailure={(reason) => {
+          console.log('Verification failed:', reason);
+        }}
+      />
+      
+      <button disabled={!token}>Submit</button>
+    </div>
+  );
+}
+```
+
+### Core API
+
+```javascript
+import { createGameShield } from '@gameshield/core';
+
+const container = document.getElementById('captcha-container');
+
+const gameShield = createGameShield({
+  container,
+  size: '400px',
+  gameType: 'breakout',
+  difficulty: 'medium',
+  onSuccess: (token) => {
+    console.log('Verification successful!', token);
+    document.getElementById('submit-button').disabled = false;
+  },
+  onFailure: (reason) => {
+    console.log('Verification failed:', reason);
+  }
+});
+
+// To destroy the instance when no longer needed
+function cleanup() {
+  if (gameShield) {
+    gameShield.destroy();
+  }
+}
+```
+
+## Accessibility Considerations
+
+GameShield games are designed with accessibility in mind:
+
+- **Keyboard Support**: All games can be played using keyboard controls
+- **Color Contrast**: Visual elements maintain sufficient contrast ratios
+- **Motion Reduction**: Games respect the user's reduced motion preferences when possible
+- **Alternative Games**: Different game types accommodate various user abilities
+
+## Future Game Types
+
+The GameShield team is continuously developing new game types to enhance both security and user experience. Future releases will include additional games that provide even more variety and challenge types.

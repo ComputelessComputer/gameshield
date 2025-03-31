@@ -1,6 +1,6 @@
 # Troubleshooting
 
-This guide provides solutions to common issues you might encounter when implementing and using Gameshield.
+This guide provides solutions to common issues you might encounter when implementing and using GameShield.
 
 ## Common Issues
 
@@ -10,15 +10,14 @@ If the CAPTCHA game isn't appearing on your page:
 
 1. **Check Console Errors**: Open your browser's developer tools (F12 or right-click → Inspect) and check the console for any JavaScript errors.
 
-2. **Verify API Key**: Ensure you're using a valid API key and that it's properly configured:
+2. **Import Issues**: Ensure you're importing the components correctly:
 
    ```javascript
-   import { configure } from '@gameshield/captcha-sdk';
-
-   configure({
-     apiKey: 'YOUR_API_KEY', // Check this is correct
-     environment: 'production'
-   });
+   // React
+   import { GameShield } from '@gameshield/react';
+   
+   // Core (vanilla JS)
+   import { createGameShield } from '@gameshield/core';
    ```
 
 3. **Container Element**: Make sure the container element exists in the DOM when you initialize the CAPTCHA:
@@ -26,8 +25,9 @@ If the CAPTCHA game isn't appearing on your page:
    ```javascript
    // Bad: Container might not exist yet
    document.addEventListener('DOMContentLoaded', () => {
-     const captcha = generateCaptcha({
-       container: document.getElementById('captcha-container')
+     const gameShield = createGameShield({
+       container: document.getElementById('captcha-container'),
+       size: '400px'
      });
    });
 
@@ -39,16 +39,33 @@ If the CAPTCHA game isn't appearing on your page:
        return;
      }
      
-     const captcha = generateCaptcha({ container });
+     const gameShield = createGameShield({ 
+       container,
+       size: '400px',
+       gameType: 'random',
+       difficulty: 'medium'
+     });
    }
    ```
 
-4. **Network Issues**: Check if the CAPTCHA resources are being loaded correctly in the Network tab of your browser's developer tools.
+4. **Network Issues**: Check if the GameShield resources are being loaded correctly in the Network tab of your browser's developer tools.
 
-5. **Content Security Policy (CSP)**: If you have a strict CSP, you may need to allow resources from Gameshield domains:
+5. **Content Security Policy (CSP)**: If you have a strict CSP, you may need to allow resources from GameShield domains:
 
    ```html
    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.gameshield.dev; connect-src 'self' https://api.gameshield.dev;">
+   ```
+
+6. **Size Property**: Make sure you're providing a valid size for the component:
+
+   ```jsx
+   // React
+   <GameShield size="400px" /> // Valid
+   <GameShield size={400} /> // Valid
+   <GameShield /> // Valid (uses default size)
+   
+   // Invalid
+   <GameShield size="large" /> // Not a valid size
    ```
 
 ### Verification Failures
@@ -61,13 +78,21 @@ If the CAPTCHA verification is failing:
 
    ```javascript
    // Node.js example
-   const { verifyToken } = require('@gameshield/captcha-sdk-server');
+   const { verifyToken } = require('@gameshield/server');
 
-   // Make sure you're using the correct secret key
-   const result = await verifyToken(token, 'YOUR_SECRET_KEY');
+   // Verify the token
+   const verification = verifyToken(token);
+   
+   if (verification.valid) {
+     // Token is valid
+     console.log('Verification successful');
+   } else {
+     // Token is invalid
+     console.error('Verification failed:', verification.reason);
+   }
    ```
 
-3. **Network Issues**: Ensure your server can reach the Gameshield verification API.
+3. **Network Issues**: Ensure your server can reach the GameShield verification API.
 
 4. **Token Transmission**: Verify that the token is being correctly sent from the client to your server:
 
@@ -76,9 +101,10 @@ If the CAPTCHA verification is failing:
    fetch('/api/verify', {
      method: 'POST',
      headers: {
-       'Content-Type': 'application/json'
+       'Content-Type': 'application/json',
+       'X-CAPTCHA-Token': captchaToken // Recommended header approach
      },
-     body: JSON.stringify({ token: captchaToken })
+     body: JSON.stringify({ formData })
    });
    ```
 
@@ -90,27 +116,57 @@ If you're experiencing slow loading or performance issues:
 
 1. **Lazy Loading**: Consider loading the CAPTCHA only when needed:
 
-   ```javascript
-   // Only load the CAPTCHA when the form is about to be submitted
-   submitButton.addEventListener('click', (e) => {
-     e.preventDefault();
+   ```jsx
+   // React example with lazy loading
+   import React, { useState } from 'react';
+   import { GameShield } from '@gameshield/react';
+   
+   function ContactForm() {
+     const [showCaptcha, setShowCaptcha] = useState(false);
+     const [token, setToken] = useState(null);
      
-     if (!captchaInitialized) {
-       initCaptcha();
-       captchaInitialized = true;
-     } else {
-       // Continue with form submission if CAPTCHA is already verified
-       if (captchaVerified) {
-         form.submit();
+     const handleSubmitAttempt = (e) => {
+       e.preventDefault();
+       if (!showCaptcha) {
+         setShowCaptcha(true);
+         return;
        }
-     }
-   });
+       
+       if (!token) {
+         alert('Please complete the CAPTCHA verification');
+         return;
+       }
+       
+       // Continue with form submission
+     };
+     
+     return (
+       <form onSubmit={handleSubmitAttempt}>
+         {/* Form fields */}
+         
+         {showCaptcha && (
+           <GameShield
+             size="400px"
+             onSuccess={setToken}
+           />
+         )}
+         
+         <button type="submit">
+           {showCaptcha ? 'Submit' : 'Continue'}
+         </button>
+       </form>
+     );
+   }
    ```
 
-2. **Resource Optimization**: Use the minified version of the SDK in production:
+2. **Resource Optimization**: Use the production build of the packages:
 
-   ```html
-   <script src="https://cdn.jsdelivr.net/npm/@gameshield/captcha-sdk@latest/dist/captcha-sdk.min.js"></script>
+   ```bash
+   # Development dependencies
+   npm install --save-dev @gameshield/core @gameshield/react @gameshield/server
+   
+   # Production build
+   npm run build
    ```
 
 3. **Preconnect Hint**: Add preconnect hints to your HTML to establish early connections:
@@ -123,9 +179,10 @@ If you're experiencing slow loading or performance issues:
 4. **Game Type Selection**: Some game types are more resource-intensive than others. If performance is critical, specify lighter game types:
 
    ```javascript
-   const captcha = generateCaptcha({
+   const gameShield = createGameShield({
      container: document.getElementById('captcha-container'),
-     gameTypes: ['simple-puzzle', 'pattern-match'] // Specify lighter game types
+     gameType: 'pong', // 'pong' is less resource-intensive than 'breakout'
+     size: '400px'
    });
    ```
 
@@ -139,54 +196,73 @@ If you're having problems on mobile devices:
    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
    ```
 
-2. **Touch Events**: Make sure touch events are not being blocked by other elements or event handlers.
+2. **Touch Events**: Make sure touch events are working correctly. GameShield supports touch interactions, but they might be affected by other touch event handlers on your page.
 
-3. **Container Size**: Ensure the CAPTCHA container has sufficient width and height on mobile screens:
+3. **Size Adaptation**: The 1:1 aspect ratio of GameShield ensures consistent display across devices, but you might need to adjust the size for smaller screens:
 
-   ```css
-   .gameshield-container {
-     width: 100%;
-     min-height: 250px;
-     max-width: 400px;
-     margin: 0 auto;
+   ```jsx
+   // React example with responsive sizing
+   import React, { useState, useEffect } from 'react';
+   import { GameShield } from '@gameshield/react';
+   
+   function ResponsiveCaptcha() {
+     const [size, setSize] = useState('400px');
+     
+     useEffect(() => {
+       const handleResize = () => {
+         const screenWidth = window.innerWidth;
+         if (screenWidth < 480) {
+           setSize('300px');
+         } else if (screenWidth < 768) {
+           setSize('350px');
+         } else {
+           setSize('400px');
+         }
+       };
+       
+       handleResize();
+       window.addEventListener('resize', handleResize);
+       return () => window.removeEventListener('resize', handleResize);
+     }, []);
+     
+     return <GameShield size={size} />;
    }
    ```
 
-4. **Game Type Compatibility**: Some game types may work better on mobile than others. Consider specifying mobile-friendly game types:
+4. **Performance**: Mobile devices might have limited resources. Consider using the 'pong' game type which is less resource-intensive.
 
-   ```javascript
-   const captcha = generateCaptcha({
-     container: document.getElementById('captcha-container'),
-     gameTypes: ['tap-sequence', 'simple-puzzle'] // Mobile-friendly games
-   });
-   ```
+### Browser Compatibility
 
-## Browser Compatibility
+GameShield is compatible with modern browsers:
 
-Gameshield supports all modern browsers, but you may encounter issues with older browsers:
-
-| Browser | Minimum Version | Notes |
-|---------|----------------|-------|
-| Chrome | 60+ | Full support |
+| Browser | Minimum Version | Support Level |
+|---------|----------------|---------------|
+| Chrome | 55+ | Full support |
 | Firefox | 55+ | Full support |
 | Safari | 11+ | Full support |
 | Edge | 79+ (Chromium-based) | Full support |
-| IE | Not supported | Consider a polyfill or fallback |
+| IE | Not supported | Not compatible |
 
 For older browsers, you can implement a fallback:
 
 ```javascript
 function initCaptcha() {
-  if (typeof GameshieldCaptcha === 'undefined') {
+  // Check for WebGL support (required for GameShield)
+  const canvas = document.createElement('canvas');
+  const hasWebGL = !!(window.WebGLRenderingContext && 
+    (canvas.getContext('webgl') || canvas.getContext('experimental-webgl')));
+  
+  if (!hasWebGL) {
     // Fallback to a simpler CAPTCHA or message
     document.getElementById('captcha-container').innerHTML = 
       '<p>Your browser does not support our advanced CAPTCHA. Please upgrade your browser or use a different one.</p>';
     return;
   }
   
-  // Initialize Gameshield CAPTCHA
-  const captcha = GameshieldCaptcha.generateCaptcha({
-    container: document.getElementById('captcha-container')
+  // Initialize GameShield
+  const gameShield = createGameShield({
+    container: document.getElementById('captcha-container'),
+    size: '400px'
   });
 }
 ```
@@ -202,23 +278,30 @@ If you're behind a corporate firewall or in a restricted network environment:
 
 2. **Proxy Configuration**: If you're using a proxy, make sure it's correctly configured for WebSocket connections.
 
-3. **Self-Hosting**: For environments with strict network policies, consider self-hosting the Gameshield resources. Contact our support team for more information.
+3. **Self-Hosting**: For environments with strict network policies, consider self-hosting the GameShield resources. Contact our support team for more information.
 
 ## Debugging Tools
 
-### SDK Debug Mode
+### Debug Mode
 
 Enable debug mode to get detailed logging:
 
 ```javascript
-import { configure } from '@gameshield/captcha-sdk';
+import { configureCore } from '@gameshield/core';
 
-configure({
-  apiKey: 'YOUR_API_KEY',
-  environment: 'development',
-  debug: true // Enable debug logging
+configureCore({
+  debug: true, // Enable debug logging
+  logLevel: 'verbose' // 'error', 'warn', 'info', 'debug', or 'verbose'
 });
 ```
+
+### React DevTools
+
+When using the React component, you can inspect it with React DevTools:
+
+1. Install [React DevTools](https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi) browser extension
+2. Open your page and inspect the GameShield component
+3. Check the props and state to ensure everything is configured correctly
 
 ### Network Analysis
 
@@ -235,20 +318,32 @@ Implement detailed logging in your server-side verification:
 
 ```javascript
 // Node.js example
-app.post('/api/verify-captcha', async (req, res) => {
-  const { token } = req.body;
+const { verifyToken, configureServer } = require('@gameshield/server');
+
+// Enable server-side debugging
+configureServer({
+  debug: true,
+  logLevel: 'verbose'
+});
+
+app.post('/api/verify-captcha', (req, res) => {
+  const token = req.headers['x-captcha-token'] || req.body.captchaToken;
   
   console.log('Verifying token:', token);
   
   try {
-    const result = await verifyToken(token);
-    console.log('Verification result:', result);
+    const verification = verifyToken(token);
+    console.log('Verification result:', verification);
     
-    if (result.valid) {
+    if (verification.valid) {
       res.json({ success: true });
     } else {
-      console.warn('Invalid CAPTCHA token:', result.error);
-      res.status(400).json({ success: false, error: 'Invalid CAPTCHA' });
+      console.warn('Invalid CAPTCHA token:', verification.reason);
+      res.status(400).json({ 
+        success: false, 
+        error: 'Invalid CAPTCHA',
+        reason: verification.reason
+      });
     }
   } catch (error) {
     console.error('Verification error:', error);
@@ -263,16 +358,20 @@ app.post('/api/verify-captcha', async (req, res) => {
 |------------|-------------|----------|
 | `invalid_token` | The token is invalid or has expired | Generate a new CAPTCHA token |
 | `token_already_used` | The token has already been verified | Generate a new CAPTCHA token |
-| `invalid_api_key` | The API key is invalid | Check your API key configuration |
+| `invalid_secret_key` | The secret key is invalid | Check your server configuration |
 | `rate_limit_exceeded` | Too many verification attempts | Implement rate limiting on your side |
 | `network_error` | Failed to connect to verification API | Check your network connection |
 | `game_not_completed` | The game was not successfully completed | Ensure the user completes the game |
+| `behavior_analysis_failed` | Behavior analysis detected bot-like patterns | This is expected for automated tests |
 
 ## Getting Additional Help
 
 If you're still experiencing issues:
 
-1. **Check Documentation**: Review the [API Reference](/api/) for detailed information on all methods and options.
+1. **Check Documentation**: Review the package-specific documentation:
+   - [@gameshield/core](/guide/packages/core)
+   - [@gameshield/react](/guide/packages/react)
+   - [@gameshield/server](/guide/packages/server)
 
 2. **Community Forums**: Visit our [GitHub Discussions](https://github.com/ComputelessComputer/gameshield/discussions) to see if others have encountered similar issues.
 
@@ -282,7 +381,7 @@ If you're still experiencing issues:
 
 When reporting an issue, please include:
 
-- Gameshield SDK version
+- GameShield package versions (@gameshield/core, @gameshield/react, @gameshield/server)
 - Browser and OS information
 - Detailed description of the problem
 - Steps to reproduce

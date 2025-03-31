@@ -1,59 +1,52 @@
-# What is Gameshield?
+# What is GameShield?
 
-Gameshield is an innovative, open-source CAPTCHA system designed to prevent web crawling and bot interactions using interactive, randomly generated games. Unlike traditional CAPTCHA methods, which rely on text-based or image recognition challenges, this approach leverages generative games that require real-time human interaction to verify authenticity.
+GameShield is an innovative CAPTCHA system that uses interactive games to verify human users instead of traditional text or image recognition challenges. By leveraging the natural interaction patterns of humans, GameShield provides a more engaging and effective way to protect your website from bots.
 
-## Why Gameshield?
+## The Problem with Traditional CAPTCHAs
 
-Traditional CAPTCHAs have become increasingly vulnerable to AI-based solvers, making them less effective at distinguishing humans from bots. Additionally, they often create frustrating user experiences that can lead to abandonment.
+Traditional CAPTCHAs have several drawbacks:
 
-Gameshield addresses these issues by:
+- **Poor User Experience**: Distorted text is frustrating to decipher
+- **Accessibility Issues**: Many CAPTCHAs are difficult for users with disabilities
+- **Decreasing Effectiveness**: AI has become increasingly capable of solving traditional CAPTCHAs
+- **User Frustration**: "Select all traffic lights" challenges can be ambiguous and time-consuming
 
-- **Creating engaging interactions**: Instead of tedious challenges, users solve quick, fun mini-games
-- **Leveraging human intuition**: Games require intuitive responses that are difficult for bots to simulate
-- **Adapting dynamically**: Each challenge is uniquely generated to prevent pattern recognition
-- **Improving conversion rates**: By turning verification into an enjoyable experience
+## The GameShield Solution
+
+GameShield addresses these issues by:
+
+- **Engaging Interaction**: Using fun mini-games that users enjoy playing
+- **Natural Behavior Analysis**: Analyzing interaction patterns that are difficult for bots to simulate
+- **Adaptive Difficulty**: Adjusting challenge complexity based on risk assessment
+- **Improved Accessibility**: Offering multiple game types to accommodate different abilities
 
 ## Key Features
 
-### Interactive Generative Games
-Unique mini-games that adapt dynamically to provide a fun user experience while verifying human interaction.
-
-### Enhanced Security
-Resistant to automated solvers and AI-based attacks, providing better protection than traditional CAPTCHAs.
-
-### Easy Integration
-Lightweight SDK that can be integrated into any website with just a few lines of code.
-
-### Analytics & Monitoring
-Comprehensive dashboard for tracking verification statistics and detecting malicious activity.
-
-### Accessibility
-Designed to be user-friendly and inclusive, with multiple game types to accommodate different abilities.
-
-### Optimized Performance
-Runs efficiently in both browser and mobile environments with minimal impact on page load times.
-
-### Customizable
-Tailor the appearance and behavior to match your website's design and requirements.
+- **Interactive Games**: A variety of mini-games that are fun to play
+- **Behavior Analysis**: Advanced detection of human vs bot interaction patterns
+- **Enhanced Security**: Multiple layers of protection against automated attacks
+- **React Integration**: Seamless integration with React applications
+- **Performance Optimized**: Lightweight implementation with minimal impact on page load
+- **Modular Architecture**: Use only the packages you need
 
 ## How It Works
 
-At a high level, Gameshield works by:
+1. **Challenge Generation**: When a user needs to be verified, GameShield presents them with an interactive game challenge
+2. **Interaction Monitoring**: As the user plays the game, GameShield monitors their interaction patterns
+3. **Behavior Analysis**: The system analyzes the collected behavior data to determine if the user is human
+4. **Token Generation**: Upon successful verification, a secure token is generated
+5. **Server Verification**: The token can be verified server-side to confirm the user is human
 
-1. **Generation**: When a user needs to be verified, the system generates a random mini-game challenge
-2. **Interaction**: The user completes the game challenge through intuitive interactions
-3. **Verification**: The system analyzes the interaction patterns to determine if they match human behavior
-4. **Authentication**: Upon successful verification, the user is allowed to proceed
+## Modular Architecture
 
-For more details on the technical implementation, see the [How it Works](/guide/how-it-works) section.
+GameShield follows a modular architecture with three main packages:
 
-## Next Steps
+- **[@gameshield/core](/guide/packages/core)**: The core logic engine with no UI dependencies
+- **[@gameshield/react](/guide/packages/react)**: React UI components for easy integration
+- **[@gameshield/server](/guide/packages/server)**: Server-side verification and security features
 
-Ready to get started with Gameshield? Here's how to proceed:
+This modular approach allows you to use only the components you need and makes it easy to integrate GameShield into your existing application.
 
-- [Getting Started](/guide/getting-started) - Begin integrating Gameshield
-- [Installation](/guide/installation) - Install the SDK in your project
-- [Game Types](/guide/game-types) - Explore the different game challenges
-- [Tech Stack & Architecture](/guide/tech-stack) - Understand the technical implementation
-- [Admin Dashboard](/guide/admin-dashboard) - Monitor your CAPTCHA performance
-- [Analytics System](/guide/analytics-system) - Understand the analytics architecture
+## Getting Started
+
+Ready to add GameShield to your application? Continue to the [Getting Started](/guide/getting-started) guide.

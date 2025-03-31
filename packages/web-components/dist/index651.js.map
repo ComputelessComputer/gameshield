@@ -1,1 +1,0 @@
-{"version":3,"file":"index651.js","sources":["../../../node_modules/.pnpm/math-intrinsics@1.1.0/node_modules/math-intrinsics/round.js"],"sourcesContent":["'use strict';\n\n/** @type {import('./round')} */\nmodule.exports = Math.round;\n"],"names":["round"],"mappings":"IAGAA,IAAiB,KAAK;","x_google_ignoreList":[0]}

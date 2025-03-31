@@ -1,9 +1,0 @@
-
-
-> gameshield-api@0.1.0 build /Users/johnjeong/dev/Projects/gameshield/apps/backend
-> bun build src/index.ts --outdir dist
-
-
-  ./index.js  1699.58 KB
-
-[0m[2m[[1m105ms[0m[2m][0m [32mbundle[0m 149 modules

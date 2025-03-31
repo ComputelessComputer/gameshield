@@ -1,16 +1,16 @@
-# How Gameshield Works
+# How GameShield Works
 
-This page explains the technical architecture and operational flow of Gameshield's game-based CAPTCHA system.
+This page explains the technical architecture and operational flow of GameShield's game-based CAPTCHA system.
 
 ## Architecture Overview
 
-Gameshield consists of three main components:
+GameShield follows a modular architecture with three main packages:
 
-1. **Client SDK**: A JavaScript library that renders the game interface and handles user interactions
-2. **Game Engine**: A WebGL-powered engine that generates and runs the verification games
-3. **Verification API**: A server-side component that validates the authenticity of completed challenges
+1. **Core Package**: Contains the essential logic for game generation, behavior analysis, and token management
+2. **React Package**: Provides React components for easy integration into React applications
+3. **Server Package**: Handles server-side verification and security features
 
-<img src="/gameshield_how_it_works.png" darkSrc="/gameshield_how_it_works_dark.png" alt="Gameshield Architecture" width="300px"/>
+<img src="/gameshield_architecture.png" darkSrc="/gameshield_architecture_dark.png" alt="GameShield Architecture" width="600px"/>
 
 ## Verification Process
 
@@ -18,82 +18,137 @@ Gameshield consists of three main components:
 
 When a CAPTCHA is requested, the system:
 
-- Generates a unique challenge ID
-- Randomly selects a game type from the available options
-- Creates game parameters with varying difficulty levels
+- Generates a unique session ID
+- Randomly selects a game type from the available options (Pong, Snake, Breakout, Dino Run)
+- Creates game parameters based on the specified difficulty level
 - Applies randomization to prevent pattern recognition
 
 ### 2. User Interaction
 
 The user is presented with an interactive game that requires human-like decision making and motor skills:
 
-- Puzzle games require spatial reasoning
-- Pattern recognition games test visual processing
-- Timing-based games measure reaction time
-- Physics-based games leverage intuitive understanding of motion
+- Each game is designed to be engaging yet simple to understand
+- Games require natural interaction patterns that are difficult for bots to simulate
+- The 1:1 aspect ratio ensures consistent display across different devices
+- The component adapts to different screen sizes while maintaining playability
 
 ### 3. Behavior Analysis
 
 During gameplay, the system analyzes multiple factors:
 
-- Interaction patterns (mouse/touch movements)
-- Timing of actions
-- Decision-making process
-- Solution approach
+- Movement patterns (mouse/touch movements)
+- Reaction times to game events
+- Interaction density and distribution
+- Pattern variability and natural inconsistencies
 
-These factors are compared against known human behavior patterns to determine authenticity.
+These factors are analyzed to determine if the user's behavior matches human patterns.
 
 ### 4. Token Generation
 
 Upon successful completion:
 
-- The client generates a cryptographically signed token
-- This token contains the challenge ID, completion data, and a timestamp
-- The token is passed to your application for server-side verification
+- The system analyzes the collected behavior data
+- A verification token is generated containing game results and behavior metrics
+- This token is passed to your application via the `onSuccess` callback
 
 ### 5. Server Verification
 
 For complete security, your server should:
 
-- Send the token to Gameshield's verification API
-- Receive confirmation of validity
-- Process the user's request only after verification
+- Receive the token from the client
+- Use the server package to verify the token's validity
+- Process the user's request only after successful verification
 
 ## Security Measures
 
-Gameshield employs multiple layers of security:
+GameShield employs multiple layers of security:
 
 ### Dynamic Challenges
 
-Each game is uniquely generated with randomized parameters, making it impossible to create a database of solutions.
+Each game instance is uniquely generated, making it impossible to create a database of solutions.
 
 ### Behavior Analysis
 
 Beyond just completing the game, the system analyzes how the user interacts with the challenge, detecting automation attempts.
 
-### Time-Limited Tokens
+### Token-based Verification
 
-Verification tokens expire after a short period, preventing replay attacks.
+Verification tokens contain encrypted data about the game session and behavior analysis results.
 
-### Server-Side Verification
+### Server-side Validation
 
 All tokens must be verified on the server side, preventing client-side tampering.
 
-### Continuous Learning
+### Responsive Design
 
-The system continuously improves by learning from new attack patterns and evolving its detection mechanisms.
+The 1:1 aspect ratio ensures consistent gameplay across different devices, preventing exploits based on screen size variations.
+
+## Technical Implementation
+
+### Game Engine
+
+GameShield uses PixiJS, a fast 2D rendering library, to create interactive game experiences:
+
+┌─────────────────────┐
+│    Game Factory     │
+└─────────────────────┘
+          │
+          ▼
+┌─────────────────────┐
+│    Game Instance    │
+└─────────────────────┘
+          │
+          ▼
+┌─────────────────────┐
+│     PixiJS App      │
+└─────────────────────┘
+
+### React Integration
+
+The React component provides a seamless integration experience:
+
+```jsx
+<GameShield
+  size="400px"
+  gameType="random"
+  difficulty="medium"
+  onSuccess={(token) => verifyToken(token)}
+/>
+```
+
+### Server Verification
+
+The server package makes it easy to verify tokens:
+
+```javascript
+import { verifyToken } from '@gameshield/server';
+
+app.post('/api/verify', (req, res) => {
+  const { token } = req.body;
+  const result = verifyToken(token);
+  
+  if (result.valid) {
+    // Token is valid, proceed with protected action
+    res.json({ success: true });
+  } else {
+    // Token is invalid, reject the request
+    res.status(400).json({ success: false });
+  }
+});
+```
 
 ## Performance Optimization
 
-Gameshield is designed for minimal impact on user experience:
+GameShield is designed for minimal impact on user experience:
 
-- Lightweight client SDK (<50KB gzipped)
-- Efficient WebGL rendering
-- Adaptive difficulty based on device capabilities
-- Preloading of game assets during idle page time
+- Lightweight implementation with minimal dependencies
+- Efficient rendering using PixiJS
+- Responsive design that adapts to different screen sizes
+- Optimized game logic for smooth performance
 
 ## Next Steps
 
-- Learn about the different [Game Types](/guide/game-types) available
-- Explore [Integration Examples](/guide/integration-examples) for implementation guidance
-- Check out the [API Reference](/api/) for detailed configuration options
+- Learn about the [modular architecture](/guide/architecture) in detail
+- Explore the [@gameshield/core](/guide/packages/core) package
+- Integrate the [React component](/guide/packages/react) into your application
+- Set up [server-side verification](/guide/packages/server)
