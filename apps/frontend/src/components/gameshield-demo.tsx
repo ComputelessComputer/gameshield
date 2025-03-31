@@ -1,34 +1,46 @@
 "use client";
 
 import { RefreshCcwIcon } from "lucide-react";
-import { useRef } from "react";
-import { GameShield } from "@gameshield/react";
+import { useGameShield } from "@gameshield/react";
 
 export default function GameshieldDemo() {
-  const gameShieldRef = useRef<{ reset: () => void } | null>(null);
+  // Use the hook instead of the component with ref
+  const { ref: gameShieldRef, reset, isVerified, error } = useGameShield({
+    gameType: "random",
+    difficulty: "medium",
+    size: "100%",
+    onSuccess: (token) => {
+      console.log("Verification successful:", token);
+    },
+    onFailure: (reason) => {
+      console.log("Verification failed:", reason);
+    }
+  });
 
   const handleRefresh = () => {
-    if (gameShieldRef.current) {
-      gameShieldRef.current.reset();
-    }
+    reset();
   };
 
   return (
     <div className="flex w-full flex-col items-center">
       <div className="aspect-square w-full max-w-[500px]">
-        <GameShield
+        <div
           ref={gameShieldRef}
-          gameType="random"
-          difficulty="medium"
-          size="100%"
-          onSuccess={(token) => {
-            console.log("Verification successful:", token);
-          }}
-          onFailure={(reason) => {
-            console.log("Verification failed:", reason);
-          }}
+          className="h-full w-full rounded-lg shadow-md"
         />
       </div>
+
+      {isVerified && (
+        <div className="mt-4 text-center text-green-600">
+          Verification successful!
+        </div>
+      )}
+
+      {error && (
+        <div className="mt-4 text-center text-red-600">
+          Verification failed: {error}
+        </div>
+      )}
 
       <button
         onClick={handleRefresh}
