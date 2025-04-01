@@ -186,7 +186,7 @@ export function useGameShield(options: UseGameShieldOptions = {}): UseGameShield
   }, [gameType, size, difficulty, onSuccess, onFailure, onTimeout]);
   
   return {
-    ref: containerRef,
+    ref: containerRef as React.RefObject<HTMLDivElement>,
     isVerifying,
     isVerified,
     token,
