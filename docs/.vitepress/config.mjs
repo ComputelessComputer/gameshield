@@ -42,13 +42,17 @@ export default defineConfig({
             { text: 'Architecture', link: '/guide/architecture' },
             { 
               text: 'Game Types', 
-              link: '/guide/game-types',
+              link: '/guide/games-overview',
               collapsed: false,
               items: [
                 { text: '🏓 Pong', link: '/guide/games/pong' },
                 { text: '🐍 Snake', link: '/guide/games/snake' },
                 { text: '🧱 Breakout', link: '/guide/games/breakout' },
-                { text: '🦖 Dino Run', link: '/guide/games/dino-run' }
+                { text: '🦖 Dino Run', link: '/guide/games/dino-run' },
+                { text: '🧩 Tetris', link: '/guide/games/tetris' },
+                { text: '🐦 Flappy Bird', link: '/guide/games/flappy-bird' },
+                { text: '🚀 Asteroids', link: '/guide/games/asteroids' },
+                { text: '👾 Pac-Man', link: '/guide/games/pacman' }
               ]
             },
             { text: 'Security Features', link: '/guide/security-features' }

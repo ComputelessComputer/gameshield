@@ -4,9 +4,9 @@ import { RefreshCcwIcon } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useState } from "react";
 
-// Import Captcha component with SSR disabled
-const Captcha = dynamic(
-  () => import("@gameshield/react").then((mod) => mod.Captcha),
+// Import GameShield component with SSR disabled
+const GameShield = dynamic(
+  () => import("@gameshield/react").then((mod) => mod.GameShield),
   { ssr: false },
 );
 
@@ -14,7 +14,8 @@ export default function GameshieldDemo() {
   const [isVerified, setIsVerified] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [captchaKey, setCaptchaKey] = useState(0);
-  const [showSized, setShowSized] = useState(true);
+  const [gameType, setGameType] = useState<string>("random");
+  const [difficulty, setDifficulty] = useState<string>("medium");
 
   const handleSuccess = (token: string) => {
     console.log("Verification successful:", token);
@@ -34,35 +35,71 @@ export default function GameshieldDemo() {
     setError(null);
   };
 
-  const toggleSize = () => {
-    setShowSized(!showSized);
-  };
+  const gameTypes = [
+    { value: "random", label: "Random" },
+    { value: "pong", label: "Pong" },
+    { value: "snake", label: "Snake" },
+    { value: "breakout", label: "Breakout" },
+    { value: "dino-run", label: "Dino Run" },
+    { value: "tetris", label: "Tetris" },
+    { value: "flappy-bird", label: "Flappy Bird" },
+    { value: "asteroids", label: "Asteroids" },
+    { value: "pacman", label: "Pac-Man" },
+  ];
+
+  const difficultyLevels = [
+    { value: "easy", label: "Easy" },
+    { value: "medium", label: "Medium" },
+    { value: "hard", label: "Hard" },
+  ];
 
   return (
     <div className="flex h-full w-full flex-col items-center justify-center p-4">
+      <div className="mb-4 flex w-full max-w-[400px] flex-col gap-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Game Type
+          </label>
+          <select
+            value={gameType}
+            onChange={(e) => setGameType(e.target.value)}
+            className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none"
+          >
+            {gameTypes.map((type) => (
+              <option key={type.value} value={type.value}>
+                {type.label}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Difficulty
+          </label>
+          <select
+            value={difficulty}
+            onChange={(e) => setDifficulty(e.target.value)}
+            className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none"
+          >
+            {difficultyLevels.map((level) => (
+              <option key={level.value} value={level.value}>
+                {level.label}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
       <div className="relative aspect-square w-full max-w-[400px]">
-        {showSized ? (
-          // Example with fixed size in pixels
-          <Captcha
-            key={`sized-${captchaKey}`}
-            size={400}
-            gameType="random"
-            difficulty="medium"
-            className="rounded-lg shadow-md"
-            onSuccess={handleSuccess}
-            onFailure={handleFailure}
-          />
-        ) : (
-          // Example with undefined size (fills container)
-          <Captcha
-            key={`unsized-${captchaKey}`}
-            gameType="random"
-            difficulty="medium"
-            className="rounded-lg shadow-md"
-            onSuccess={handleSuccess}
-            onFailure={handleFailure}
-          />
-        )}
+        <GameShield
+          key={`captcha-${captchaKey}`}
+          size={400}
+          gameType={gameType as any}
+          difficulty={difficulty as any}
+          className="rounded-lg shadow-md"
+          onSuccess={handleSuccess}
+          onFailure={handleFailure}
+        />
       </div>
 
       {isVerified && (
@@ -83,13 +120,6 @@ export default function GameshieldDemo() {
           className="inline-flex cursor-pointer items-center gap-2 border border-black bg-transparent px-4 py-2 text-black transition-all hover:scale-95 hover:bg-gray-50"
         >
           <RefreshCcwIcon className="h-4 w-4" /> Refresh
-        </button>
-
-        <button
-          onClick={toggleSize}
-          className="border border-blue-600 bg-blue-600 px-4 py-2 text-white transition-all hover:scale-95 hover:bg-blue-700"
-        >
-          {showSized ? "Switch to Auto Size" : "Switch to Fixed Size"}
         </button>
       </div>
     </div>

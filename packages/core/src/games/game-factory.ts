@@ -1,5 +1,13 @@
-import { Game, GameOptions, GameType } from '../types';
-import { PongGame } from './pong-game';
+import { GameOptions, GameType } from "../types";
+import { BaseGame } from "./base-game";
+import { PongGame } from "./pong-game";
+import { SnakeGame } from "./snake-game";
+import { BreakoutGame } from "./breakout-game";
+import { DinoRunGame } from "./dino-run-game";
+import { TetrisGame } from "./tetris-game";
+import { FlappyBirdGame } from "./flappy-bird-game";
+import { AsteroidsGame } from "./asteroids-game";
+import { PacmanGame } from "./pacman-game";
 
 /**
  * Factory class for creating game instances
@@ -7,48 +15,44 @@ import { PongGame } from './pong-game';
 export class GameFactory {
   /**
    * Creates a game instance based on the specified type and options
-   * @param type Type of game to create
+   * @param type Game type to create
    * @param options Game options
    * @returns Game instance
    */
-  public static createGame(type: GameType, options: GameOptions): Game {
-    // If type is random, choose a random game type
-    if (type === 'random') {
-      const gameTypes: GameType[] = ['pong', 'snake', 'breakout', 'dino-run'];
+  public static createGame(type: GameType, options: GameOptions): BaseGame {
+    if (type === "random") {
+      const gameTypes: GameType[] = [
+        "pong",
+        "snake",
+        "breakout",
+        "dino-run",
+        "tetris",
+        "flappy-bird",
+        "asteroids",
+        "pacman",
+      ];
       type = gameTypes[Math.floor(Math.random() * gameTypes.length)];
     }
-    
-    // Create the appropriate game instance
+
     switch (type) {
-      case 'pong':
+      case "pong":
         return new PongGame(options);
-      case 'snake':
-        // For now, return a placeholder implementation
-        // Will be replaced with actual implementation later
-        return this.createPlaceholderGame(type, options);
-      case 'breakout':
-        // For now, return a placeholder implementation
-        // Will be replaced with actual implementation later
-        return this.createPlaceholderGame(type, options);
-      case 'dino-run':
-        // For now, return a placeholder implementation
-        // Will be replaced with actual implementation later
-        return this.createPlaceholderGame(type, options);
+      case "snake":
+        return new SnakeGame(options);
+      case "breakout":
+        return new BreakoutGame(options);
+      case "dino-run":
+        return new DinoRunGame(options);
+      case "tetris":
+        return new TetrisGame(options);
+      case "flappy-bird":
+        return new FlappyBirdGame(options);
+      case "asteroids":
+        return new AsteroidsGame(options);
+      case "pacman":
+        return new PacmanGame(options);
       default:
-        throw new Error(`Unsupported game type: ${type}`);
+        throw new Error(`Unknown game type: ${type}`);
     }
-  }
-  
-  /**
-   * Creates a placeholder game for types that aren't fully implemented yet
-   * @param type Type of game
-   * @param options Game options
-   * @returns Placeholder game instance
-   */
-  private static createPlaceholderGame(type: GameType, options: GameOptions): Game {
-    // For now, we'll use the Pong game as a placeholder
-    // This will be replaced with actual implementations later
-    console.warn(`Game type '${type}' not fully implemented yet. Using placeholder.`);
-    return new PongGame(options);
   }
 }

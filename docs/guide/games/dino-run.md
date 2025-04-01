@@ -1,12 +1,18 @@
+---
+layout: doc
+title: Dino Run Game
+description: Jump Timing Test that challenges players to avoid obstacles with precise timing
+---
+
 # Dino Run Game
 
-A timing-based challenge inspired by the classic Chrome dinosaur game, testing precise jump timing and obstacle avoidance.
+A timing-based challenge inspired by the classic Chrome dinosaur game, testing precise jump timing and obstacle avoidance. Players must successfully jump over a specified number of obstacles to verify they are human.
 
 ## Game Mechanics
-- Jump over obstacles
-- Duck under flying objects
-- Time jumps precisely
-- Maintain rhythm and focus
+- Jump over obstacles by tapping or pressing space
+- Time jumps precisely to avoid collisions
+- Pass the required number of obstacles to verify
+- Game ends if you collide with an obstacle
 
 ## Configuration
 
@@ -15,46 +21,48 @@ const captcha = new CaptchaSDK({
   gameType: 'dino-run',
   difficulty: 'medium',
   config: {
-    speed: 8,
-    obstacleFrequency: 1.5,
-    jumpHeight: 150
+    speed: 300,
+    obstacleSpacing: 1500,
+    targetScore: 3,
+    gravity: 1500
   }
 });
 ```
 
 ### Parameters
-- `speed`: Game scroll speed (5-12)
-- `obstacleFrequency`: Obstacle spawn rate (1-2)
-- `jumpHeight`: Maximum jump height (100-200)
+- `speed`: Game scroll speed (250-400)
+- `obstacleSpacing`: Time between obstacles in ms (1000-2000)
+- `targetScore`: Number of obstacles to pass for verification (2-5)
+- `gravity`: Gravity strength affecting jump height (1000-2000)
 
 ## Difficulty Levels
 
 ### Easy
-- Slower game speed
-- Fewer obstacles
+- Slower game speed (250)
+- More space between obstacles (2000ms)
+- Target: Pass 2 obstacles
 - More forgiving hitboxes
-- Simple obstacle patterns
 
 ### Medium
-- Balanced speed
-- Regular obstacles
+- Balanced speed (300)
+- Standard obstacle spacing (1500ms)
+- Target: Pass 3 obstacles
 - Standard hitboxes
-- Mixed patterns
 
 ### Hard
-- Fast game speed
-- Frequent obstacles
+- Fast game speed (400)
+- Frequent obstacles (1000ms)
+- Target: Pass 5 obstacles
 - Precise hitboxes
-- Complex patterns
 
 ## Security Features
 - Jump timing analysis
-- Pattern recognition
+- Reaction time measurement
 - Anti-automation detection
-- Rhythm verification
+- Input pattern recognition
 
 ## Accessibility
 - Spacebar/touch controls
-- Visual jump indicators
-- Audio cues
+- Visual indicators for successful jumps
+- High contrast mode
 - Adjustable game speed
