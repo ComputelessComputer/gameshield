@@ -1,8 +1,14 @@
 "use client";
 
 import { RefreshCcwIcon } from "lucide-react";
-import { Captcha } from "@gameshield/react";
+import dynamic from "next/dynamic";
 import { useState } from "react";
+
+// Import Captcha component with SSR disabled
+const Captcha = dynamic(
+  () => import("@gameshield/react").then((mod) => mod.Captcha),
+  { ssr: false },
+);
 
 export default function GameshieldDemo() {
   const [isVerified, setIsVerified] = useState(false);
