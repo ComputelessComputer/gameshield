@@ -19,12 +19,12 @@
     "captcha",
     "security",
     "game",
-    "pixi.js"
+    "phaser"
   ],
   "author": "Fastrepl Inc.",
   "license": "MIT",
   "dependencies": {
-    "pixi.js": "^7.3.2"
+    "phaser": "^3.88.2"
   },
   "devDependencies": {
     "@types/node": "^20.10.5",

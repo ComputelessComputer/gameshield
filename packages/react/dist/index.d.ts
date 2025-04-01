@@ -1,5 +1,6 @@
 import { GameType, Size, Difficulty } from '@gameshield/core';
 import React$1 from 'react';
+import * as react_jsx_runtime from 'react/jsx-runtime';
 
 /**
  * Props for the GameShield React component
@@ -121,4 +122,24 @@ interface UseGameShieldReturn {
  */
 declare function useGameShield(options?: UseGameShieldOptions): UseGameShieldReturn;
 
-export { GameShield, type GameShieldProps, useGameShield };
+interface CaptchaProps extends Omit<GameShieldProps, 'size'> {
+    /**
+     * Size of the captcha square in pixels
+     * If undefined, the captcha will be contained within its parent element
+     */
+    size?: number;
+}
+/**
+ * Captcha component for GameShield
+ *
+ * A simplified interface for the GameShield component that maintains a perfect 1:1 aspect ratio.
+ * If size is undefined, it adapts to its parent container size.
+ *
+ * @example
+ * ```tsx
+ * <Captcha size={400} className="border rounded" />
+ * ```
+ */
+declare function Captcha({ size, className, style, ...props }: CaptchaProps): react_jsx_runtime.JSX.Element;
+
+export { Captcha, type CaptchaProps, GameShield, type GameShieldProps, useGameShield };

@@ -10,7 +10,7 @@ import { GameShieldProps } from './types';
  */
 export const GameShield = forwardRef<{ reset: () => void }, GameShieldProps>(function GameShield({
   gameType = 'random',
-  size = '400px',
+  size = '100%',
   difficulty = 'medium',
   onSuccess,
   onFailure,
@@ -42,16 +42,19 @@ export const GameShield = forwardRef<{ reset: () => void }, GameShieldProps>(fun
       return;
     }
     
-    // Create GameShield instance
-    gameShieldRef.current = createGameShield({
-      container: containerRef.current,
-      gameType,
-      size,
-      difficulty,
-      onSuccess,
-      onFailure,
-      onTimeout
-    });
+    // Small delay to ensure proper container sizing
+    setTimeout(() => {
+      // Create GameShield instance
+      gameShieldRef.current = createGameShield({
+        container: containerRef.current!,
+        gameType,
+        size: parsedSize,
+        difficulty,
+        onSuccess,
+        onFailure,
+        onTimeout
+      });
+    }, 0);
     
     // Clean up on unmount
     return () => {
@@ -60,19 +63,20 @@ export const GameShield = forwardRef<{ reset: () => void }, GameShieldProps>(fun
         gameShieldRef.current = null;
       }
     };
-  }, [gameType, size, difficulty, onSuccess, onFailure, onTimeout]);
+  }, [gameType, parsedSize, difficulty, onSuccess, onFailure, onTimeout]);
   
   return (
     <div
       className={`gameshield-container ${className || ''}`}
       style={{
-        width: parsedSize,
-        maxWidth: '500px',
+        width: '100%',
+        height: '100%',
         aspectRatio: '1/1',
         position: 'relative',
         overflow: 'hidden',
-        borderRadius: '8px',
-        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
         ...style
       }}
     >

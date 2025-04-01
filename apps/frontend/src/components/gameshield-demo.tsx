@@ -1,33 +1,62 @@
 "use client";
 
 import { RefreshCcwIcon } from "lucide-react";
-import { useGameShield } from "@gameshield/react";
+import { Captcha } from "@gameshield/react";
+import { useState } from "react";
 
 export default function GameshieldDemo() {
-  // Use the hook instead of the component with ref
-  const { ref: gameShieldRef, reset, isVerified, error } = useGameShield({
-    gameType: "random",
-    difficulty: "medium",
-    size: "100%",
-    onSuccess: (token) => {
-      console.log("Verification successful:", token);
-    },
-    onFailure: (reason) => {
-      console.log("Verification failed:", reason);
-    }
-  });
+  const [isVerified, setIsVerified] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [captchaKey, setCaptchaKey] = useState(0);
+  const [showSized, setShowSized] = useState(true);
+
+  const handleSuccess = (token: string) => {
+    console.log("Verification successful:", token);
+    setIsVerified(true);
+    setError(null);
+  };
+
+  const handleFailure = (reason: string) => {
+    console.log("Verification failed:", reason);
+    setIsVerified(false);
+    setError(reason);
+  };
 
   const handleRefresh = () => {
-    reset();
+    setCaptchaKey((prev) => prev + 1);
+    setIsVerified(false);
+    setError(null);
+  };
+
+  const toggleSize = () => {
+    setShowSized(!showSized);
   };
 
   return (
-    <div className="flex w-full flex-col items-center">
-      <div className="aspect-square w-full max-w-[500px]">
-        <div
-          ref={gameShieldRef}
-          className="h-full w-full rounded-lg shadow-md"
-        />
+    <div className="flex h-full w-full flex-col items-center justify-center p-4">
+      <div className="relative aspect-square w-full max-w-[400px]">
+        {showSized ? (
+          // Example with fixed size in pixels
+          <Captcha
+            key={`sized-${captchaKey}`}
+            size={400}
+            gameType="random"
+            difficulty="medium"
+            className="rounded-lg shadow-md"
+            onSuccess={handleSuccess}
+            onFailure={handleFailure}
+          />
+        ) : (
+          // Example with undefined size (fills container)
+          <Captcha
+            key={`unsized-${captchaKey}`}
+            gameType="random"
+            difficulty="medium"
+            className="rounded-lg shadow-md"
+            onSuccess={handleSuccess}
+            onFailure={handleFailure}
+          />
+        )}
       </div>
 
       {isVerified && (
@@ -42,12 +71,21 @@ export default function GameshieldDemo() {
         </div>
       )}
 
-      <button
-        onClick={handleRefresh}
-        className="mt-4 inline-flex cursor-pointer items-center gap-2 border border-black bg-transparent px-4 py-2 text-black transition-all hover:scale-95 hover:bg-gray-50"
-      >
-        <RefreshCcwIcon className="h-4 w-4" /> Refresh
-      </button>
+      <div className="mt-4 flex gap-4">
+        <button
+          onClick={handleRefresh}
+          className="inline-flex cursor-pointer items-center gap-2 border border-black bg-transparent px-4 py-2 text-black transition-all hover:scale-95 hover:bg-gray-50"
+        >
+          <RefreshCcwIcon className="h-4 w-4" /> Refresh
+        </button>
+
+        <button
+          onClick={toggleSize}
+          className="border border-blue-600 bg-blue-600 px-4 py-2 text-white transition-all hover:scale-95 hover:bg-blue-700"
+        >
+          {showSized ? "Switch to Auto Size" : "Switch to Fixed Size"}
+        </button>
+      </div>
     </div>
   );
 }
