@@ -18,6 +18,9 @@ importers:
 
   apps/frontend:
     dependencies:
+      '@gameshield/core':
+        specifier: workspace:*
+        version: link:../../packages/core
       '@gameshield/react':
         specifier: workspace:*
         version: link:../../packages/react

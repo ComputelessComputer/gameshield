@@ -3,6 +3,7 @@
 import { RefreshCcwIcon } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useState } from "react";
+import { GameType, Difficulty } from "@gameshield/core";
 
 // Import GameShield component with SSR disabled
 const GameShield = dynamic(
@@ -14,8 +15,8 @@ export default function GameshieldDemo() {
   const [isVerified, setIsVerified] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [captchaKey, setCaptchaKey] = useState(0);
-  const [gameType, setGameType] = useState<string>("random");
-  const [difficulty, setDifficulty] = useState<string>("medium");
+  const [gameType, setGameType] = useState<GameType>("random");
+  const [difficulty, setDifficulty] = useState<Difficulty>("medium");
 
   const handleSuccess = (token: string) => {
     console.log("Verification successful:", token);
@@ -62,7 +63,7 @@ export default function GameshieldDemo() {
           </label>
           <select
             value={gameType}
-            onChange={(e) => setGameType(e.target.value)}
+            onChange={(e) => setGameType(e.target.value as GameType)}
             className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none"
           >
             {gameTypes.map((type) => (
@@ -78,7 +79,7 @@ export default function GameshieldDemo() {
           </label>
           <select
             value={difficulty}
-            onChange={(e) => setDifficulty(e.target.value)}
+            onChange={(e) => setDifficulty(e.target.value as Difficulty)}
             className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none"
           >
             {difficultyLevels.map((level) => (
@@ -94,8 +95,8 @@ export default function GameshieldDemo() {
         <GameShield
           key={`captcha-${captchaKey}`}
           size={400}
-          gameType={gameType as any}
-          difficulty={difficulty as any}
+          gameType={gameType}
+          difficulty={difficulty}
           className="rounded-lg shadow-md"
           onSuccess={handleSuccess}
           onFailure={handleFailure}
