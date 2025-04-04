@@ -320,40 +320,90 @@ export class BreakoutGame extends BaseGame {
     ball: Phaser.GameObjects.GameObject,
     brick: Phaser.GameObjects.GameObject
   ): void {
-    // For rectangles, we need to use a different approach to disable the brick
-    const brickBody = (brick as Phaser.GameObjects.Rectangle).body as Phaser.Physics.Arcade.StaticBody;
-    if (brickBody) {
-      brickBody.enable = false;
+    const ballObj = ball as Phaser.Physics.Arcade.Sprite;
+    const brickRect = brick as Phaser.GameObjects.Rectangle;
+    
+    // 이미 비활성화된 벽돌은 처리하지 않음
+    const brickBody = brickRect.body as Phaser.Physics.Arcade.StaticBody;
+    if (!brickBody || !brickBody.enable || !ballObj.body) {
+      return;
     }
     
-    // Hide the brick
-    (brick as Phaser.GameObjects.Rectangle).setVisible(false);
+    // 공의 물리적 속성 가져오기
+    const ballBody = ballObj.body as Phaser.Physics.Arcade.Body;
+    const ballVelocity = ballBody.velocity.clone();
+    const ballSpeed = ballVelocity.length();
     
-    // Apply proper physics reflection for the ball
-    const ballObj = ball as Phaser.Physics.Arcade.Sprite;
-    if (ballObj.body) {
-      // Determine which side of the brick was hit
-      const brickRect = brick as Phaser.GameObjects.Rectangle;
-      const ballCenterX = ballObj.x;
-      const ballCenterY = ballObj.y;
-      const brickCenterX = brickRect.x;
-      const brickCenterY = brickRect.y;
+    // 벽돌의 경계 계산
+    const brickBounds = {
+      left: brickRect.x - brickRect.width / 2,
+      right: brickRect.x + brickRect.width / 2,
+      top: brickRect.y - brickRect.height / 2,
+      bottom: brickRect.y + brickRect.height / 2
+    };
+    
+    // 충돌 측면 감지 - 공의 중심과 벽돌의 각 면 사이의 교차 지점 확인
+    const intersectRight = ballObj.x >= brickBounds.right && ballBody.prev.x < brickBounds.right;
+    const intersectLeft = ballObj.x <= brickBounds.left && ballBody.prev.x > brickBounds.left;
+    const intersectBottom = ballObj.y >= brickBounds.bottom && ballBody.prev.y < brickBounds.bottom;
+    const intersectTop = ballObj.y <= brickBounds.top && ballBody.prev.y > brickBounds.top;
+    
+    // 충돌 측면에 따라 반사 적용
+    let reflected = false;
+    
+    if ((intersectLeft || intersectRight) && Math.abs(ballVelocity.x) > 0) {
+      ballVelocity.x = -ballVelocity.x;
+      reflected = true;
+    }
+    
+    if ((intersectTop || intersectBottom) && Math.abs(ballVelocity.y) > 0) {
+      ballVelocity.y = -ballVelocity.y;
+      reflected = true;
+    }
+    
+    // 특정 측면을 감지하지 못한 경우, 공의 직전 위치와 현재 위치를 비교하여 판단
+    if (!reflected) {
+      // 공의 직전 위치
+      const prevX = ballBody.prev.x;
+      const prevY = ballBody.prev.y;
       
-      // Calculate distances from ball center to brick center
-      const dx = Math.abs(ballCenterX - brickCenterX);
-      const dy = Math.abs(ballCenterY - brickCenterY);
+      // 수평/수직 침투 거리 계산
+      const overlapX = (ballObj.width + brickRect.width) / 2 - Math.abs(ballObj.x - brickRect.x);
+      const overlapY = (ballObj.height + brickRect.height) / 2 - Math.abs(ballObj.y - brickRect.y);
       
-      // Determine if collision is more horizontal or vertical
-      // This is a simplified approach to determine which side was hit
-      if (dx > dy) {
-        // Horizontal collision (left or right side)
-        ballObj.body.velocity.x = -ballObj.body.velocity.x;
+      // 더 작은 침투 거리를 기준으로 반사 방향 결정
+      if (overlapX <= overlapY) {
+        // 수평 반사
+        ballVelocity.x = -ballVelocity.x;
+        
+        // 공을 벽돌 바깥으로 밀어냄
+        if (ballObj.x > brickRect.x) {
+          ballObj.x = brickBounds.right + ballObj.width / 2 + 1;
+        } else {
+          ballObj.x = brickBounds.left - ballObj.width / 2 - 1;
+        }
       } else {
-        // Vertical collision (top or bottom)
-        ballObj.body.velocity.y = -ballObj.body.velocity.y;
+        // 수직 반사
+        ballVelocity.y = -ballVelocity.y;
+        
+        // 공을 벽돌 바깥으로 밀어냄
+        if (ballObj.y > brickRect.y) {
+          ballObj.y = brickBounds.bottom + ballObj.height / 2 + 1;
+        } else {
+          ballObj.y = brickBounds.top - ballObj.height / 2 - 1;
+        }
       }
     }
-
+    
+    // 속도 정규화하여 일정한 속도 유지
+    ballVelocity.normalize().scale(ballSpeed);
+    ballObj.setVelocity(ballVelocity.x, ballVelocity.y);
+    
+    // 벽돌 비활성화 - 물리적 반응이 적용된 후에 수행
+    brickBody.enable = false;
+    brickRect.setVisible(false);
+    
+    // 점수 업데이트
     this.score++;
     this.scoreText.setText(`Bricks: ${this.score}/${this.targetScore}`);
 
