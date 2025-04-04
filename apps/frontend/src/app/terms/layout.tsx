@@ -2,7 +2,7 @@ import React from "react";
 
 export const metadata = {
   title: "Terms of Service | GameShield",
-  description: "Terms of Service for GameShield - Generative Game CAPTCHA",
+  description: "Terms of Service for GameShield: Game-as-a-CAPTCHA",
 };
 
 export default function TermsLayout({

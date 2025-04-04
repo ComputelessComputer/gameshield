@@ -38,7 +38,9 @@ export class BreakoutGame extends BaseGame {
     this.ball.setCollideWorldBounds(true);
     this.ball.setBounce(1);
 
+    // Initialize the bricks group properly
     this.bricks = this.gameScene.physics.add.staticGroup();
+    this.createBricks();
 
     this.gameScene.physics.add.collider(
       this.ball,
@@ -198,29 +200,35 @@ export class BreakoutGame extends BaseGame {
     const brickWidth = 50;
     const brickHeight = 20;
     const padding = 5;
-    const offsetX = (width - (brickWidth + padding) * 6 + padding) / 2;
+    const cols = 7; // Increased from 6 to 7 columns
+    const offsetX = (width - (brickWidth + padding) * cols + padding) / 2;
     const offsetY = 80;
 
     const rows =
       this.difficulty === "easy" ? 3 : this.difficulty === "medium" ? 4 : 5;
-    const cols = 6;
 
     for (let row = 0; row < rows; row++) {
       for (let col = 0; col < cols; col++) {
-        const brick = this.gameScene.physics.add.sprite(
+        // Create a brick as a rectangle
+        const brick = this.gameScene.add.rectangle(
           offsetX + col * (brickWidth + padding),
           offsetY + row * (brickHeight + padding),
-          ""
+          brickWidth,
+          brickHeight,
+          0xffffff
         );
-
-        brick.setDisplaySize(brickWidth, brickHeight);
-
-        const colors = [0xff0000, 0xff7f00, 0xffff00, 0x00ff00, 0x0000ff];
-        brick.setTint(colors[row % colors.length]);
-
+        
+        // Add the brick to the physics group and enable it
         this.bricks.add(brick);
+        
+        // Apply color to the brick
+        const colors = [0xff0000, 0xff7f00, 0xffff00, 0x00ff00, 0x0000ff];
+        (brick as Phaser.GameObjects.Rectangle).setFillStyle(colors[row % colors.length]);
       }
     }
+    
+    // Refresh the physics body for all bricks
+    this.bricks.refresh();
   }
 
   /**
@@ -278,7 +286,14 @@ export class BreakoutGame extends BaseGame {
     ball: Phaser.GameObjects.GameObject,
     brick: Phaser.GameObjects.GameObject
   ): void {
-    (brick as Phaser.Physics.Arcade.Sprite).disableBody(true, true);
+    // For rectangles, we need to use a different approach to disable the brick
+    const brickBody = (brick as Phaser.GameObjects.Rectangle).body as Phaser.Physics.Arcade.StaticBody;
+    if (brickBody) {
+      brickBody.enable = false;
+    }
+    
+    // Hide the brick
+    (brick as Phaser.GameObjects.Rectangle).setVisible(false);
 
     this.score++;
     this.scoreText.setText(`Bricks: ${this.score}/${this.targetScore}`);

@@ -3,7 +3,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Gameshield - Generative Game CAPTCHA",
+  title: "Gameshield - Game-as-a-CAPTCHA",
   description:
     "Protect your website from bots with interactive, fun game challenges",
 };

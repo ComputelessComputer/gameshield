@@ -3,7 +3,7 @@ layout: home
 title: GameShield
 hero:
   name: "GameShield"
-  text: "Generative Game CAPTCHA"
+  text: "Game-as-a-CAPTCHA"
   tagline: Prevent bots with interactive games that humans love to play
   image:
     src: /logo.png
@@ -39,7 +39,7 @@ features:
 
 ## What is GameShield?
 
-GameShield is an innovative, open-source CAPTCHA system designed to prevent web crawling and bot interactions using interactive, randomly generated games. Unlike traditional CAPTCHA methods, which rely on text-based or image recognition challenges, this approach leverages generative games that require real-time human interaction to verify authenticity.
+GameShield is an innovative, open-source CAPTCHA system designed to prevent web crawling and bot interactions using interactive, randomly generated games. Unlike traditional CAPTCHA methods, which rely on text-based or image recognition challenges, this approach leverages games that require real-time human interaction to verify authenticity.
 
 ## Quick Installation
 
@@ -54,17 +54,17 @@ npm install @gameshield/server
 ## Basic Usage
 
 ```jsx
-import { GameShield } from '@gameshield/react';
+import { GameShield } from "@gameshield/react";
 
 function MyForm() {
   return (
     <form>
       <div className="captcha-container">
-        <GameShield 
+        <GameShield
           size="400px"
           gameType="random"
           difficulty="medium"
-          onSuccess={(token) => console.log('Verified:', token)}
+          onSuccess={(token) => console.log("Verified:", token)}
         />
       </div>
       <button type="submit">Submit</button>

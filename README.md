@@ -1,14 +1,14 @@
-# GameShield - Generative Game CAPTCHA
+# GameShield: Game-as-a-CAPTCHA
 
 > Inspired by [Guillermo Rauch](https://x.com/rauchg)'s [Doom CAPTCHA](https://doom-captcha.vercel.app)
 
 ## Overview
 
-GameShield is an innovative, open-source CAPTCHA system designed to prevent web crawling and bot interactions using interactive, randomly generated games. Unlike traditional CAPTCHA methods, which rely on text-based or image recognition challenges, this approach leverages generative games that require real-time human interaction to verify authenticity.
+GameShield is an innovative, open-source CAPTCHA system designed to prevent web crawling and bot interactions using interactive, randomly generated games. Unlike traditional CAPTCHA methods, which rely on text-based or image recognition challenges, this approach leverages games that require real-time human interaction to verify authenticity.
 
 ## Features
 
-- 🎮 Interactive Generative Games – Unique mini-games that adapt dynamically
+- 🎮 Interactive Games – Unique mini-games that adapt dynamically
 - 🔒 Enhanced Security – Resistant to automated solvers and AI-based attacks
 - ⚛️ React-based – Built with React for seamless integration with modern web apps
 - 🌍 Accessible – Designed to be user-friendly and inclusive

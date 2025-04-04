@@ -1,7 +1,7 @@
 {
   "name": "gameshield",
   "version": "1.0.0",
-  "description": "Generative Game CAPTCHA - Innovative security through interactive games",
+  "description": "Gameshield: Game-as-a-CAPTCHA. Innovative security through interactive games.",
   "private": true,
   "scripts": {
     "dev": "turbo run dev",
