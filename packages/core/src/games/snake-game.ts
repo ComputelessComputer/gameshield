@@ -22,10 +22,7 @@ export class SnakeGame extends BaseGame {
   private nextDirection: { x: number; y: number } = { x: 1, y: 0 };
   private score: number = 0;
   private targetScore: number = 3;
-  private foodTypes: string[] = ["apple", "banana"];
-  private currentFoodType: string = "apple";
-  private targetFoodType: string = "apple";
-  private avoidFoodType: string = "banana";
+  private foodType: string = "apple";
   private gameOver: boolean = false;
 
   /**
@@ -67,7 +64,7 @@ export class SnakeGame extends BaseGame {
     this.instructionText = this.gameScene.add.text(
       width / 2,
       30,
-      `Eat ${this.targetScore} ${this.targetFoodType}s, avoid ${this.avoidFoodType}s`,
+      `Eat ${this.targetScore} apples`,
       {
         fontSize: "16px",
         color: "#ffffff",
@@ -85,7 +82,7 @@ export class SnakeGame extends BaseGame {
     if (this.gameScene.input.keyboard) {
       this.gameScene.input.keyboard.on("keydown", this.handleKeyDown, this);
     }
-    
+
     // Set up touch/mouse input
     this.gameScene.input.on("pointerdown", this.handlePointerDown, this);
   }
@@ -98,11 +95,17 @@ export class SnakeGame extends BaseGame {
   public updateGame(time: number, delta: number): void {
     if (this.gameOver) return;
 
+    // Debug log to check if updateGame is being called
+    if (time % 1000 < 20) {
+      console.log("Snake game updating, direction:", this.direction);
+    }
+
     if (time > this.lastMoveTime + this.moveInterval) {
       this.lastMoveTime = time;
       this.moveSnake();
     }
 
+    // Make sure direction is updated from nextDirection
     this.direction = { ...this.nextDirection };
   }
 
@@ -149,9 +152,7 @@ export class SnakeGame extends BaseGame {
     }
 
     if (this.instructionText) {
-      this.instructionText.setText(
-        `Eat ${this.targetScore} ${this.targetFoodType}s, avoid ${this.avoidFoodType}s`
-      );
+      this.instructionText.setText(`Eat ${this.targetScore} apples`);
     }
   }
 
@@ -166,6 +167,8 @@ export class SnakeGame extends BaseGame {
     this.snakeHead = this.gameScene.physics.add.sprite(startX, startY, "");
     this.snakeHead.setDisplaySize(this.gridSize, this.gridSize);
     this.snakeHead.setOrigin(0);
+    // Make snake head white
+    this.snakeHead.setTint(0xffffff);
     this.snake.add(this.snakeHead);
 
     for (let i = 1; i <= 2; i++) {
@@ -176,6 +179,8 @@ export class SnakeGame extends BaseGame {
       );
       part.setDisplaySize(this.gridSize, this.gridSize);
       part.setOrigin(0);
+      // Make snake body parts white
+      part.setTint(0xffffff);
       this.snake.add(part);
       this.snakeParts.push(part);
     }
@@ -190,25 +195,43 @@ export class SnakeGame extends BaseGame {
       this.difficulty === "easy" ? 3 : this.difficulty === "medium" ? 5 : 8;
 
     for (let i = 0; i < numObstacles; i++) {
-      const x =
-        Phaser.Math.Between(1, Math.floor(width / this.gridSize) - 2) *
-        this.gridSize;
-      const y =
-        Phaser.Math.Between(1, Math.floor(height / this.gridSize) - 2) *
-        this.gridSize;
+      // Initialize with default values to avoid TypeScript errors
+      let x = 0;
+      let y = 0;
+      let validPosition = false;
 
-      if (
-        Math.abs(x - this.snakeHead.x) < this.gridSize * 3 &&
-        Math.abs(y - this.snakeHead.y) < this.gridSize * 3
-      ) {
-        i--;
-        continue;
+      while (!validPosition) {
+        x =
+          Phaser.Math.Between(0, Math.floor(width / this.gridSize) - 1) *
+          this.gridSize;
+        y =
+          Phaser.Math.Between(0, Math.floor(height / this.gridSize) - 1) *
+          this.gridSize;
+
+        validPosition = true;
+
+        if (
+          (x === this.snakeHead.x && y === this.snakeHead.y) ||
+          (Math.abs(x - this.snakeHead.x) < this.gridSize * 3 &&
+            Math.abs(y - this.snakeHead.y) < this.gridSize * 3)
+        ) {
+          validPosition = false;
+          continue;
+        }
+
+        for (const part of this.snakeParts) {
+          if (x === part.x && y === part.y) {
+            validPosition = false;
+            break;
+          }
+        }
       }
 
       const obstacle = this.gameScene.physics.add.sprite(x, y, "");
       obstacle.setDisplaySize(this.gridSize, this.gridSize);
       obstacle.setOrigin(0);
-      obstacle.setTint(0x888888);
+      // Make obstacles dark gray instead of purple for better visibility
+      obstacle.setTint(0x666666);
       this.obstacles.add(obstacle);
     }
   }
@@ -219,45 +242,73 @@ export class SnakeGame extends BaseGame {
   private placeFood(): void {
     const { width, height } = this.game.canvas;
 
-    this.currentFoodType = Phaser.Math.RND.pick(this.foodTypes);
-
-    if (this.currentFoodType === "apple") {
-      this.food.setTint(0xff0000);
-    } else {
-      this.food.setTint(0xffff00);
+    // Always set to green apple
+    this.food.setTint(0x00ff00);
+    
+    // Remove outline code
+    if (this.food.getData('outline')) {
+      this.food.getData('outline').destroy();
+      this.food.setData('outline', null);
     }
 
     let validPosition = false;
-    let x: number = 0;
-    let y: number = 0;
+    // Initialize with default values
+    let x = 0;
+    let y = 0;
+    
+    // Add a maximum attempt counter to prevent infinite loops
+    let attempts = 0;
+    const maxAttempts = 100;
 
-    while (!validPosition) {
-      x =
-        Phaser.Math.Between(0, Math.floor(width / this.gridSize) - 1) *
-        this.gridSize;
-      y =
-        Phaser.Math.Between(0, Math.floor(height / this.gridSize) - 1) *
-        this.gridSize;
+    while (!validPosition && attempts < maxAttempts) {
+      attempts++;
+      
+      x = Phaser.Math.Between(0, Math.floor(width / this.gridSize) - 1) * this.gridSize;
+      y = Phaser.Math.Between(0, Math.floor(height / this.gridSize) - 1) * this.gridSize;
 
       validPosition = true;
 
+      // Check collision with snake head
       if (x === this.snakeHead.x && y === this.snakeHead.y) {
         validPosition = false;
         continue;
       }
 
+      // Check collision with snake parts
+      let collisionWithParts = false;
       for (const part of this.snakeParts) {
         if (x === part.x && y === part.y) {
-          validPosition = false;
+          collisionWithParts = true;
           break;
         }
       }
+      
+      if (collisionWithParts) {
+        validPosition = false;
+        continue;
+      }
 
+      // Check collision with obstacles
+      let collisionWithObstacle = false;
       this.obstacles.getChildren().forEach((obstacle: any) => {
         if (x === obstacle.x && y === obstacle.y) {
-          validPosition = false;
+          collisionWithObstacle = true;
         }
       });
+      
+      if (collisionWithObstacle) {
+        validPosition = false;
+        continue;
+      }
+    }
+    
+    // If we couldn't find a valid position after max attempts, just place it somewhere
+    // This ensures food always appears even in crowded scenarios
+    if (!validPosition) {
+      console.warn("Could not find valid food position after max attempts");
+      // Place food in the top-left corner as a fallback
+      x = this.gridSize;
+      y = this.gridSize;
     }
 
     this.food.setPosition(x, y);
@@ -307,20 +358,15 @@ export class SnakeGame extends BaseGame {
     head: Phaser.GameObjects.GameObject,
     food: Phaser.GameObjects.GameObject
   ): void {
-    if (this.currentFoodType === this.targetFoodType) {
-      this.score++;
-      this.scoreText.setText(`Score: ${this.score}`);
+    this.score++;
+    this.scoreText.setText(`Score: ${this.score}`);
 
-      if (this.score >= this.targetScore) {
-        this.complete(true, this.score);
-        return;
-      }
-    } else if (this.currentFoodType === this.avoidFoodType) {
-      this.complete(false, this.score);
+    if (this.score >= this.targetScore) {
+      this.complete(true, this.score);
       return;
     }
 
-    const lastPart = this.snakeParts[this.snakeParts.length - 1];
+    const lastPart = this.snakeParts[this.snakeParts.length - 1] || this.snakeHead;
     const newPart = this.gameScene.physics.add.sprite(
       lastPart.x,
       lastPart.y,
@@ -328,6 +374,8 @@ export class SnakeGame extends BaseGame {
     );
     newPart.setDisplaySize(this.gridSize, this.gridSize);
     newPart.setOrigin(0);
+    // Make new snake parts white
+    newPart.setTint(0xffffff);
     this.snake.add(newPart);
     this.snakeParts.push(newPart);
 
