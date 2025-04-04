@@ -33,6 +33,11 @@ export function createGameShield(options: GameShieldOptions): GameShield {
   
   // Initialize the game
   const initGame = () => {
+    // Clear the container first
+    while (mergedOptions.container.firstChild) {
+      mergedOptions.container.removeChild(mergedOptions.container.firstChild);
+    }
+    
     // Create game instance
     gameInstance = GameFactory.createGame(mergedOptions.gameType!, {
       container: mergedOptions.container,

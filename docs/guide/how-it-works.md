@@ -19,7 +19,7 @@ GameShield follows a modular architecture with three main packages:
 When a CAPTCHA is requested, the system:
 
 - Generates a unique session ID
-- Randomly selects a game type from the available options (Pong, Snake, Breakout, Dino Run)
+- Randomly selects a game type from the available options (Snake, Breakout, Dino Run)
 - Creates game parameters based on the specified difficulty level
 - Applies randomization to prevent pattern recognition
 

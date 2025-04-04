@@ -38,14 +38,9 @@ export default function GameshieldDemo() {
 
   const gameTypes = [
     { value: "random", label: "Random" },
-    { value: "pong", label: "Pong" },
     { value: "snake", label: "Snake" },
     { value: "breakout", label: "Breakout" },
-    { value: "dino-run", label: "Dino Run" },
     { value: "tetris", label: "Tetris" },
-    { value: "flappy-bird", label: "Flappy Bird" },
-    { value: "asteroids", label: "Asteroids" },
-    { value: "pacman", label: "Pac-Man" },
   ];
 
   const difficultyLevels = [

@@ -5,7 +5,7 @@
 /**
  * Available game types in GameShield
  */
-export type GameType = 'pong' | 'snake' | 'breakout' | 'dino-run' | 'random';
+export type GameType = 'snake' | 'breakout' | 'tetris' | 'random';
 
 /**
  * Game result after completion

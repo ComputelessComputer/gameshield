@@ -13,12 +13,14 @@ Welcome to the GameShield API reference. This section provides detailed document
 GameShield follows a modular architecture with three main packages:
 
 1. **@gameshield/core**: Core functionality for CAPTCHA challenges
+
    - Game generation and management
    - User interaction handling
    - Behavior analysis
    - Token generation
 
 2. **@gameshield/react**: React components and hooks
+
    - Ready-to-use GameShield component
    - Custom hooks for advanced use cases
    - TypeScript support
@@ -55,47 +57,49 @@ pnpm add @gameshield/server
 #### React Component
 
 ```jsx
-import React, { useState } from 'react';
-import { GameShield } from '@gameshield/react';
+import React, { useState } from "react";
+import { GameShield } from "@gameshield/react";
 
 function ContactForm() {
   const [token, setToken] = useState(null);
-  
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     if (!token) {
-      alert('Please complete the CAPTCHA verification');
+      alert("Please complete the CAPTCHA verification");
       return;
     }
-    
+
     // Send form data with token to your server
-    fetch('/api/submit', {
-      method: 'POST',
+    fetch("/api/submit", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-        'X-CAPTCHA-Token': token
+        "Content-Type": "application/json",
+        "X-CAPTCHA-Token": token,
       },
       body: JSON.stringify({
         name: e.target.name.value,
-        email: e.target.email.value
-      })
+        email: e.target.email.value,
+      }),
     });
   };
-  
+
   return (
     <form onSubmit={handleSubmit}>
       <input name="name" required />
       <input name="email" type="email" required />
-      
+
       <GameShield
         size="400px"
         gameType="random"
         difficulty="medium"
         onSuccess={setToken}
       />
-      
-      <button type="submit" disabled={!token}>Submit</button>
+
+      <button type="submit" disabled={!token}>
+        Submit
+      </button>
     </form>
   );
 }
@@ -104,33 +108,33 @@ function ContactForm() {
 #### Core API (Vanilla JavaScript)
 
 ```javascript
-import { createGameShield } from '@gameshield/core';
+import { createGameShield } from "@gameshield/core";
 
-const container = document.getElementById('captcha-container');
+const container = document.getElementById("captcha-container");
 let token = null;
 
 const gameShield = createGameShield({
   container,
-  size: '400px',
-  gameType: 'pong',
-  difficulty: 'medium',
+  size: "400px",
+  gameType: "random",
+  difficulty: "medium",
   onSuccess: (captchaToken) => {
     token = captchaToken;
-    document.getElementById('submit-button').disabled = false;
+    document.getElementById("submit-button").disabled = false;
   },
   onFailure: (reason) => {
-    console.error('Verification failed:', reason);
-  }
+    console.error("Verification failed:", reason);
+  },
 });
 
-document.getElementById('contact-form').addEventListener('submit', (e) => {
+document.getElementById("contact-form").addEventListener("submit", (e) => {
   e.preventDefault();
-  
+
   if (!token) {
-    alert('Please complete the CAPTCHA verification');
+    alert("Please complete the CAPTCHA verification");
     return;
   }
-  
+
   // Send form data with token to your server
   // ...
 });
@@ -139,43 +143,43 @@ document.getElementById('contact-form').addEventListener('submit', (e) => {
 ### 3. Server-Side Verification
 
 ```javascript
-const express = require('express');
-const { verifyToken } = require('@gameshield/server');
+const express = require("express");
+const { verifyToken } = require("@gameshield/server");
 
 const app = express();
 app.use(express.json());
 
-app.post('/api/submit', (req, res) => {
-  const token = req.headers['x-captcha-token'];
-  
+app.post("/api/submit", (req, res) => {
+  const token = req.headers["x-captcha-token"];
+
   if (!token) {
     return res.status(400).json({
       success: false,
-      message: 'CAPTCHA token is required'
+      message: "CAPTCHA token is required",
     });
   }
-  
+
   const verification = verifyToken(token);
-  
+
   if (verification.valid) {
     // Process the form submission
     // ...
-    
+
     return res.json({
       success: true,
-      message: 'Form submitted successfully'
+      message: "Form submitted successfully",
     });
   } else {
     return res.status(400).json({
       success: false,
-      message: 'CAPTCHA verification failed',
-      reason: verification.reason
+      message: "CAPTCHA verification failed",
+      reason: verification.reason,
     });
   }
 });
 
 app.listen(3000, () => {
-  console.log('Server running on port 3000');
+  console.log("Server running on port 3000");
 });
 ```
 

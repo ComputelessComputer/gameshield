@@ -42,11 +42,6 @@ interface AnalyticsConfig {
 
 ```typescript
 interface GameSettings {
-  pong: {
-    paddleSpeed: number;
-    ballSpeed: number;
-    winScore: number;
-  };
   snake: {
     gridSize: number;
     speed: number;

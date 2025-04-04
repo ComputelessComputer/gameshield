@@ -6,14 +6,9 @@
  * Available game types in GameShield
  */
 export type GameType = 
-  | 'pong'
   | 'snake'
   | 'breakout'
-  | 'dino-run'
   | 'tetris'
-  | 'flappy-bird'
-  | 'asteroids'
-  | 'pacman'
   | 'random';
 
 /**

@@ -8,16 +8,9 @@ GameShield offers a variety of game-based CAPTCHA challenges, each designed to b
 
 ## Core Game Types
 
-GameShield currently includes four primary game types that provide a balance of user engagement and security:
+GameShield currently includes several primary game types that provide a balance of user engagement and security:
 
 <div class="game-grid">
-  <div class="game-card">
-    <div class="game-link">
-      <div class="game-icon">🏓</div>
-      <h3>Pong</h3>
-      <p>Classic paddle-and-ball game testing reflexes and timing. Perfect for quick verifications with minimal complexity.</p>
-    </div>
-  </div>
   
   <div class="game-card">
     <div class="game-link">
@@ -98,7 +91,7 @@ GameShield allows you to specify which game type to use or set it to "random" fo
 ```jsx
 // React component with specific game type
 <GameShield
-  gameType="pong"
+  gameType="snake"
   size="400px"
   onSuccess={handleSuccess}
 />
@@ -118,7 +111,6 @@ The `gameType` property accepts the following values:
 
 | Value | Description |
 |-------|-------------|
-| `"pong"` | Classic paddle-and-ball game |
 | `"snake"` | Snake movement and collection game |
 | `"breakout"` | Block-breaking arcade game |
 | `"dino-run"` | Obstacle jumping game |
