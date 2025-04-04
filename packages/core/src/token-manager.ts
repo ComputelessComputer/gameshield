@@ -8,18 +8,21 @@ export class TokenManager {
   
   /**
    * Generates a verification token containing game results and behavior analysis
-   * @param data Token data including subject, game result, and behavior metrics
+   * @param data Token data including subject, game result, and optionally behavior metrics
    * @returns Encoded token string
    */
   public static generateToken(data: {
     sub: string;
     gameResult: GameResult;
-    behaviorMetrics: BehaviorMetrics;
+    behaviorMetrics?: BehaviorMetrics;
   }): string {
     const tokenData: TokenData = {
       sub: data.sub,
       gameResult: data.gameResult,
-      behaviorMetrics: data.behaviorMetrics,
+      behaviorMetrics: data.behaviorMetrics || {
+        isHuman: true, // Default to assuming human when behavior analyzer is not used
+        confidence: 1.0
+      },
       iat: Date.now(),
       // Token expires in 5 minutes
       exp: Date.now() + 5 * 60 * 1000

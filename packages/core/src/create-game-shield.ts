@@ -1,6 +1,5 @@
 import { GameShield, GameShieldOptions, Game, GameResult } from './types';
 import { GameFactory } from './games/game-factory';
-import { BehaviorAnalyzer } from './behavior-analyzer';
 import { TokenManager } from './token-manager';
 
 /**
@@ -21,9 +20,6 @@ export function createGameShield(options: GameShieldOptions): GameShield {
     ...defaultOptions,
     ...options
   };
-  
-  // Create behavior analyzer
-  const behaviorAnalyzer = new BehaviorAnalyzer();
   
   // Generate a unique session ID
   const sessionId = generateSessionId();
@@ -47,9 +43,6 @@ export function createGameShield(options: GameShieldOptions): GameShield {
       onError: handleGameError
     });
     
-    // Start behavior tracking
-    behaviorAnalyzer.startTracking(mergedOptions.container);
-    
     // Initialize and start the game
     gameInstance.init();
     gameInstance.start();
@@ -61,31 +54,22 @@ export function createGameShield(options: GameShieldOptions): GameShield {
       return;
     }
     
-    // Stop behavior tracking
-    behaviorAnalyzer.stopTracking(mergedOptions.container);
-    
-    // Analyze behavior
-    const behaviorMetrics = behaviorAnalyzer.analyze();
-    
     // Generate verification token
     const token = TokenManager.generateToken({
       sub: sessionId,
       gameResult: result,
-      behaviorMetrics
+      // Behavior metrics removed as the analyzer is still in development
     });
     
     // Call success callback if game was completed successfully
-    // and behavior analysis indicates a human user
-    if (result.success && behaviorMetrics.isHuman) {
+    if (result.success) {
       if (mergedOptions.onSuccess) {
         mergedOptions.onSuccess(token);
       }
     } else {
       // Call failure callback
       if (mergedOptions.onFailure) {
-        const reason = !result.success 
-          ? 'Game not completed successfully' 
-          : 'Behavior analysis indicates bot-like behavior';
+        const reason = 'Game not completed successfully';
         mergedOptions.onFailure(reason);
       }
     }
@@ -94,9 +78,6 @@ export function createGameShield(options: GameShieldOptions): GameShield {
   // Handle game errors
   const handleGameError = (error: Error) => {
     console.error('GameShield error:', error);
-    
-    // Stop behavior tracking
-    behaviorAnalyzer.stopTracking(mergedOptions.container);
     
     // Call failure callback
     if (mergedOptions.onFailure) {
@@ -112,7 +93,6 @@ export function createGameShield(options: GameShieldOptions): GameShield {
     reset: () => {
       // Destroy existing game
       if (gameInstance) {
-        behaviorAnalyzer.stopTracking(mergedOptions.container);
         gameInstance.destroy();
       }
       
@@ -122,7 +102,6 @@ export function createGameShield(options: GameShieldOptions): GameShield {
     destroy: () => {
       // Clean up resources
       if (gameInstance) {
-        behaviorAnalyzer.stopTracking(mergedOptions.container);
         gameInstance.destroy();
         gameInstance = null;
       }
