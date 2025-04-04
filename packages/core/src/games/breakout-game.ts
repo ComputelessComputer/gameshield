@@ -120,8 +120,18 @@ export class BreakoutGame extends BaseGame {
       this.ball.x = this.paddle.x;
     }
 
+    // If the ball falls off the bottom of the screen, the player fails the challenge
     if (this.ball.y > this.game.canvas.height) {
-      this.resetBall();
+      this.gameOver = true;
+      this.complete(false, this.score); // Mark as failed
+      
+      // Display failure message
+      if (this.instructionText) {
+        this.instructionText.setText("Challenge failed!");
+        this.instructionText.setVisible(true);
+      }
+      
+      return; // Exit early since game is over
     }
 
     if (this.ballLaunched && time % 10000 < 20) {
@@ -201,7 +211,12 @@ export class BreakoutGame extends BaseGame {
     const brickHeight = 20;
     const padding = 5;
     const cols = 7; // Increased from 6 to 7 columns
-    const offsetX = (width - (brickWidth + padding) * cols + padding) / 2;
+    
+    // Fix the centering calculation - the previous formula had an issue
+    // Total width of all bricks and padding between them
+    const totalBricksWidth = cols * brickWidth + (cols - 1) * padding;
+    // Center this in the canvas
+    const offsetX = (width - totalBricksWidth) / 2;
     const offsetY = 80;
 
     const rows =
@@ -211,8 +226,9 @@ export class BreakoutGame extends BaseGame {
       for (let col = 0; col < cols; col++) {
         // Create a brick as a rectangle
         const brick = this.gameScene.add.rectangle(
-          offsetX + col * (brickWidth + padding),
-          offsetY + row * (brickHeight + padding),
+          // Position each brick with proper spacing
+          offsetX + col * (brickWidth + padding) + brickWidth / 2,
+          offsetY + row * (brickHeight + padding) + brickHeight / 2,
           brickWidth,
           brickHeight,
           0xffffff
@@ -267,16 +283,34 @@ export class BreakoutGame extends BaseGame {
   ): void {
     const paddleObj = paddle as Phaser.Physics.Arcade.Sprite;
     const ballObj = ball as Phaser.Physics.Arcade.Sprite;
+    
+    if (!ballObj.body) return;
 
+    // Get current velocity
+    const velocity = ballObj.body.velocity;
+    const speed = Math.sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
+    
+    // Calculate the hit position relative to the paddle center
     const diff = ballObj.x - paddleObj.x;
-    const normalizedDiff = diff / (paddleObj.width / 2);
-    const angle = normalizedDiff * 60 * (Math.PI / 180);
-
-    const speed = this.ballSpeed;
-    const vx = Math.cos(angle) * speed;
-    const vy = -Math.sin(angle) * speed;
-
-    ballObj.setVelocity(vx, vy);
+    
+    // Normalize the difference to a value between -1 and 1
+    const normalizedDiff = Phaser.Math.Clamp(diff / (paddleObj.width / 2), -1, 1);
+    
+    // Base reflection - maintain incoming angle but reverse vertical direction
+    // This follows the physics principle that angle of incidence equals angle of reflection
+    let vx = velocity.x;
+    let vy = -Math.abs(velocity.y); // Always bounce upward
+    
+    // Add paddle influence - hitting the edges adds horizontal velocity
+    // This simulates the paddle "brushing" the ball when hit on the edges
+    vx += normalizedDiff * (this.ballSpeed * 0.7);
+    
+    // Normalize the resulting vector to maintain consistent ball speed
+    const newSpeed = Math.sqrt(vx * vx + vy * vy);
+    const speedFactor = this.ballSpeed / newSpeed;
+    
+    // Apply the new velocity with consistent speed
+    ballObj.setVelocity(vx * speedFactor, vy * speedFactor);
   }
 
   /**
@@ -294,6 +328,31 @@ export class BreakoutGame extends BaseGame {
     
     // Hide the brick
     (brick as Phaser.GameObjects.Rectangle).setVisible(false);
+    
+    // Apply proper physics reflection for the ball
+    const ballObj = ball as Phaser.Physics.Arcade.Sprite;
+    if (ballObj.body) {
+      // Determine which side of the brick was hit
+      const brickRect = brick as Phaser.GameObjects.Rectangle;
+      const ballCenterX = ballObj.x;
+      const ballCenterY = ballObj.y;
+      const brickCenterX = brickRect.x;
+      const brickCenterY = brickRect.y;
+      
+      // Calculate distances from ball center to brick center
+      const dx = Math.abs(ballCenterX - brickCenterX);
+      const dy = Math.abs(ballCenterY - brickCenterY);
+      
+      // Determine if collision is more horizontal or vertical
+      // This is a simplified approach to determine which side was hit
+      if (dx > dy) {
+        // Horizontal collision (left or right side)
+        ballObj.body.velocity.x = -ballObj.body.velocity.x;
+      } else {
+        // Vertical collision (top or bottom)
+        ballObj.body.velocity.y = -ballObj.body.velocity.y;
+      }
+    }
 
     this.score++;
     this.scoreText.setText(`Bricks: ${this.score}/${this.targetScore}`);

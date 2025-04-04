@@ -60,6 +60,9 @@ export default function GameshieldDemo() {
             value={gameType}
             onChange={(e) => {
               setGameType(e.target.value as GameType);
+              setCaptchaKey((prev) => prev + 1); // Reset the game when type changes
+              setIsVerified(false);
+              setError(null);
               e.target.blur();
             }}
             className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none"
@@ -79,6 +82,9 @@ export default function GameshieldDemo() {
             value={difficulty}
             onChange={(e) => {
               setDifficulty(e.target.value as Difficulty);
+              setCaptchaKey((prev) => prev + 1); // Reset the game when difficulty changes
+              setIsVerified(false);
+              setError(null);
               e.target.blur();
             }}
             className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none"
@@ -102,28 +108,44 @@ export default function GameshieldDemo() {
           onSuccess={handleSuccess}
           onFailure={handleFailure}
         />
+        
+        {/* Overlay for verification result */}
+        {(isVerified || error) && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/70 rounded-lg">
+            {isVerified && (
+              <div className="flex flex-col items-center gap-4">
+                <div className="text-2xl font-bold text-green-400">
+                  Verification Successful!
+                </div>
+                <button
+                  onClick={handleRefresh}
+                  className="inline-flex cursor-pointer items-center gap-2 border border-white bg-transparent px-4 py-2 text-white transition-all hover:scale-95 hover:bg-white/10"
+                >
+                  <RefreshCcwIcon className="h-4 w-4" /> Try Again
+                </button>
+              </div>
+            )}
+            
+            {error && (
+              <div className="flex flex-col items-center gap-4">
+                <div className="text-2xl font-bold text-red-400">
+                  Verification Failed
+                </div>
+                <div className="text-white/80 mb-2">
+                  {error}
+                </div>
+                <button
+                  onClick={handleRefresh}
+                  className="inline-flex cursor-pointer items-center gap-2 border border-white bg-transparent px-4 py-2 text-white transition-all hover:scale-95 hover:bg-white/10"
+                >
+                  <RefreshCcwIcon className="h-4 w-4" /> Try Again
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
-      {isVerified && (
-        <div className="mt-4 text-center text-green-600">
-          Verification successful!
-        </div>
-      )}
-
-      {error && (
-        <div className="mt-4 text-center text-red-600">
-          Verification failed: {error}
-        </div>
-      )}
-
-      <div className="mt-4 flex gap-4">
-        <button
-          onClick={handleRefresh}
-          className="inline-flex cursor-pointer items-center gap-2 border border-black bg-transparent px-4 py-2 text-black transition-all hover:scale-95 hover:bg-gray-50"
-        >
-          <RefreshCcwIcon className="h-4 w-4" /> Refresh
-        </button>
-      </div>
     </div>
   );
 }
