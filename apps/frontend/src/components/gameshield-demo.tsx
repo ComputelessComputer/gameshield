@@ -2,7 +2,7 @@
 
 import { RefreshCcwIcon } from "lucide-react";
 import dynamic from "next/dynamic";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { GameType, Difficulty } from "@gameshield/core";
 
 // Import GameShield component with SSR disabled
@@ -35,6 +35,22 @@ export default function GameshieldDemo() {
     setIsVerified(false);
     setError(null);
   };
+
+  useEffect(() => {
+    const handleSpacebarPress = (event: KeyboardEvent) => {
+      // Only trigger refresh on spacebar when overlay is visible
+      if ((isVerified || error) && event.key === " ") {
+        event.preventDefault(); // Prevent page scrolling
+        handleRefresh();
+      }
+    };
+
+    document.addEventListener("keydown", handleSpacebarPress);
+
+    return () => {
+      document.removeEventListener("keydown", handleSpacebarPress);
+    };
+  }, [isVerified, error]); // Re-add listener when these states change
 
   const gameTypes = [
     { value: "random", label: "Random" },
@@ -108,10 +124,10 @@ export default function GameshieldDemo() {
           onSuccess={handleSuccess}
           onFailure={handleFailure}
         />
-        
+
         {/* Overlay for verification result */}
         {(isVerified || error) && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/70 rounded-lg">
+          <div className="absolute inset-0 flex flex-col items-center justify-center rounded-lg bg-black/70">
             {isVerified && (
               <div className="flex flex-col items-center gap-4">
                 <div className="text-2xl font-bold text-green-400">
@@ -125,27 +141,24 @@ export default function GameshieldDemo() {
                 </button>
               </div>
             )}
-            
+
             {error && (
               <div className="flex flex-col items-center gap-4">
                 <div className="text-2xl font-bold text-red-400">
                   Verification Failed
                 </div>
-                <div className="text-white/80 mb-2">
-                  {error}
-                </div>
+                <div className="mb-2 text-white/80">{error}</div>
                 <button
                   onClick={handleRefresh}
                   className="inline-flex cursor-pointer items-center gap-2 border border-white bg-transparent px-4 py-2 text-white transition-all hover:scale-95 hover:bg-white/10"
                 >
-                  <RefreshCcwIcon className="h-4 w-4" /> Try Again
+                  <RefreshCcwIcon className="h-4 w-4" /> Try Again (Spacebar)
                 </button>
               </div>
             )}
           </div>
         )}
       </div>
-
     </div>
   );
 }
