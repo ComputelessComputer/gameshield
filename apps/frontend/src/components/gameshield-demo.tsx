@@ -51,14 +51,17 @@ export default function GameshieldDemo() {
 
   return (
     <div className="flex h-full w-full flex-col items-center justify-center p-4">
-      <div className="mb-4 flex w-full max-w-[400px] flex-col gap-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+      <div className="mb-4 flex w-full max-w-[400px] flex-row gap-4">
+        <div className="w-1/2">
+          <label className="mb-1 block text-sm font-medium text-gray-700">
             Game Type
           </label>
           <select
             value={gameType}
-            onChange={(e) => setGameType(e.target.value as GameType)}
+            onChange={(e) => {
+              setGameType(e.target.value as GameType);
+              e.target.blur();
+            }}
             className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none"
           >
             {gameTypes.map((type) => (
@@ -68,13 +71,16 @@ export default function GameshieldDemo() {
             ))}
           </select>
         </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+        <div className="w-1/2">
+          <label className="mb-1 block text-sm font-medium text-gray-700">
             Difficulty
           </label>
           <select
             value={difficulty}
-            onChange={(e) => setDifficulty(e.target.value as Difficulty)}
+            onChange={(e) => {
+              setDifficulty(e.target.value as Difficulty);
+              e.target.blur();
+            }}
             className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none"
           >
             {difficultyLevels.map((level) => (
