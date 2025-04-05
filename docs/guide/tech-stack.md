@@ -28,6 +28,7 @@ gameshield/
 ### Core Technologies
 
 #### Frontend Stack
+
 - **Next.js**: React framework for the main application
 - **TypeScript**: Type-safe development
 - **TailwindCSS**: Utility-first styling
@@ -35,6 +36,7 @@ gameshield/
 - **React Query**: Data fetching and caching
 
 #### Backend Stack
+
 - **Node.js**: Runtime environment
 - **Hono**: Lightweight web framework
 - **TypeScript**: Type safety across the stack
@@ -42,6 +44,7 @@ gameshield/
 - **Redis**: Caching and session management
 
 #### Development Tools
+
 - **pnpm**: Package management
 - **ESLint**: Code linting
 - **Prettier**: Code formatting
@@ -78,19 +81,13 @@ gameshield/
 
 The GameShield system follows a modular architecture with clear separation of concerns:
 
-<img src="/sys_arch.png" darkSrc="/sys_arch_dark.png" alt="System Architecture" width="600px"/>
-
 ### SDK Architecture
 
 The CaptchaSDK follows a modular design pattern:
 
-<img src="/sdk_arch.png" darkSrc="/sdk_arch_dark.png" alt="CaptchaSDK Architecture" width="100%"/>
-
 ### Analytics Architecture
 
 The analytics system follows a provider pattern for flexibility:
-
-<img src="/analytics_arch.png" darkSrc="/analytics_arch_dark.png" alt="Analytics Architecture" width="100%"/>
 
 ## Implementation Details
 

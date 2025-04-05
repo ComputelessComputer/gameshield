@@ -10,8 +10,6 @@ GameShield follows a modular architecture with three main packages:
 2. **React Package**: Provides React components for easy integration into React applications
 3. **Server Package**: Handles server-side verification and security features
 
-<img src="/gameshield_how_it_works.png" darkSrc="/gameshield_how_it_works_dark.png" alt="GameShield Architecture" width="600px"/>
-
 ## Verification Process
 
 ### 1. Challenge Generation
@@ -90,17 +88,17 @@ The 1:1 aspect ratio ensures consistent gameplay across different devices, preve
 GameShield uses PixiJS, a fast 2D rendering library, to create interactive game experiences:
 
 ┌─────────────────────┐
-│    Game Factory     │
+│ Game Factory │
 └─────────────────────┘
-          │
-          ▼
+│
+▼
 ┌─────────────────────┐
-│    Game Instance    │
+│ Game Instance │
 └─────────────────────┘
-          │
-          ▼
+│
+▼
 ┌─────────────────────┐
-│     PixiJS App      │
+│ PixiJS App │
 └─────────────────────┘
 
 ### React Integration
@@ -121,12 +119,12 @@ The React component provides a seamless integration experience:
 The server package makes it easy to verify tokens:
 
 ```javascript
-import { verifyToken } from '@gameshield/server';
+import { verifyToken } from "@gameshield/server";
 
-app.post('/api/verify', (req, res) => {
+app.post("/api/verify", (req, res) => {
   const { token } = req.body;
   const result = verifyToken(token);
-  
+
   if (result.valid) {
     // Token is valid, proceed with protected action
     res.json({ success: true });
