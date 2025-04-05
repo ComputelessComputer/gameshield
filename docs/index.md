@@ -6,8 +6,8 @@ hero:
   text: "Game-as-a-CAPTCHA"
   tagline: Prevent bots with interactive games that humans love to play
   image:
-    src: /logo.png
-    alt: GameShield Logo
+    src: /gameshield-hero.gif
+    alt: GameShield Hero
   actions:
     - theme: brand
       text: Get Started
