@@ -58,6 +58,26 @@ gameshield/
 +-- docker/              # Docker Compose + nginx config
 ```
 
+## Setup
+
+Start the server, then create a site and API key via the admin API:
+
+```bash
+# 1. create a site (returns your site key)
+curl -X POST http://localhost:3001/api/v1/admin/sites \
+  -H "Content-Type: application/json" \
+  -d '{"name": "My App", "domains": ["localhost"]}'
+# -> { "siteKey": "gs_pk_...", ... }
+
+# 2. create a secret key for server-side verification
+curl -X POST http://localhost:3001/api/v1/admin/sites/SITE_ID/keys \
+  -H "Content-Type: application/json" \
+  -d '{"name": "production"}'
+# -> { "secretKey": "gs_sk_...", ... }  (shown once)
+```
+
+Or use the dashboard at `http://localhost:5173` to manage sites and keys through the UI.
+
 ## Usage
 
 **Client** — drop the widget into any page:
