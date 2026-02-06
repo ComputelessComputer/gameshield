@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GameShield Widget Demo</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f5f5;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      margin: 0;
+    }
+
+    .demo-container {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      padding: 32px;
+      max-width: 400px;
+      width: 100%;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin: 0 0 8px;
+    }
+
+    p {
+      color: #666;
+      margin: 0 0 24px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    label {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    input {
+      padding: 12px;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #6366f1;
+    }
+
+    button {
+      padding: 12px 24px;
+      background: #6366f1;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    button:hover {
+      background: #4f46e5;
+    }
+
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    .captcha-container {
+      margin: 16px 0;
+    }
+
+    .status {
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 14px;
+      display: none;
+    }
+
+    .status.success {
+      display: block;
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .status.error {
+      display: block;
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .token-display {
+      margin-top: 16px;
+      padding: 12px;
+      background: #f5f5f5;
+      border-radius: 6px;
+      font-family: monospace;
+      font-size: 12px;
+      word-break: break-all;
+      display: none;
+    }
+
+    .token-display.visible {
+      display: block;
+    }
+
+    .instructions {
+      margin-top: 24px;
+      padding: 16px;
+      background: #f0f9ff;
+      border-radius: 6px;
+      font-size: 13px;
+    }
+
+    .instructions h3 {
+      margin: 0 0 8px;
+      font-size: 14px;
+    }
+
+    .instructions ol {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    .instructions li {
+      margin-bottom: 4px;
+    }
+
+    .site-key-input {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .site-key-input input {
+      flex: 1;
+    }
+
+    .site-key-input button {
+      padding: 12px 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-container">
+    <h1>GameShield Demo</h1>
+    <p>Play Tetris to prove you're human</p>
+
+    <div class="site-key-input">
+      <input type="text" id="site-key" placeholder="Enter site key (gs_pk_...)" />
+      <button type="button" onclick="updateSiteKey()">Set</button>
+    </div>
+
+    <form id="demo-form" onsubmit="handleSubmit(event)">
+      <label>Email</label>
+      <input type="email" name="email" placeholder="you@example.com" required />
+
+      <label>Password</label>
+      <input type="password" name="password" placeholder="••••••••" required />
+
+      <div class="captcha-container">
+        <gameshield-captcha
+          id="captcha"
+          site-key=""
+          api-url="http://localhost:3001"
+          data-callback="onCaptchaSuccess"
+          data-error-callback="onCaptchaError"
+        ></gameshield-captcha>
+      </div>
+
+      <input type="hidden" name="captcha-token" id="captcha-token" />
+
+      <button type="submit" id="submit-btn" disabled>Sign Up</button>
+    </form>
+
+    <div id="status" class="status"></div>
+    <div id="token-display" class="token-display"></div>
+
+    <div class="instructions">
+      <h3>Setup Instructions</h3>
+      <ol>
+        <li>Start the server: <code>pnpm dev</code></li>
+        <li>Create a site in the dashboard</li>
+        <li>Copy the site key and paste above</li>
+        <li>Click "I'm not a robot" to play Tetris</li>
+        <li>Clear the required lines to verify</li>
+      </ol>
+    </div>
+  </div>
+
+  <script type="module" src="../src/gameshield-widget.ts"></script>
+  <script>
+    let verificationToken = null;
+
+    function updateSiteKey() {
+      const siteKey = document.getElementById('site-key').value;
+      const captcha = document.getElementById('captcha');
+      if (siteKey && captcha) {
+        captcha.setAttribute('site-key', siteKey);
+        // Force re-render by removing and re-adding
+        const parent = captcha.parentNode;
+        const clone = captcha.cloneNode(true);
+        parent.replaceChild(clone, captcha);
+      }
+    }
+
+    function onCaptchaSuccess(token) {
+      console.log('CAPTCHA success:', token);
+      verificationToken = token;
+      document.getElementById('captcha-token').value = token;
+      document.getElementById('submit-btn').disabled = false;
+
+      document.getElementById('token-display').textContent = 'Token: ' + token;
+      document.getElementById('token-display').classList.add('visible');
+    }
+
+    function onCaptchaError(error) {
+      console.error('CAPTCHA error:', error);
+      verificationToken = null;
+      document.getElementById('captcha-token').value = '';
+      document.getElementById('submit-btn').disabled = true;
+
+      const status = document.getElementById('status');
+      status.textContent = 'CAPTCHA Error: ' + error;
+      status.className = 'status error';
+    }
+
+    function handleSubmit(event) {
+      event.preventDefault();
+
+      if (!verificationToken) {
+        alert('Please complete the CAPTCHA first');
+        return;
+      }
+
+      const status = document.getElementById('status');
+      status.textContent = 'Form submitted successfully! Token: ' + verificationToken.substring(0, 20) + '...';
+      status.className = 'status success';
+
+      console.log('Form submitted with token:', verificationToken);
+    }
+  </script>
+</body>
+</html>

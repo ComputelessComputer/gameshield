@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  server:
+    build:
+      context: ..
+      dockerfile: apps/server/Dockerfile
+      target: base
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=development
+      - PORT=3001
+    volumes:
+      - ../apps/server/src:/app/apps/server/src
+      - ../packages/shared/src:/app/packages/shared/src
+      - gameshield-data:/app/data
+    command: pnpm --filter @gameshield/server dev
+
+volumes:
+  gameshield-data:

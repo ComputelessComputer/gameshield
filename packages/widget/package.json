@@ -1,0 +1,25 @@
+{
+  "name": "@gameshield/widget",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/gameshield-widget.js",
+  "exports": {
+    ".": {
+      "import": "./dist/gameshield-widget.js"
+    }
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "lit": "^3.2.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3",
+    "vite": "^6.0.6"
+  }
+}

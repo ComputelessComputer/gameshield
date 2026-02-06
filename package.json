@@ -1,0 +1,24 @@
+{
+  "name": "gameshield",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Tetris-based CAPTCHA system",
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "lint": "turbo lint",
+    "typecheck": "turbo typecheck",
+    "clean": "turbo clean && rm -rf node_modules",
+    "db:generate": "pnpm --filter @gameshield/server db:generate",
+    "db:push": "pnpm --filter @gameshield/server db:push",
+    "db:studio": "pnpm --filter @gameshield/server db:studio"
+  },
+  "devDependencies": {
+    "turbo": "^2.3.0",
+    "typescript": "^5.6.3"
+  },
+  "packageManager": "pnpm@9.14.2",
+  "engines": {
+    "node": ">=20"
+  }
+}
