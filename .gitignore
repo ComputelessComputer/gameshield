@@ -5,6 +5,8 @@ node_modules/
 dist/
 .next/
 .turbo/
+docs/.vitepress/cache/
+docs/.vitepress/dist/
 
 # Database
 *.db

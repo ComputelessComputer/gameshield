@@ -1,0 +1,108 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+:root {
+  --vp-font-family-mono: 'Courier New', Consolas, monospace;
+  --pixel-font: 'Press Start 2P', monospace;
+
+  --vp-c-brand-1: #6366f1;
+  --vp-c-brand-2: #4f46e5;
+  --vp-c-brand-3: #818cf8;
+  --vp-c-brand-soft: rgba(99, 102, 241, 0.14);
+
+  --vp-home-hero-name-color: #6366f1;
+}
+
+/* ── kill all roundness ── */
+
+*,
+*::before,
+*::after {
+  border-radius: 0 !important;
+}
+
+/* ── pixel headings ── */
+
+.vp-doc h1,
+.vp-doc h2,
+.vp-doc h3 {
+  font-family: var(--pixel-font);
+  letter-spacing: -0.5px;
+}
+
+.vp-doc h1 {
+  font-size: 20px;
+  line-height: 1.6;
+}
+
+.vp-doc h2 {
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.vp-doc h3 {
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+/* ── nav & sidebar pixel treatment ── */
+
+.VPNavBarTitle .title {
+  font-family: var(--pixel-font);
+  font-size: 12px;
+  letter-spacing: -0.5px;
+}
+
+.VPNavBarMenuLink {
+  font-family: var(--pixel-font);
+  font-size: 10px;
+}
+
+.VPSidebar .item .text {
+  font-family: var(--pixel-font);
+  font-size: 9px;
+}
+
+/* ── code blocks: sharp ── */
+
+.vp-doc div[class*='language-'] {
+  border: 2px solid var(--vp-c-border);
+}
+
+.vp-doc code {
+  font-family: var(--vp-font-family-mono);
+}
+
+/* ── inline code pixel feel ── */
+
+.vp-doc :not(pre) > code {
+  border: 1px solid var(--vp-c-border);
+  background: var(--vp-c-bg-soft);
+  padding: 2px 6px;
+}
+
+/* ── footer ── */
+
+.VPFooter {
+  font-family: var(--pixel-font);
+  font-size: 9px;
+}
+
+/* ── custom blocks sharp ── */
+
+.custom-block {
+  border-width: 2px;
+}
+
+/* ── scrollbar pixel feel (webkit) ── */
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--vp-c-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--vp-c-border);
+}
