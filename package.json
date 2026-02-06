@@ -9,6 +9,7 @@
     "lint": "turbo lint",
     "typecheck": "turbo typecheck",
     "clean": "turbo clean && rm -rf node_modules",
+    "setup": "bash scripts/setup.sh",
     "db:generate": "pnpm --filter @gameshield/server db:generate",
     "db:push": "pnpm --filter @gameshield/server db:push",
     "db:studio": "pnpm --filter @gameshield/server db:studio",
