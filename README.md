@@ -23,24 +23,24 @@ A CAPTCHA alternative that replaces image puzzles with Tetris. Users prove they'
 ## How it works
 
 ```
-┌──────────┐     challenge      ┌──────────┐
-│          │ ──────────────────► │          │
-│  Widget  │                    │  Server  │
-│          │ ◄────────────────  │          │
-│  (plays  │   seed + config    │ (Hono +  │
-│  Tetris) │                    │  Drizzle)│
-│          │  moves + score     │          │
-│          │ ──────────────────►│          │
-│          │                    │          │
-│          │ ◄────────────────  │          │
-└──────────┘  verification      └──────────┘
-                 token               │
-                                     │ siteverify
-                                     ▼
-                              ┌──────────────┐
-                              │  Your Server  │
-                              │  (server-sdk) │
-                              └──────────────┘
++----------+     challenge      +----------+
+|          | ------------------> |          |
+|  Widget  |                    |  Server  |
+|          | <----------------  |          |
+|  (plays  |   seed + config    | (Hono +  |
+|  Tetris) |                    |  Drizzle)|
+|          |  moves + score     |          |
+|          | ------------------>|          |
+|          |                    |          |
+|          | <----------------  |          |
++----------+  verification      +----------+
+                 token               |
+                                     | siteverify
+                                     v
+                              +--------------+
+                              |  Your Server  |
+                              |  (server-sdk) |
+                              +--------------+
 ```
 
 1. Widget requests a challenge — server returns a **seed** (determines piece sequence)
@@ -54,14 +54,14 @@ A CAPTCHA alternative that replaces image puzzles with Tetris. Users prove they'
 
 ```
 gameshield/
-├── apps/
-│   ├── server/          # Hono API — challenges, verification, analytics
-│   └── dashboard/       # React admin UI — site management, analytics
-├── packages/
-│   ├── widget/          # Lit web component — <gameshield-captcha>
-│   ├── server-sdk/      # Node.js SDK for server-side token verification
-│   └── shared/          # Shared TypeScript types
-└── docker/              # Docker Compose + nginx config
+|-- apps/
+|   |-- server/          # Hono API -- challenges, verification, analytics
+|   +-- dashboard/       # React admin UI -- site management, analytics
+|-- packages/
+|   |-- widget/          # Lit web component -- <gameshield-captcha>
+|   |-- server-sdk/      # Node.js SDK for server-side token verification
+|   +-- shared/          # Shared TypeScript types
++-- docker/              # Docker Compose + nginx config
 ```
 
 ## Usage
