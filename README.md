@@ -22,25 +22,19 @@ A CAPTCHA alternative that replaces image puzzles with Tetris. Users prove they'
 
 ## How it works
 
-```
-+----------+     challenge      +----------+
-|          | ------------------> |          |
-|  Widget  |                    |  Server  |
-|          | <----------------  |          |
-|  (plays  |   seed + config    | (Hono +  |
-|  Tetris) |                    |  Drizzle)|
-|          |  moves + score     |          |
-|          | ------------------>|          |
-|          |                    |          |
-|          | <----------------  |          |
-+----------+  verification      +----------+
-                 token               |
-                                     | siteverify
-                                     v
-                              +--------------+
-                              |  Your Server  |
-                              |  (server-sdk) |
-                              +--------------+
+```mermaid
+sequenceDiagram
+    participant W as Widget
+    participant S as Server
+    participant Y as Your Server
+
+    W->>S: request challenge
+    S-->>W: seed + config
+    Note over W: user plays Tetris
+    W->>S: moves + score
+    S-->>W: verification token
+    Y->>S: siteverify (token)
+    S-->>Y: success / fail
 ```
 
 1. Widget requests a challenge — server returns a **seed** (determines piece sequence)
