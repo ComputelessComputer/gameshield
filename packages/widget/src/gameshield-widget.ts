@@ -205,6 +205,13 @@ export class GameShieldCaptcha extends LitElement {
       text-align: center;
     }
 
+    .content {
+      min-height: ${BOARD_HEIGHT * CELL_SIZE + 4 + 28}px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
     .message {
       padding: 16px;
       text-align: center;
@@ -549,7 +556,9 @@ export class GameShieldCaptcha extends LitElement {
           <span class="title">GameShield</span>
         </div>
 
-        ${this.renderContent()}
+        <div class="content">
+          ${this.renderContent()}
+        </div>
       </div>
     `;
   }

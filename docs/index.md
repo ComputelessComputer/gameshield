@@ -3,7 +3,7 @@ layout: page
 ---
 
 <script setup>
-import TetrisDemo from './.vitepress/components/TetrisDemo.vue'
+import InteractiveCheckbox from './.vitepress/components/InteractiveCheckbox.vue'
 </script>
 
 <div class="hero-section">
@@ -16,7 +16,7 @@ import TetrisDemo from './.vitepress/components/TetrisDemo.vue'
       <a href="https://github.com/ComputelessComputer/gameshield" class="btn-secondary">[GITHUB]</a>
     </div>
   </div>
-  <TetrisDemo />
+  <InteractiveCheckbox />
 </div>
 
 <div class="features">

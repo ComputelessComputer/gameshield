@@ -64,8 +64,8 @@ gameshield/
 git clone https://github.com/ComputelessComputer/gameshield.git
 cd gameshield
 pnpm install
-pnpm dev          # starts server + dashboard + widget
-pnpm setup        # creates a site and prints your keys
+pnpm dev           # starts all services
+pnpm setup         # creates a site + API keys
 ```
 
 Output:

@@ -14,13 +14,21 @@ echo "  Site:   $SITE_NAME"
 echo "  Domain: $DOMAIN"
 echo ""
 
-# check server is running
-if ! curl -sf "$API_URL/health" > /dev/null 2>&1; then
-  echo "  ERROR: Server is not running at $API_URL"
-  echo "  Start it first with: pnpm dev"
-  echo ""
-  exit 1
-fi
+# wait for server
+echo "  Waiting for server..."
+for i in $(seq 1 30); do
+  if curl -sf "$API_URL/health" > /dev/null 2>&1; then
+    echo "  Server is up!"
+    break
+  fi
+  if [ "$i" -eq 30 ]; then
+    echo "  ERROR: Server not reachable at $API_URL after 30s"
+    echo "  Start it first with: pnpm dev"
+    echo ""
+    exit 1
+  fi
+  sleep 1
+done
 
 # create site
 echo "  Creating site..."
@@ -51,8 +59,14 @@ if [ -z "$SECRET_KEY" ]; then
   exit 1
 fi
 
+# Write keys to .env file
+ENV_FILE="$(dirname "$0")/../.env"
+echo "GAMESHIELD_SITE_KEY=$SITE_KEY" > "$ENV_FILE"
+echo "GAMESHIELD_SECRET_KEY=$SECRET_KEY" >> "$ENV_FILE"
+echo "GAMESHIELD_SITE_ID=$SITE_ID" >> "$ENV_FILE"
+
 echo ""
-echo "  Done! Save these keys:"
+echo "  Done! Keys saved to .env"
 echo ""
 echo "  SITE KEY (public, use in widget):"
 echo "    $SITE_KEY"
