@@ -3,6 +3,7 @@ import { defineConfig } from 'vitepress';
 export default defineConfig({
   title: 'GameShield',
   description: 'Tetris-based CAPTCHA for the modern web',
+  outDir: '../dist',
   ignoreDeadLinks: [/localhost/],
   head: [
     ['link', { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }],
